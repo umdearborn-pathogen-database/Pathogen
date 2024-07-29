@@ -1,0 +1,10 @@
+# .gitignore
+
+# Mac OS
+.DS_Store
+.DS_Store_
+.DS_Store?
+.Spotlight-V100
+
+# Visual Studio
+.vs
