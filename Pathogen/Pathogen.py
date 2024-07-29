@@ -6,7 +6,7 @@ if __name__ == "__main__":
 
 # 1. Move Import
 # Open the file in read mode
-with open('TestData/air.POSITIVE.txt', 'r') as file:
+with open('Pathogen/TestData/air.POSITIVE.txt', 'r') as file:
     # Read the contents of the file
     contents = file.read()
 
