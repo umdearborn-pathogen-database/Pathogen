@@ -1,19 +1,32 @@
+# Imports for packages already included with Python
 import sys
 import os
+# Necessary for __init__.py classes
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Import the install method from the Setup module in the Dependencies package
+# Import the install method from the Dependencies/Setup.py
 from Dependencies.Setup import install
+# Import the install function from the Dependencies/Setup.py
 from Dependencies.Setup import installDependencies
 
+# Main function
 def main():
+    # Pulling dependencies defined in Dependencies/Setup.py
     installDependencies()
+    # Imports after installDependencies()
     import pandas as pd
     import seaborn
     import MALDIpy
+
+    # ~Testing~
     print("successfully installed dependencies!")
+    # ~End Testing~
+
     raw_file = pd.read_csv('Data/Import/info-ecoli-MAI.csv')
+
+    # ~Testing~
     print(raw_file.head())
+    # ~End Testing~
 
 if __name__ == "__main__":
     main()
