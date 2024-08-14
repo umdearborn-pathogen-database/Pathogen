@@ -18,15 +18,19 @@ def main():
     import seaborn
     import MALDIpy
 
-    # ~Testing~
+# ~Testing~
     print("successfully installed dependencies!")
-    # ~End Testing~
+# ~End Testing~
 
-    raw_file = pd.read_csv('Data/Import/info-ecoli-MAI.csv')
+# Equivalence of:
+#   spectra.info <- read.csv("info-ecoli-MAI.csv", header=TRUE)
+    spectra_info = pd.read_csv('Data/Import/info-ecoli-MAI.csv')
 
     # ~Testing~
-    print(raw_file.head())
+    print(spectra_info.head())
     # ~End Testing~
+
+    spectra = pd.read_csv('Data/Import/MAI-redo-ecoli')
 
 if __name__ == "__main__":
     main()
