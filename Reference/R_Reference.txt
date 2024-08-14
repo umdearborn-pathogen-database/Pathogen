@@ -1,0 +1,64 @@
+setMethod:
+    setMethod(f, signature, definition)
+    setMethod(f, signature=character(), definition,
+          where = topenv(parent.frame()),
+          valueClass = NULL, sealed = FALSE)
+    f:
+        The character-string name of the generic function.
+        The unquoted name usually works as well
+        (evaluating to the generic function), except
+        for a few functions in the base package.
+    signature: 
+        The classes required for some of the arguments.
+        Most applications just require one or two character
+        strings matching the first argument(s) in the
+        signature. More complicated cases follow R's rule for
+        argument matching. See the details below; however,
+        if the signature is not trivial, you should use
+        method.skeleton to generate a valid call to setMethod.
+    definition:
+        A function definition, which will become the method
+        called when the arguments in a call to f match the
+        classes in signature, directly or through inheritance.
+        The definition must be a function with the same formal
+        arguments as the generic; however, setMethod() will
+        handle methods that add arguments, if … is a formal
+        argument to the generic. See the Details section.
+    where:
+        Where to store the definition; should be the default,
+        the namespace for the package.
+    valueClass:
+        Obsolete
+    sealed:
+        Prevents the method being redefined, but should never
+        be needed when the method is defined in the source
+        code of a package.
+
+MALDIquant/R/isEmpty-methods.R:
+    ## AbstractMassObject
+    setMethod(f="isEmpty",
+            signature=signature(x="AbstractMassObject"),
+            definition=function(x) {
+
+        !sum(as.double(x@intensity), na.rm=TRUE)
+    })
+
+    setMethod(f=".isEmptyWarning",
+            signature=signature(x="AbstractMassObject"),
+            definition=function(x) {
+
+        if (isEmpty(x)) {
+            msg <- paste0(class(x)[1L], " object")
+
+            if (!is.null(x@metaData$file)) {
+                msg <- paste0(msg, " (file: ", x@metaData$file, ")")
+            }
+
+            parentCall <- sys.call(-1L)
+            warning("In ", deparse(parentCall), " : ", msg, " is empty!",
+                    call.=FALSE)
+            return(TRUE)
+        }
+
+        FALSE
+    })
