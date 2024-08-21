@@ -1,5 +1,5 @@
 # Notes:
-#   pyOpenMS
+#   Research: pyOpenMS
 
 # Install the necessary packages
 # R > install.packages(c("sda", "crossval", "devtools", "pca3d","FactoMineR", "factoextra", "dendextend", "MALDIquant", "MALDIquantForeign"))
@@ -68,6 +68,7 @@
 # Python > ...
 
 # Estimate the baseline using the SNIP method
+# SNIP method not necessary can be any method
 # R > baseline <- estimateBaseline(spectra[[1]], method="SNIP",iterations=150)
 # Python > ...
 
