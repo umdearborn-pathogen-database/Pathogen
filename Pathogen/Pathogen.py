@@ -9,11 +9,33 @@ from Dependencies.Setup import installDependencies
 def main():
     installDependencies()
     import pandas as pd
-    import seaborn
+    import glob
+    import os
+    import seaborn as sns
     import MALDIpy
+    import scanpy as sc
+    import scanpy.external as sce
+    sc.settings.verbosity = 3
+    sc.settings.set_figure_params(dpi=100, facecolor='white',fontsize=12)
+    import matplotlib.pyplot as plt
+
     print("successfully installed dependencies!")
-    raw_file = pd.read_csv('Data/Import/info-ecoli-MAI.csv')
-    print(raw_file.head())
+    metadata_file = pd.read_csv('Data/Import/info-ecoli-MAI.csv')
+    print(metadata_file.head())
+    # spectra_file = pd.read_csv('MAI-redo-ecoli.csv')
+
+    # Define the folder path
+    # folder_path = 'Data/Import/MAI-redo-ecoli/'
+    folder_path = 'Data/Import/MAI-redo-ecoli'
+
+    # Find all CSV files in the folder
+    csv_files = glob.glob(os.path.join(folder_path, "*.csv"))
+
+    # Load each CSV file into a DataFrame and store in a list
+    dataframes = [pd.read_csv(file) for file in csv_files]
+
+    # Print the head of the first DataFrame
+    print(dataframes[0].head())
 
 if __name__ == "__main__":
     main()
