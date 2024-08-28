@@ -8,3 +8,4 @@
 
 # Visual Studio
 .vs
+*.pyc
