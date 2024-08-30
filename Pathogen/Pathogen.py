@@ -4,13 +4,18 @@ import os
 # Necessary for __init__.py classes
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Import the install method from the Dependencies/Setup.py
+# Import the loadConfig method from Dependencies/Setup.py
+from Dependencies.Setup import loadConfig
+# Import the install method from Dependencies/Setup.py
 from Dependencies.Setup import install
-# Import the install function from the Dependencies/Setup.py
+# Import the install function from Dependencies/Setup.py
 from Dependencies.Setup import installDependencies
+# Import the getConfigValue function from Dependencies/Setup.py
+from Dependencies.Setup import getConfigValue
 
 # Main function
 def main():
+    loadConfig()
     # Pulling dependencies defined in Dependencies/Setup.py
     installDependencies()
     # Imports after installDependencies()
@@ -24,8 +29,8 @@ def main():
     sc.settings.verbosity = 3
     sc.settings.set_figure_params(dpi=100, facecolor='white',fontsize=12)
     import matplotlib.pyplot as plt
-
     print("successfully installed dependencies!")
+
     metadata_file = pd.read_csv('Data/Import/info-ecoli-MAI.csv')
     print(metadata_file.head())
     # spectra_file = pd.read_csv('MAI-redo-ecoli.csv')
@@ -42,6 +47,16 @@ def main():
 
     # Print the head of the first DataFrame
     print(dataframes[0].head())
+
+    if(getConfigValue('options', 'remove-null-valued-spectra') == 'true'):
+        ###
+        print("This is for removing with removeNullValuedSpectra()")
+
+
+    if(getConfigValue('options', 'cancel-if-sum-is-zero') == 'true'):
+        ###
+        print("This is for checking to ensure that the sum of the intensities are not zero")
+
 
 if __name__ == "__main__":
     main()

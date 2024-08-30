@@ -1,0 +1,10 @@
+database:
+  local-enabled: 'yes'
+  local-file-name: pathogens.db
+  password: password
+  remote-host: 127.0.0.1
+  remote-port: '3306'
+  remote-user: admin
+logging:
+  logging-enabled: 'false'
+  logging-output: pathogens.log
