@@ -4,17 +4,24 @@ import os
 # Necessary for __init__.py classes
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Import the install method from the Dependencies/Setup.py
+# Import the loadConfig method from Dependencies/Setup.py
+from Dependencies.Setup import loadConfig
+# Import the install method from Dependencies/Setup.py
 from Dependencies.Setup import install
-# Import the install function from the Dependencies/Setup.py
+# Import the install function from Dependencies/Setup.py
 from Dependencies.Setup import installDependencies
+# Import the getConfigValue function from Dependencies/Setup.py
+from Dependencies.Setup import getConfigValue
 
 from QualityControl.QualityControl import is_regular
 from Preprocessing.Preprocessing import trim_spectra
 from BaselineCorrection.BaselineCorrection import snip_baseline_correction
+from IntensityCalibration.IntensityCalibration import calibrateIntensity
+from PeakDetection.PeakDetection import alignSpectra
 
 # Main function
 def main():
+    loadConfig()
     # Pulling dependencies defined in Dependencies/Setup.py
     installDependencies()
     # Imports after installDependencies()
@@ -135,20 +142,14 @@ def main():
     # Show the plot
     plt.show()
 
+    #5. Intensity Calibration
+    spectrum_df = calibrateIntensity(spectrum_df, str(getConfigValue('options', 'scaling-factor')))
+    #6. Spectra Alignment
+    spectrum_df = alignSpectra(spectrum_df)
 
 
 if __name__ == "__main__":
     main()
-
-# 1. Move Import
-
-#2. Quality Control
-
-#3. Transformational Smoothing
-
-#4. Baseline Correction
-
-#5. Intensity Calibration
 
 #6. Spectra Alignment
 
