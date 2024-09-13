@@ -1,0 +1,17 @@
+database:
+  local-enabled: false
+  local-file-name: pathogens.db
+  remote-database: pathogens
+  remote-host: tcmtech98.com
+  remote-password: 5Ml4_*qOT10M7:=x
+  remote-port: 3306
+  remote-username: tusa
+logging:
+  logging-enabled: false
+  logging-output-file: pathogens.log
+options:
+  cancel-if-sum-is-zero: false
+  remove-null-valued-spectra: false
+  scaling-factor: TIC
+  trim-lower-bounds: 200
+  trim-upper-bounds: 1995

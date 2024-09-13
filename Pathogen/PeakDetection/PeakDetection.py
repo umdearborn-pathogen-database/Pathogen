@@ -7,20 +7,20 @@ from Dependencies.Setup import log
 def alignSpectra(spectra, halfWindowSize=20, noiseMethod="MAD", SNR=2, reference=None, tolerance=0.002, warpingMethod="lowess", allowNoMatches=False, emptyNoMatches=False, **kwargs):
     peaks = detectPeaks(spectra, halfWindowSize=halfWindowSize, noiseMethod=noiseMethod, SNR=SNR)
     warpingFunctions = []
-    for peak in peaks:
-        x = peak['Mass']
-        d = np.zeros_like(x)
-        if warpingMethod == "lowess":
-            wf = warpingFunctionLowess(x, d, **kwargs)
-        elif warpingMethod == "linear":
-            wf = warpingFunctionLinear(x, d, **kwargs)
-        elif warpingMethod == "quadratic":
-            wf = warpingFunctionQuadratic(x, d, **kwargs)
-        elif warpingMethod == "cubic":
-            wf = warpingFunctionCubic(x, d, **kwargs)
-        else:
-            log(f"Unknown warping method: {warpingMethod}")
-        warpingFunctions.append(wf)
+    x = peaks['Mass']
+    d = np.zeros_like(x)
+    if warpingMethod == "lowess":
+        wf = warpingFunctionLowess(x, d, **kwargs)
+    elif warpingMethod == "linear":
+        wf = warpingFunctionLinear(x, d, **kwargs)
+    elif warpingMethod == "quadratic":
+        wf = warpingFunctionQuadratic(x, d, **kwargs)
+    elif warpingMethod == "cubic":
+        wf = warpingFunctionCubic(x, d, **kwargs)
+    else:
+        log(f"Unknown warping method: {warpingMethod}")
+        wf = None
+    warpingFunctions.append(wf)
     alignedSpectra = warpMassSpectra(spectra, warpingFunctions, emptyNoMatches=emptyNoMatches)
     return alignedSpectra
 
@@ -53,8 +53,8 @@ def warpMassSpectra(spectra, warpingFunctions, emptyNoMatches=False):
             if emptyNoMatches:
                 warpedSpectra.append({'Mass': spectrum['Mass'], 'Intensity': np.zeros_like(spectrum['Mass'])})
             continue
-        mass = spectrum['Mass'].values
-        intensity = spectrum['Intensity'].values
+        mass = spectrum[0]
+        intensity = spectrum[1]
         warpedMass = mass + wf(mass)
         warpedSpectra.append({'Mass': warpedMass, 'Intensity': intensity})
     return warpedSpectra

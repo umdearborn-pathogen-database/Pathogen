@@ -4,15 +4,9 @@ import os
 # Necessary for __init__.py classes
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Import the loadConfig method from Dependencies/Setup.py
-from Dependencies.Setup import loadConfig
-# Import the install method from Dependencies/Setup.py
-from Dependencies.Setup import install
-# Import the install function from Dependencies/Setup.py
 from Dependencies.Setup import installDependencies
-# Import the getConfigValue function from Dependencies/Setup.py
-from Dependencies.Setup import getConfigValue
-
+from ConfigurationFile.Config import initializeConfig
+from ConfigurationFile.Config import getConfigValueCasted
 from QualityControl.QualityControl import is_regular
 from Preprocessing.Preprocessing import trim_spectra
 from BaselineCorrection.BaselineCorrection import snip_baseline_correction
@@ -21,8 +15,9 @@ from PeakDetection.PeakDetection import alignSpectra
 
 # Main function
 def main():
-    loadConfig()
-    # Pulling dependencies defined in Dependencies/Setup.py
+    initializeConfig()
+    from DatabaseConnection.DatabaseConnector import initializeDatabase
+    initializeDatabase()
     installDependencies()
     # Imports after installDependencies()
     import pandas as pd
@@ -94,7 +89,9 @@ def main():
     #3. Transformational Smoothing
 
     # Define the range to trim and pass the dataframes and range using the pre-processing trim_spectra function
-    mz_range = (200, 1995)
+    xl = getConfigValueCasted('options', 'trim-lower-bounds', int)
+    xu = getConfigValueCasted('options', 'trim-upper-bounds', int)
+    mz_range = (xl, xu)
     trimmed_spectra_dfs = trim_spectra(dataframes, mz_range)
     print("The Trimmed Spectra")
     print(trimmed_spectra_dfs[0].head())
@@ -143,7 +140,8 @@ def main():
     plt.show()
 
     #5. Intensity Calibration
-    spectrum_df = calibrateIntensity(spectrum_df, str(getConfigValue('options', 'scaling-factor')))
+    spectrum_df = calibrateIntensity(spectrum_df, getConfigValueCasted('options', 'scaling-factor', str))
+    
     #6. Spectra Alignment
     spectrum_df = alignSpectra(spectrum_df)
 

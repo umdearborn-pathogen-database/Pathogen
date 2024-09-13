@@ -17,20 +17,21 @@ import yaml
     
 default_config = {
     'database': {
-        'local-enabled': 'yes',
+        'local-enabled': 'True',
         'local-file-name': 'pathogens.db',
         'remote-host': '127.0.0.1',
         'remote-port': '3306',
-        'remote-user': 'admin',
-        'password': 'password'
+        'remote-database': 'pathogendb',
+        'remote-username': 'admin',
+        'remote-password': 'password'
     },
     'logging': {
-        'logging-enabled': 'false',
+        'logging-enabled': 'False',
         'logging-output': 'pathogens.log'
     },
     'options': {
-        'remove-null-valued-spectra': 'false',
-        'cancel-if-sum-is-zero': 'false',
+        'remove-null-valued-spectra': 'False',
+        'cancel-if-sum-is-zero': 'False',
         'scaling-factor': 'TIC'
     }
 }
@@ -65,6 +66,14 @@ def getConfigValue(root, branch):
     else:
         log(f"Error retrieving value. {root} or {branch} not found in the configuration file.")
 
+def getConfigValueCasted(root, branch, cast_type):
+    x = getConfigValue(root, branch)
+    try:
+        x = cast_type(x)
+        return x
+    except (ValueError, TypeError):
+        print(f"Failed to correctly read in value '{x}' to {cast_type.__name__}")
+
 def setConfigValue(root, branch, value):
     file_name = 'pathogen-config.yaml'
     file_path = os.path.join(os.getcwd(), file_name)
@@ -76,5 +85,5 @@ def setConfigValue(root, branch, value):
         log(f"Error setting value. {root} or {branch} not found in the configuration file.")
 
 def log(log):
-    if getConfigValue('logging', 'logging-enabled'):
+    if getConfigValueCasted('logging', 'logging-enabled', eval):
         print(log)
