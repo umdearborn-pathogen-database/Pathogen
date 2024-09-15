@@ -1,5 +1,5 @@
-from ConfigurationFile.Config import getConfigValueCasted
-from ConfigurationFile.Config import log
+from Dependencies.Setup import getConfigValueCasted
+from Dependencies.Setup import log
 from Dependencies.Setup import install
 
 localEnabled = getConfigValueCasted('database', 'local-enabled', bool)

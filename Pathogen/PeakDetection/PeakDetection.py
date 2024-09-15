@@ -32,7 +32,9 @@ def detectPeaks(spectra, halfWindowSize=20, noiseMethod="MAD", SNR=2):
 
 def warpingFunctionLowess(x, d, **kwargs):
     lowess = sm.nonparametric.lowess(d, x, **kwargs)
-    return np.interp(x, lowess[:, 0], lowess[:, 1])
+    if lowess.ndim != 2 or lowess.shape[1] != 2:
+        log(ValueError("Lowess result is not a 2D array with two columns."))
+    return lowess
 
 def warpingFunctionLinear(x, d, **kwargs):
     coeffs = np.polyfit(x, d, 1)
@@ -55,6 +57,10 @@ def warpMassSpectra(spectra, warpingFunctions, emptyNoMatches=False):
             continue
         mass = spectrum[0]
         intensity = spectrum[1]
+        print(spectra)
+        print("warpingfunctions", warpingFunctions)
+        print(spectrum)
+        print(wf)
         warpedMass = mass + wf(mass)
         warpedSpectra.append({'Mass': warpedMass, 'Intensity': intensity})
     return warpedSpectra

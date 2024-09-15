@@ -1,7 +1,7 @@
 import numpy as np
 
 # Logging
-from ConfigurationFile.Config import log
+from Dependencies.Setup import log
 
 def calibrateIntensity(spectrum, method):
     if(method == "TIC"):
