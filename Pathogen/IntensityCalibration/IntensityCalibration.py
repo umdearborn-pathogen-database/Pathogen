@@ -22,7 +22,46 @@ def calibrateIntensity(spectrum, method):
         return spectrum
     else:
         log("Error calibrating intensity. Method is incorrectly defined.")
+    
+    # Before TIC Normalization
+    # Mass   Intensity
+    # 100    200
+    # 150    300
+    # 200    500
 
+    # After TIC Normalization
+    # Mass   Normalized Intensity
+    # 100    0.2   (200 / 1000)
+    # 150    0.3   (300 / 1000)
+    # 200    0.5   (500 / 1000)
+
+def tic_normalization(df):
+    """
+    Perform TIC normalization on the 'Intensity' column of the DataFrame.
+
+    Parameters:
+    df (pd.DataFrame): Input DataFrame with a column 'Intensity' of type float64.
+
+    Returns:
+    pd.DataFrame: A new DataFrame with TIC-normalized 'Intensity' values.
+    """
+    if 'Intensity' not in df.columns:
+        raise ValueError("DataFrame must contain an 'Intensity' column.")
+
+    # Calculate the Total Ion Current (TIC)
+    tic = df['Intensity'].sum()
+
+    # Normalize the 'Intensity' column
+    df['Normalized_Intensity'] = df['Intensity'] / tic
+
+    return df
+
+# Example usage:
+# df = pd.DataFrame({'Mass': [100, 150, 200], 'Intensity': [200.0, 300.0, 500.0]})
+# normalized_df = tic_normalization(df)
+# print(normalized_df)
+
+# commenting this out for now
 def totalIonCurrent(spectrum):
     intensities = spectrum['Intensity'].values
     masses = spectrum['Intensity'].values

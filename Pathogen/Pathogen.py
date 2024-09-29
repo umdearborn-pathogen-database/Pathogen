@@ -3,6 +3,7 @@ import sys
 import os
 # Necessary for __init__.py classes
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from Helper.Helper import print_dataframe_summary
 
 # Main function
 def main():
@@ -27,11 +28,11 @@ def main():
     # 1. Move Import
     metadata_file = pd.read_csv('Data/Import/info-ecoli-MAI.csv')
 
-# Debugging
-#    print(metadata_file.head())
+    # Debugging
+    #    print(metadata_file.head())
 
-# Optional: commented out in R file    
-    # spectra_file = pd.read_csv('MAI-redo-ecoli.csv')
+    # Optional: commented out in R file    
+        # spectra_file = pd.read_csv('MAI-redo-ecoli.csv')
 
     # Define the folder path
     folder_path = 'Data/Import/MAI-redo-ecoli'
@@ -42,10 +43,6 @@ def main():
     # Load each CSV file into a DataFrame and store in a list
     dataframes = [pd.read_csv(file) for file in csv_files]
 
-# Debugging
-# Print the head of the first DataFrame
-#    print(dataframes[0].head())
-
 
     #2. Quality Control
 
@@ -55,38 +52,15 @@ def main():
     # Or get a list of which DataFrames contain null or empty values
     dataframes_with_nulls = [df for df in dataframes if df.isnull().values.any()]
 
-# Adjust in future, debugging
-#    if any_null_or_empty:
-#        print("At least one DataFrame contains null or empty values.")
-#    else:
-#        print("No DataFrames contain null or empty values.")
-
-# Adjust in future to cancel if nulls, or remove nulls  
-#   print('Dataframes with nulls')
-#   print(dataframes_with_nulls)
-
     # Calculate the number of rows for each DataFrame
     row_counts = [len(df) for df in dataframes]
 
     # Create a frequency table of the row counts
     row_count_table = pd.Series(row_counts).value_counts()
 
-# Debugging
-#    print('Row_Count_Table')
-#    print(row_count_table)
-#    print('count of dataframes/csvs')
-#    print(dataframes.count)
-
     # Check if all DataFrames have regular intervals over the 'Mass' column
     from QualityControl.QualityControl import is_regular
     all_regular = all(is_regular(df, 'Mass') for df in dataframes)
-
-# Replace to have function defined in the config
-#    if all_regular:
-#        print("All DataFrames have regular intervals.")
-#    else:
-#        print("Not all DataFrames have regular intervals.")
-
 
     #3. Transformational Smoothing
 
@@ -97,16 +71,16 @@ def main():
     from Preprocessing.Preprocessing import trim_spectra
     trimmed_spectra_dfs = trim_spectra(dataframes, mz_range)
 
-# Debugging
-#    print("The Trimmed Spectra")
-#    print(trimmed_spectra_dfs[0].head())
+    # Debugging - Prints some visuals of the dataframe
+    print("Object characteristics")
+    print(print_dataframe_summary(trimmed_spectra_dfs))
 
 
     #4. Baseline Correction
 
     # trimmed_spectra_dfs is a list of trimmed spectra DataFrames
     # Apply the baseline correction to the first DataFrame
-    spectrum_df = trimmed_spectra_dfs[0]  
+    spectrum_df = trimmed_spectra_dfs[0]
 
     # Assuming the signal is in a column named Intensity
     signal = spectrum_df['Intensity'].values
@@ -158,8 +132,85 @@ def main():
     warpingMethod = getConfigValueCasted('align-spectra', 'warping-method', str)
     allowNoMatches = getConfigValueCasted('align-spectra', 'allow-no-matches', bool)
     emptyNoMatches = getConfigValueCasted('align-spectra', 'empty-no-matches', bool)
+    
+    # Align Spectra
     from PeakDetection.PeakDetection import alignSpectra
     spectrum_df = alignSpectra(spectrum_df, halfWindowSize, noiseMethod, snr, reference, tolerance, warpingMethod, allowNoMatches, emptyNoMatches)
+    
+    # Average Mass Spectra
+    from PeakBinning.PeakBinning import averageMassSpectra
+    average_spectra_df = averageMassSpectra(spectrum_df, metadata_file['patientID'].unique())
+    average_spectra_df.attrs = metadata_file['patientID'].unique()
+
+    # Estimate Noise
+    from PeakBinning.PeakBinning import estimateNoise
+    noise = estimateNoise(average_spectra_df[0])
+
+    # Print the noise
+    # Assuming 'average_spectra_df' is your DataFrame with 'm/z', 'intensity', and 'baseline' columns
+    # Plot the original spectrum
+    plt.plot(average_spectra_df['Mass'], average_spectra_df['Intensity'], label='Original Spectrum', color='blue')
+
+    # Plot the noise data
+    plt.plot(noise[:, 0], noise[:, 1], color='red', label="SNR == 1")
+
+    # Plot 2 * noise[:, 1] in blue
+    plt.plot(noise[:, 0], 2 * noise[:, 1], color='blue', label="2 * Noise")
+
+    # Add labels, legend, and title if needed
+    plt.xlabel('X-axis label')
+    plt.ylabel('Y-axis label')
+    plt.legend()
+    plt.title('Plot of avgSpectra and noise')
+
+    # Add labels and title
+    plt.xlabel('m/z')
+    plt.ylabel('Intensity')
+    plt.title('Spectrum with Noise')
+
+    # Add a legend
+    plt.legend()
+
+    # Show the plot
+    plt.show()
+
+    # Detect Peaks 
+    from PeakDetection.PeakDetection import detectPeaks
+    peaks = detectPeaks(average_spectra_df, SNR=2, halfWindowSize=20)
+
+    from PeakBinning.PeakBinning import binPeaks
+    binned_peaks = binPeaks(peaks)
+
+    # data to save to SQL
+    # save raw data / trimmed (at which point? ask Darrell)
+    # columns = id, mass, intensity, created on date
+    # save feature matrix
+    # columns = id,
+    # save output of pca
+    
+    # remaining R code
+    # peaks <- binPeaks(peaks)
+    # peaks <- filterPeaks(peaks, minFrequency=c(0.2),labels=avgSpectra.info$Bacteria, mergeWhitelists=TRUE)
+    # featureMatrix <- intensityMatrix(peaks, avgSpectra)
+    # #exclude varibles
+    # #featureMatrix <- featureMatrix[,-c(726:730)]
+
+    # rownames(featureMatrix) <- avgSpectra.info$patientID
+    # Xtrain <- featureMatrix
+    # Ytrain <- avgSpectra.info$Bacteria
+    # ddar <- sda.ranking(Xtrain=featureMatrix, L=Ytrain, fdr=FALSE,diagonal=TRUE)
+    # distanceMatrix <- dist(featureMatrix, method="euclidean")
+    # hClust <- hclust(distanceMatrix, method="complete")
+    # plot(hClust, hang=-1)
+    # write.csv(featureMatrix, file = "PCA1.csv")
+    # z <- read.csv(file = 'PCA1.csv', header = TRUE)
+
+
+
+    # pca <- prcomp(z[,-1], scale.=TRUE)
+    # gr <- factor(z[,1], labels=avgSpectra.info$Bacteria)
+    # summary(gr)
+        
 
 
 if __name__ == "__main__":
@@ -172,3 +223,9 @@ if __name__ == "__main__":
 #8. Peak Binning
 
 #9. Feature Matrix
+
+
+# Useful links
+# https://pandas.pydata.org/docs/user_guide/style.html
+# https://github.com/sgibb/MALDIquant/blob/master/R/alignSpectra-functions.R
+

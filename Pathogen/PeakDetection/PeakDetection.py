@@ -25,6 +25,9 @@ def alignSpectra(spectra, halfWindowSize=20, noiseMethod="MAD", SNR=2, reference
     return alignedSpectra
 
 def detectPeaks(spectra, halfWindowSize=20, noiseMethod="MAD", SNR=2):
+    # mass = spectrum_df['mass'].values
+    # intensity = spectrum_df['intensity'].values
+
     intensity = spectra['Intensity'].values
     mass = spectra['Mass'].values
     peakIndices, _ = find_peaks(intensity, distance=halfWindowSize)
@@ -55,8 +58,8 @@ def warpMassSpectra(spectra, warpingFunctions, emptyNoMatches=False):
             if emptyNoMatches:
                 warpedSpectra.append({'Mass': spectrum['Mass'], 'Intensity': np.zeros_like(spectrum['Mass'])})
             continue
-        mass = spectrum[0]
-        intensity = spectrum[1]
+        mass = spectrum[0][0]
+        intensity = spectrum[1][0]
         print(spectra)
         print("warpingfunctions", warpingFunctions)
         print(spectrum)
