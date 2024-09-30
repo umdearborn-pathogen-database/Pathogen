@@ -78,32 +78,86 @@ def main():
 
     #4. Baseline Correction
 
+    # going to use this for now
     # trimmed_spectra_dfs is a list of trimmed spectra DataFrames
     # Apply the baseline correction to the first DataFrame
-    spectrum_df = trimmed_spectra_dfs[0]
+    # spectrum_df = trimmed_spectra_dfs[0]
 
-    # Assuming the signal is in a column named Intensity
-    signal = spectrum_df['Intensity'].values
+    # # Assuming the signal is in a column named Intensity
+    # signal = spectrum_df['Intensity'].values
+
+    # # Apply the SNIP baseline correction
+    # from BaselineCorrection.BaselineCorrection import snip_baseline_correction
+    # baseline = snip_baseline_correction(signal, iterations=150)
+
+    # # Optionally: Add the baseline as a new column to your DataFrame
+    # spectrum_df['Baseline'] = baseline
+
+    # # Now you can subtract the baseline from the signal if needed
+    # corrected_signal = signal - baseline
+    # # spectrum_df['Corrected_Intensity'] = corrected_signal
+    # spectrum_df['Corrected_Intensity'] = corrected_signal
+
+    # # Assuming 'spectrum_df' is your DataFrame with 'm/z', 'intensity', and 'baseline' columns
+
+    # # Plot the original spectrum
+    # plt.plot(spectrum_df['Mass'], spectrum_df['Intensity'], label='Original Spectrum', color='blue')
+
+    # # Plot the baseline
+    # plt.plot(spectrum_df['Mass'], spectrum_df['Baseline'], label='Baseline', color='red', linestyle='--')
+
+    # # Optionally: Plot the original spectrum minus the baseline
+    # # plt.plot(spectrum_df['Mass'], spectrum_df['Corrected_Intensity'], label='Corrected Spectrum', color='green')
+
+    # # Add labels and title
+    # plt.xlabel('m/z')
+    # plt.ylabel('Intensity')
+    # plt.title('Spectrum with Baseline Correction')
+
+    # # Add a legend
+    # plt.legend()
+
+    # # Show the plot
+    # plt.show()
+
+
+    
+    # # trimmed_spectra_dfs is a list of trimmed spectra DataFrames
+    # # Apply the baseline correction to the first DataFrame
+    spectrum_df = trimmed_spectra_dfs
+    print("list spectra")
+    print(type(spectrum_df))
+    print(spectrum_df[0].head())
+    first_spectrum_df = trimmed_spectra_dfs[0]
+    print("first spectra")
+    print(type(first_spectrum_df))
+    print(first_spectrum_df.head())
+    # get just the intensity values from the list of data frames
+    # signal = [df[['Intensity']] for df in spectrum_df]
 
     # Apply the SNIP baseline correction
     from BaselineCorrection.BaselineCorrection import snip_baseline_correction
-    baseline = snip_baseline_correction(signal, iterations=150)
+    baseline = snip_baseline_correction([first_spectrum_df], iterations=50)
+    print("returned first spectra")
+    print(type(baseline))
+    print(baseline[0].head())
+    first_spectrum_df['Baseline'] = baseline[0]['Baseline']
 
     # Optionally: Add the baseline as a new column to your DataFrame
-    spectrum_df['Baseline'] = baseline
+    # spectrum_df['Baseline'] = baseline
 
     # Now you can subtract the baseline from the signal if needed
-    corrected_signal = signal - baseline
-    spectrum_df['Corrected_Intensity'] = corrected_signal
-
+    # corrected_intensity = signal - baseline
+    # spectrum_df['Corrected_Intensity'] = corrected_signal
+    # spectrum_df['Intensity'] = corrected_signal
 
     # Assuming 'spectrum_df' is your DataFrame with 'm/z', 'intensity', and 'baseline' columns
 
     # Plot the original spectrum
-    plt.plot(spectrum_df['Mass'], spectrum_df['Intensity'], label='Original Spectrum', color='blue')
+    plt.plot(first_spectrum_df['Mass'], first_spectrum_df['Intensity'], label='Original Spectrum', color='blue')
 
     # Plot the baseline
-    plt.plot(spectrum_df['Mass'], spectrum_df['Baseline'], label='Baseline', color='red', linestyle='--')
+    plt.plot(first_spectrum_df['Mass'], first_spectrum_df['Baseline'], label='Baseline', color='red', linestyle='--')
 
     # Optionally: Plot the original spectrum minus the baseline
     # plt.plot(spectrum_df['Mass'], spectrum_df['Corrected_Intensity'], label='Corrected Spectrum', color='green')
@@ -111,7 +165,32 @@ def main():
     # Add labels and title
     plt.xlabel('m/z')
     plt.ylabel('Intensity')
-    plt.title('Spectrum with Baseline Correction')
+    plt.title('First Spectrum with Baseline Correction')
+
+    # Add a legend
+    plt.legend()
+
+    # Show the plot
+    plt.show()
+
+    # Finish removing baseline from the entire the dataframe list
+    trimmed_spectra_baseline_adjusted = snip_baseline_correction(spectrum_df, iterations=50)
+    print("Object characteristics After Baseline Removal")
+    print(print_dataframe_summary(trimmed_spectra_baseline_adjusted))
+    # trimmed_spectra_baseline_adjusted['Baseline'] = trimmed_spectra_baseline_adjusted[0]['Baseline']
+    
+    # replot that to test
+    # Plot the original spectrum
+    second_specturm_df_baseline_adjusted = trimmed_spectra_baseline_adjusted[1]
+    plt.plot(second_specturm_df_baseline_adjusted['Mass'], second_specturm_df_baseline_adjusted['Intensity'], label='Original Spectrum', color='blue')
+
+    # Plot the baseline
+    plt.plot(second_specturm_df_baseline_adjusted['Mass'], second_specturm_df_baseline_adjusted['Baseline'], label='Baseline', color='red', linestyle='--')
+
+        # Add labels and title
+    plt.xlabel('m/z')
+    plt.ylabel('Intensity')
+    plt.title('Second Spectrum with Baseline Correction')
 
     # Add a legend
     plt.legend()
@@ -121,7 +200,7 @@ def main():
 
     #5. Intensity Calibration
     from IntensityCalibration.IntensityCalibration import calibrateIntensity
-    spectrum_df = calibrateIntensity(spectrum_df, getConfigValueCasted('options', 'scaling-factor', str))
+    trimmed_spectra_baseline_adjusted_calibrated = calibrateIntensity(trimmed_spectra_baseline_adjusted, getConfigValueCasted('options', 'scaling-factor', str))
     
     #6. Spectra Alignment
     halfWindowSize = getConfigValueCasted('align-spectra', 'half-window-size', int)
@@ -135,21 +214,22 @@ def main():
     
     # Align Spectra
     from PeakDetection.PeakDetection import alignSpectra
-    spectrum_df = alignSpectra(spectrum_df, halfWindowSize, noiseMethod, snr, reference, tolerance, warpingMethod, allowNoMatches, emptyNoMatches)
+    trimmed_spectra_baseline_adjusted_calibrated_aligned = alignSpectra(trimmed_spectra_baseline_adjusted_calibrated, halfWindowSize, noiseMethod, snr, reference, tolerance, warpingMethod, allowNoMatches, emptyNoMatches)
     
     # Average Mass Spectra
     from PeakBinning.PeakBinning import averageMassSpectra
-    average_spectra_df = averageMassSpectra(spectrum_df, metadata_file['patientID'].unique())
-    average_spectra_df.attrs = metadata_file['patientID'].unique()
+    trimmed_spectra_baseline_adjuted_calibrated_aligned_averaged = averageMassSpectra(trimmed_spectra_baseline_adjusted_calibrated_aligned, metadata_file['patientID'].unique())
+    trimmed_spectra_baseline_adjuted_calibrated_aligned_averaged.attrs = metadata_file['patientID'].unique()
+    print_dataframe_summary(trimmed_spectra_baseline_adjuted_calibrated_aligned_averaged)
 
     # Estimate Noise
     from PeakBinning.PeakBinning import estimateNoise
-    noise = estimateNoise(average_spectra_df[0])
+    noise = estimateNoise(trimmed_spectra_baseline_adjuted_calibrated_aligned_averaged[0])
 
     # Print the noise
-    # Assuming 'average_spectra_df' is your DataFrame with 'm/z', 'intensity', and 'baseline' columns
+    # Assuming 'trimmed_spectra_baseline_adjuted_calibrated_aligned_averaged' is your DataFrame with 'm/z', 'intensity', and 'baseline' columns
     # Plot the original spectrum
-    plt.plot(average_spectra_df['Mass'], average_spectra_df['Intensity'], label='Original Spectrum', color='blue')
+    plt.plot(trimmed_spectra_baseline_adjuted_calibrated_aligned_averaged['Mass'], trimmed_spectra_baseline_adjuted_calibrated_aligned_averaged['Intensity'], label='Original Spectrum', color='blue')
 
     # Plot the noise data
     plt.plot(noise[:, 0], noise[:, 1], color='red', label="SNR == 1")
@@ -176,7 +256,7 @@ def main():
 
     # Detect Peaks 
     from PeakDetection.PeakDetection import detectPeaks
-    peaks = detectPeaks(average_spectra_df, SNR=2, halfWindowSize=20)
+    peaks = detectPeaks(trimmed_spectra_baseline_adjuted_calibrated_aligned_averaged, SNR=2, halfWindowSize=20)
 
     from PeakBinning.PeakBinning import binPeaks
     binned_peaks = binPeaks(peaks)
@@ -198,7 +278,7 @@ def main():
     # rownames(featureMatrix) <- avgSpectra.info$patientID
     # Xtrain <- featureMatrix
     # Ytrain <- avgSpectra.info$Bacteria
-    # ddar <- sda.ranking(Xtrain=featureMatrix, L=Ytrain, fdr=FALSE,diagonal=TRUE)
+    # ddar <- sda.ranking(Xtrain=featureMatrix, L=Ytrain, fdrs=FALSE,diagonal=TRUE)
     # distanceMatrix <- dist(featureMatrix, method="euclidean")
     # hClust <- hclust(distanceMatrix, method="complete")
     # plot(hClust, hang=-1)

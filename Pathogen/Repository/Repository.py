@@ -1,6 +1,9 @@
 class my_class(object):
     pass
 
+# savePathogen()
+# id, name, createdDate
+
 # saveRawData()
 # id, run, mass, intensity, createdDate
 

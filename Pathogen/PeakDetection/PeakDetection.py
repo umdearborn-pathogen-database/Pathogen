@@ -3,6 +3,7 @@ from scipy.signal import find_peaks
 import statsmodels.api as sm
 
 from Dependencies.Setup import log
+from Helper.Helper import print_dataframe_summary
 
 def alignSpectra(spectra, halfWindowSize=20, noiseMethod="MAD", SNR=2, reference=None, tolerance=0.002, warpingMethod="lowess", allowNoMatches=False, emptyNoMatches=False, **kwargs):
     peaks = detectPeaks(spectra, halfWindowSize=halfWindowSize, noiseMethod=noiseMethod, SNR=SNR)
@@ -23,6 +24,27 @@ def alignSpectra(spectra, halfWindowSize=20, noiseMethod="MAD", SNR=2, reference
     warpingFunctions.append(wf)
     alignedSpectra = warpMassSpectra(spectra, warpingFunctions, emptyNoMatches=emptyNoMatches)
     return alignedSpectra
+
+# def align_spectra(spectrum, target_mass_range):
+#     """Aligns the spectrum to a common mass range using interpolation."""
+#     common_mass = np.linspace(target_mass_range[0], target_mass_range[1], num=1000)
+
+#     # Ensure spectrum is a DataFrame
+#     if isinstance(spectrum, pd.DataFrame):
+#         masses = spectrum['Mass'].to_numpy()  # Access mass column
+#         intensities = spectrum['Intensity'].to_numpy()  # Access intensity column
+
+#         # Create interpolation function
+#         interp_func = interp1d(masses, intensities, bounds_error=False, fill_value=0)
+
+#         # Interpolate intensity values onto the common mass grid
+#         aligned_intensity = interp_func(common_mass)
+
+#         # Return the aligned spectrum as a DataFrame
+#         return pd.DataFrame({'Mass': common_mass, 'Intensity': aligned_intensity})
+#     else:
+#         raise ValueError("Input spectrum is not a valid DataFrame.")
+
 
 def detectPeaks(spectra, halfWindowSize=20, noiseMethod="MAD", SNR=2):
     # mass = spectrum_df['mass'].values
@@ -60,10 +82,7 @@ def warpMassSpectra(spectra, warpingFunctions, emptyNoMatches=False):
             continue
         mass = spectrum[0][0]
         intensity = spectrum[1][0]
-        print(spectra)
         print("warpingfunctions", warpingFunctions)
-        print(spectrum)
-        print(wf)
         warpedMass = mass + wf(mass)
         warpedSpectra.append({'Mass': warpedMass, 'Intensity': intensity})
     return warpedSpectra
