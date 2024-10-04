@@ -3,27 +3,83 @@ from scipy.signal import find_peaks
 import statsmodels.api as sm
 
 from Helper.Helper import print_dataframe_summary
-from Pathogen.Dependencies.Global import printMessage
+from Dependencies.Global import printMessage
 
-def alignSpectra(spectra, halfWindowSize=20, noiseMethod="MAD", SNR=2, reference=None, tolerance=0.002, warpingMethod="lowess", allowNoMatches=False, emptyNoMatches=False, **kwargs):
-    peaks = detectPeaks(spectra, halfWindowSize=halfWindowSize, noiseMethod=noiseMethod, SNR=SNR)
-    warpingFunctions = []
-    x = peaks['Mass']
-    d = np.zeros_like(x)
-    if warpingMethod == "lowess":
-        wf = warpingFunctionLowess(x, d, **kwargs)
-    elif warpingMethod == "linear":
-        wf = warpingFunctionLinear(x, d, **kwargs)
-    elif warpingMethod == "quadratic":
-        wf = warpingFunctionQuadratic(x, d, **kwargs)
-    elif warpingMethod == "cubic":
-        wf = warpingFunctionCubic(x, d, **kwargs)
-    else:
-        printMessage("err", f"Unknown warping method: {warpingMethod}")
-        wf = None
-    warpingFunctions.append(wf)
-    alignedSpectra = warpMassSpectra(spectra, warpingFunctions, emptyNoMatches=emptyNoMatches)
+# def alignSpectra(spectra, halfWindowSize=20, noiseMethod="MAD", SNR=2, reference=None, tolerance=0.002, warpingMethod="lowess", allowNoMatches=False, emptyNoMatches=False, **kwargs):
+#     peaks = detectPeaks(spectra, halfWindowSize=halfWindowSize, noiseMethod=noiseMethod, SNR=SNR)
+#     warpingFunctions = []
+#     x = peaks['Mass']
+#     d = np.zeros_like(x)
+#     if warpingMethod == "lowess":
+#         wf = warpingFunctionLowess(x, d, **kwargs)
+#     elif warpingMethod == "linear":
+#         wf = warpingFunctionLinear(x, d, **kwargs)
+#     elif warpingMethod == "quadratic":
+#         wf = warpingFunctionQuadratic(x, d, **kwargs)
+#     elif warpingMethod == "cubic":
+#         wf = warpingFunctionCubic(x, d, **kwargs)
+#     else:
+#         printMessage("err", f"Unknown warping method: {warpingMethod}")
+#         wf = None
+#     warpingFunctions.append(wf)
+#     alignedSpectra = warpMassSpectra(spectra, warpingFunctions, emptyNoMatches=emptyNoMatches)
+#     return alignedSpectra
+
+def alignSpectra(spectra_list, halfWindowSize=20, noiseMethod="MAD", SNR=2, reference=None, tolerance=0.002, warpingMethod="lowess", allowNoMatches=False, emptyNoMatches=False, **kwargs):
+    alignedSpectra = []  # To hold the aligned spectra from each DataFrame
+
+    for spectra in spectra_list:
+        # Detect peaks for the current DataFrame
+        peaks = detectPeaks(spectra, halfWindowSize=halfWindowSize, noiseMethod=noiseMethod, SNR=SNR)
+        warpingFunctions = []
+        x = peaks['Mass']
+        d = np.zeros_like(x)
+
+        # Determine the warping function based on the specified method
+        if warpingMethod == "lowess":
+            wf = warpingFunctionLowess(x, d, **kwargs)
+        elif warpingMethod == "linear":
+            wf = warpingFunctionLinear(x, d, **kwargs)
+        elif warpingMethod == "quadratic":
+            wf = warpingFunctionQuadratic(x, d, **kwargs)
+        elif warpingMethod == "cubic":
+            wf = warpingFunctionCubic(x, d, **kwargs)
+        else:
+            printMessage("err", f"Unknown warping method: {warpingMethod}")
+            wf = None
+
+        warpingFunctions.append(wf)
+
+        # Warp the mass spectra for the current DataFrame
+        alignedSpectra.append(warpMassSpectra([spectra], warpingFunctions, emptyNoMatches=emptyNoMatches))
+
     return alignedSpectra
+
+# def alignSpectra(spectra_list, 
+#                  halfWindowSize=20, noiseMethod="MAD", SNR=2, 
+#                  reference=None, tolerance=0.002, 
+#                  warpingMethod="lowess", 
+#                  allowNoMatches=False, emptyNoMatches=False, **kwargs):
+
+#     # Check if input is a list of DataFrames (mass spectra)
+#     if not isinstance(spectra_list, list) or not all(isinstance(spectrum, pd.DataFrame) for spectrum in spectra_list):
+#         raise ValueError("Input must be a list of mass spectra DataFrames.")
+
+#     # Detect peaks in the spectra
+#     peaks = detectPeaks(spectra_list, halfWindowSize=halfWindowSize, 
+#                         method=noiseMethod, SNR=SNR, **kwargs)
+
+#     # Determine warping functions based on the detected peaks and reference
+#     warpingFunctions = determineWarpingFunctions(peaks, reference=reference, 
+#                                                  tolerance=tolerance, 
+#                                                  method=warpingMethod, 
+#                                                  allowNoMatches=allowNoMatches)
+
+#     # Warp the mass spectra using the determined warping functions
+#     alignedSpectra = warpMassSpectra(spectra_list, warpingFunctions, 
+#                                       emptyNoMatches=emptyNoMatches)
+
+#     return alignedSpectra
 
 # def align_spectra(spectrum, target_mass_range):
 #     """Aligns the spectrum to a common mass range using interpolation."""
@@ -80,9 +136,10 @@ def warpMassSpectra(spectra, warpingFunctions, emptyNoMatches=False):
             if emptyNoMatches:
                 warpedSpectra.append({'Mass': spectrum['Mass'], 'Intensity': np.zeros_like(spectrum['Mass'])})
             continue
-        mass = spectrum[0][0]
-        intensity = spectrum[1][0]
+        mass = spectrum["Mass"].values
+        intensity = spectrum["Intensity"].values
         print("warpingfunctions", warpingFunctions)
+        print(f"type of mass:{type(mass)} type of wf{type(wf)}")
         warpedMass = mass + wf(mass)
         warpedSpectra.append({'Mass': warpedMass, 'Intensity': intensity})
     return warpedSpectra

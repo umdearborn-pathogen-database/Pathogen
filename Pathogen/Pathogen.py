@@ -152,8 +152,12 @@ def main():
     # print(baseline[0].head())
     # first_spectrum_df['Baseline'] = baseline[0]['Baseline']
     
-    corrected_spectra = apply_snip_baseline_correction(spectrum_df, window_size=10)
-    first_spectrum_df = corrected_spectra[0]
+    trimmed_spectra_baseline_adjusted = apply_snip_baseline_correction(spectrum_df, window_size=10)
+    first_trimmed_spectra_baseline_adjusted = trimmed_spectra_baseline_adjusted[0]
+
+    # plt.plot(x, y, label='Original data')
+    # plt.plot(x, baseline, label='SNIP baseline')
+    # plt.plot(x, y - baseline, label='Corrected signal')
 
     # Plot the results
     # plt.figure(figsize=(10, 6))
@@ -179,10 +183,10 @@ def main():
     # Assuming 'spectrum_df' is your DataFrame with 'm/z', 'intensity', and 'baseline' columns
 
     # Plot the original spectrum
-    plt.plot(first_spectrum_df['Mass'], first_spectrum_df['Intensity'], label='Original Spectrum', color='blue')
+    plt.plot(first_trimmed_spectra_baseline_adjusted['Mass'], first_trimmed_spectra_baseline_adjusted['Intensity'], label='Original Spectrum', color='blue')
 
     # Plot the baseline
-    plt.plot(first_spectrum_df['Mass'], first_spectrum_df['Baseline'], label='Baseline', color='red', linestyle='--')
+    plt.plot(first_trimmed_spectra_baseline_adjusted['Mass'], first_trimmed_spectra_baseline_adjusted['Baseline'], label='Baseline', color='red', linestyle='--')
 
     # Optionally: Plot the original spectrum minus the baseline
     # plt.plot(spectrum_df['Mass'], spectrum_df['Corrected_Intensity'], label='Corrected Spectrum', color='green')
@@ -199,29 +203,29 @@ def main():
     plt.show()
 
     # Finish removing baseline from the entire the dataframe list
-    trimmed_spectra_baseline_adjusted = snip_baseline_correction(spectrum_df, iterations=50)
-    print("Object characteristics After Baseline Removal")
-    print(print_dataframe_summary(trimmed_spectra_baseline_adjusted))
-    # trimmed_spectra_baseline_adjusted['Baseline'] = trimmed_spectra_baseline_adjusted[0]['Baseline']
+    # trimmed_spectra_baseline_adjusted = snip_baseline_correction(spectrum_df, iterations=50)
+    # print("Object characteristics After Baseline Removal")
+    # print(print_dataframe_summary(trimmed_spectra_baseline_adjusted))
+    # # trimmed_spectra_baseline_adjusted['Baseline'] = trimmed_spectra_baseline_adjusted[0]['Baseline']
     
-    # replot that to test
-    # Plot the original spectrum
-    second_specturm_df_baseline_adjusted = trimmed_spectra_baseline_adjusted[1]
-    plt.plot(second_specturm_df_baseline_adjusted['Mass'], second_specturm_df_baseline_adjusted['Intensity'], label='Original Spectrum', color='blue')
+    # # replot that to test
+    # # Plot the original spectrum
+    # second_specturm_df_baseline_adjusted = trimmed_spectra_baseline_adjusted[1]
+    # plt.plot(second_specturm_df_baseline_adjusted['Mass'], second_specturm_df_baseline_adjusted['Intensity'], label='Original Spectrum', color='blue')
 
-    # Plot the baseline
-    plt.plot(second_specturm_df_baseline_adjusted['Mass'], second_specturm_df_baseline_adjusted['Baseline'], label='Baseline', color='red', linestyle='--')
+    # # Plot the baseline
+    # plt.plot(second_specturm_df_baseline_adjusted['Mass'], second_specturm_df_baseline_adjusted['Baseline'], label='Baseline', color='red', linestyle='--')
 
-        # Add labels and title
-    plt.xlabel('m/z')
-    plt.ylabel('Intensity')
-    plt.title('Second Spectrum with Baseline Correction')
+    #     # Add labels and title
+    # plt.xlabel('m/z')
+    # plt.ylabel('Intensity')
+    # plt.title('Second Spectrum with Baseline Correction')
 
-    # Add a legend
-    plt.legend()
+    # # Add a legend
+    # plt.legend()
 
-    # Show the plot
-    plt.show()
+    # # Show the plot
+    # plt.show()
 
     #5. Intensity Calibration
     from IntensityCalibration.IntensityCalibration import calibrateIntensity
