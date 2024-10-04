@@ -114,8 +114,7 @@ defaultConfig = {
         'remote-password': 'password'
     },
     'options': {
-        'remove-null-valued-spectra': False,
-        'cancel-if-sum-is-zero': False,
+        'cancel-if-null-valued-spectra': False,
         'trim-lower-bounds': 200,
         'trim-upper-bounds': 1995,
         'scaling-factor': 'TIC'
@@ -168,8 +167,7 @@ def checkConfig():
         getConfigValue('database', 'remote-password', str)
     else:
         getConfigValue('database', 'local-file-name', str)
-        getConfigValue('options', 'remove-null-valued-spectra', bool)
-        getConfigValue('options', 'cancel-if-sum-is-zero', bool)
+        getConfigValue('options', 'cancel-if-null-valued-spectra', bool)
         getConfigValue('options', 'trim-lower-bounds', int)
         getConfigValue('options', 'trim-upper-bounds', int)
         getConfigValue('options', 'scaling-factor', str)
@@ -286,3 +284,10 @@ def database(statement, initialize=False, fetchOne=True):
         if connection:
             cursor.close()
             connection.close()
+
+def getColumnValues(dataframesList, colName):
+    for index, data in enumerate(dataframesList):
+        if data.shape[1] < 2:
+            printMessage("err", f"DataFrame at index {index} must contain at least two columns.")
+        else:
+            return data[colName].values

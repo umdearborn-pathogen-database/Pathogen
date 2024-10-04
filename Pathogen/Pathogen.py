@@ -20,6 +20,7 @@ def main():
     from Dependencies.Global import database
     database(None, True)
     from Dependencies.Global import getConfigValue
+    from Dependencies.Global import printMessage
     
     # Imports after installDependencies()
     import pandas as pd
@@ -56,10 +57,14 @@ def main():
     #2. Quality Control
 
     # Check if any DataFrame in the list has null or empty values
-    any_null_or_empty = any(df.isnull().values.any() for df in dataframes)
+    if getConfigValue('options', 'cancel-if-null-valued-spectra', bool):
+        anyNull = any(df.isnull().values.any() for df in dataframes)
+        if anyNull:
+            printMessage("err", "Cannot initialize with null/empty valued spectra. Change configuration value if you wish to continue.")
+            quit(0)
 
     # Or get a list of which DataFrames contain null or empty values
-    dataframes_with_nulls = [df for df in dataframes if df.isnull().values.any()]
+    # dataframes_with_nulls = [df for df in dataframes if df.isnull().values.any()]
 
     # Calculate the number of rows for each DataFrame
     row_counts = [len(df) for df in dataframes]

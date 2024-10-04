@@ -80,8 +80,8 @@ def warpMassSpectra(spectra, warpingFunctions, emptyNoMatches=False):
             if emptyNoMatches:
                 warpedSpectra.append({'Mass': spectrum['Mass'], 'Intensity': np.zeros_like(spectrum['Mass'])})
             continue
-        mass = spectrum[0][0]
-        intensity = spectrum[1][0]
+        mass = spectrum[0][0:]
+        intensity = spectrum[1][0:]
         print("warpingfunctions", warpingFunctions)
         warpedMass = mass + wf(mass)
         warpedSpectra.append({'Mass': warpedMass, 'Intensity': intensity})

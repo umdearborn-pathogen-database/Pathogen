@@ -14,12 +14,8 @@ database:
   remote-password: password
   remote-port: 3306
   remote-username: admin
-logging:
-  logging-enabled: false
-  logging-output-file: pathogens.log
 options:
-  cancel-if-sum-is-zero: false
-  remove-null-valued-spectra: false
+  cancel-if-null-valued-spectra: true
   scaling-factor: TIC
   trim-lower-bounds: 200
   trim-upper-bounds: 1995

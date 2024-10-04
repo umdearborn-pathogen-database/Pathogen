@@ -34,6 +34,14 @@
         "documentation": {}
     },
     {
+        "label": "Baseline",
+        "importPath": "pybaselines",
+        "description": "pybaselines",
+        "isExtraImport": true,
+        "detail": "pybaselines",
+        "documentation": {}
+    },
+    {
         "label": "os",
         "kind": 6,
         "isExtraImport": true,
@@ -111,11 +119,38 @@
         "documentation": {}
     },
     {
+        "label": "alignSpectra",
+        "kind": 2,
+        "importPath": "Data.Reference.MALDIquant.AlignSpectra",
+        "description": "Data.Reference.MALDIquant.AlignSpectra",
+        "peekOfCode": "def alignSpectra(spectra, \n             ## peak detection\n             halfWindowSize=20, noiseMethod=\"MAD\", SNR=2,\n             ## warping\n             reference=None, tolerance=0.002, warpingMethod=\"lowess\",\n             allowNoMatches=False, emptyNoMatches=False, **kwargs):\n    stopIfNotIsMassSpectrumList(spectra)\n    peaks = detectPeaks(spectra, halfWindowSize=halfWindowSize,\n                        method=noiseMethod, SNR=SNR, **kwargs)\n    wf = determineWarpingFunctions(peaks, reference=reference,",
+        "detail": "Data.Reference.MALDIquant.AlignSpectra",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "Data.Reference.MALDIquant.Pathogen",
+        "description": "Data.Reference.MALDIquant.Pathogen",
+        "peekOfCode": "def main():\n    print()\nif __name__ == \"__main__\":\n    main()\n### AllClasses.R\n### AllGenerics.R\n### Deprecated.R\n#DONE# alignSpectra-functions.R\n### approxfun-methods.R\n### as-methods.R",
+        "detail": "Data.Reference.MALDIquant.Pathogen",
+        "documentation": {}
+    },
+    {
         "label": "snip_baseline_correction",
         "kind": 2,
         "importPath": "Pathogen.BaselineCorrection.BaselineCorrection",
         "description": "Pathogen.BaselineCorrection.BaselineCorrection",
         "peekOfCode": "def snip_baseline_correction(dataframes, iterations=30):\n    snipped_dataframes = []\n    for df in dataframes:\n        n = len(df)\n        baseline = np.copy(df['Intensity'].values)  # Assuming you want to correct 'Intensity'\n        for i in range(iterations):\n            for j in range(1, n - 1):\n                # Use np.minimum to get the element-wise minimum\n                baseline[j] = np.minimum(baseline[j], (baseline[j - 1] + baseline[j + 1]) / 2)\n        # Create a new DataFrame with 'mass' and corrected 'Intensity'",
+        "detail": "Pathogen.BaselineCorrection.BaselineCorrection",
+        "documentation": {}
+    },
+    {
+        "label": "apply_snip_baseline_correction",
+        "kind": 2,
+        "importPath": "Pathogen.BaselineCorrection.BaselineCorrection",
+        "description": "Pathogen.BaselineCorrection.BaselineCorrection",
+        "peekOfCode": "def apply_snip_baseline_correction(spectra_list, window_size=10):\n    \"\"\"\n    Applies SNIP baseline correction to a list of mass spec data DataFrames.\n    Parameters:\n    spectra_list (list of pd.DataFrame): A list of dataframes containing mass spec data.\n                                          Each dataframe should have two columns: m/z and intensity.\n    window_size (int): The size of the moving average window for smoothing the baseline.\n    Returns:\n    list of pd.DataFrame: A list of baseline-corrected spectra as dataframes.\n    \"\"\"",
         "detail": "Pathogen.BaselineCorrection.BaselineCorrection",
         "documentation": {}
     },
@@ -210,6 +245,15 @@
         "documentation": {}
     },
     {
+        "label": "getColumnValues",
+        "kind": 2,
+        "importPath": "Pathogen.Dependencies.Global",
+        "description": "Pathogen.Dependencies.Global",
+        "peekOfCode": "def getColumnValues(dataframesList, colName):\n    for index, data in enumerate(dataframesList):\n        if data.shape[1] < 2:\n            printMessage(\"err\", f\"DataFrame at index {index} must contain at least two columns.\")\n        else:\n            return data[colName].values",
+        "detail": "Pathogen.Dependencies.Global",
+        "documentation": {}
+    },
+    {
         "label": "massSpecDataDirectory",
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
@@ -223,7 +267,7 @@
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "metaDataFile = \"Data/Import/info-ecoli-MAI.csv\"\nconfigFile = \"config.yaml\"\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',\n    'mysql-connector-python',\n    'scipy'",
+        "peekOfCode": "metaDataFile = \"Data/Import/info-ecoli-MAI.csv\"\nconfigFile = \"config.yaml\"\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',\n    'mysql-connector-python',\n    'scipy',",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -232,7 +276,7 @@
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "configFile = \"config.yaml\"\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',\n    'mysql-connector-python',\n    'scipy'\n]",
+        "peekOfCode": "configFile = \"config.yaml\"\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',\n    'mysql-connector-python',\n    'scipy',\n    'pybaselines'",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -241,7 +285,7 @@
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "packages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',\n    'mysql-connector-python',\n    'scipy'\n]\n# Escape codes",
+        "peekOfCode": "packages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',\n    'mysql-connector-python',\n    'scipy',\n    'pybaselines'\n]",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -333,15 +377,6 @@
         "description": "Pathogen.Helper.Helper",
         "peekOfCode": "def print_dataframe_summary(df_list):\n    for idx, df in enumerate(df_list):\n        print(f\"\\nDataFrame {idx + 1}:\")\n        print(\"-\" * 50)\n        # Number of rows and columns\n        print(f\"Shape: {df.shape}\")\n        # Column names\n        print(f\"Columns: {df.columns.tolist()}\")\n        # Data types of each column\n        print(\"\\nData types:\")",
         "detail": "Pathogen.Helper.Helper",
-        "documentation": {}
-    },
-    {
-        "label": "my_class",
-        "kind": 6,
-        "importPath": "Pathogen.Import.Import",
-        "description": "Pathogen.Import.Import",
-        "peekOfCode": "class my_class(object):\n    pass",
-        "detail": "Pathogen.Import.Import",
         "documentation": {}
     },
     {
@@ -484,7 +519,7 @@
         "kind": 2,
         "importPath": "Pathogen.PeakDetection.PeakDetection",
         "description": "Pathogen.PeakDetection.PeakDetection",
-        "peekOfCode": "def warpMassSpectra(spectra, warpingFunctions, emptyNoMatches=False):\n    warpedSpectra = []\n    for spectrum, wf in zip(spectra, warpingFunctions):\n        if wf is None:\n            if emptyNoMatches:\n                warpedSpectra.append({'Mass': spectrum['Mass'], 'Intensity': np.zeros_like(spectrum['Mass'])})\n            continue\n        mass = spectrum[0][0]\n        intensity = spectrum[1][0]\n        print(\"warpingfunctions\", warpingFunctions)",
+        "peekOfCode": "def warpMassSpectra(spectra, warpingFunctions, emptyNoMatches=False):\n    warpedSpectra = []\n    for spectrum, wf in zip(spectra, warpingFunctions):\n        if wf is None:\n            if emptyNoMatches:\n                warpedSpectra.append({'Mass': spectrum['Mass'], 'Intensity': np.zeros_like(spectrum['Mass'])})\n            continue\n        mass = spectrum[0][0:]\n        intensity = spectrum[1][0:]\n        print(\"warpingfunctions\", warpingFunctions)",
         "detail": "Pathogen.PeakDetection.PeakDetection",
         "documentation": {}
     },
@@ -493,7 +528,7 @@
         "kind": 2,
         "importPath": "Pathogen.Preprocessing.Preprocessing",
         "description": "Pathogen.Preprocessing.Preprocessing",
-        "peekOfCode": "def trim_spectra(dataframes, mz_range):\n    trimmed_dataframes = []\n    lower_bound, upper_bound = mz_range\n    for df in dataframes:\n        trimmed_df = df[(df['Mass'] >= lower_bound) & (df['Mass'] <= upper_bound)]\n        trimmed_dataframes.append(trimmed_df)\n    return trimmed_dataframes",
+        "peekOfCode": "def trim_spectra(dataframes, mz_range):\n    trimmed_dataframes = []\n    lower_bound, upper_bound = mz_range\n    for df in dataframes:\n        trimmed_df = df[(df['Mass'] >= lower_bound) & (df['Mass'] <= upper_bound)]        \n        trimmed_dataframes.append(pd.DataFrame(trimmed_df))\n    return trimmed_dataframes",
         "detail": "Pathogen.Preprocessing.Preprocessing",
         "documentation": {}
     },
@@ -513,15 +548,6 @@
         "description": "Pathogen.Repository.Repository",
         "peekOfCode": "class my_class(object):\n    pass\n# savePathogen()\n# id, name, createdDate\n# saveRawData()\n# id, run, mass, intensity, createdDate\n# saveFeatureMatrix()\n# id(from above), it's feature matrix data, createdDate\n# savePCAData()\n# id(from above), pcaData, createdDate",
         "detail": "Pathogen.Repository.Repository",
-        "documentation": {}
-    },
-    {
-        "label": "my_class",
-        "kind": 6,
-        "importPath": "Pathogen.TransformationSmoothing.TransformationSmoothing",
-        "description": "Pathogen.TransformationSmoothing.TransformationSmoothing",
-        "peekOfCode": "class my_class(object):\n    pass",
-        "detail": "Pathogen.TransformationSmoothing.TransformationSmoothing",
         "documentation": {}
     },
     {
