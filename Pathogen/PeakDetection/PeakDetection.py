@@ -2,7 +2,7 @@ import numpy as np
 from scipy.signal import find_peaks
 import statsmodels.api as sm
 
-from Dependencies.Setup import log
+from Pathogen.Dependencies.Global import log
 from Helper.Helper import print_dataframe_summary
 
 def alignSpectra(spectra, halfWindowSize=20, noiseMethod="MAD", SNR=2, reference=None, tolerance=0.002, warpingMethod="lowess", allowNoMatches=False, emptyNoMatches=False, **kwargs):

@@ -7,13 +7,19 @@ from Helper.Helper import print_dataframe_summary
 
 # Main function
 def main():
-    from Dependencies.Setup import installDependencies
-    installDependencies()
-    from Dependencies.Setup import initializeConfig
+    # Installs necessary imports for the entirety of the program
+    from Dependencies.Global import installPackages
+    installPackages()
+    # Prints the welcome message
+    from Dependencies.Global import printWelcomeMsg
+    printWelcomeMsg()
+    # Initializes the configuration file
+    from Dependencies.Global import initializeConfig
     initializeConfig()
-    from Dependencies.Setup import getConfigValueCasted
-    from DatabaseConnection.DatabaseConnector import initializeDatabase
-    initializeDatabase()
+    # Initializes and checks the database connection
+    from Dependencies.Global import database
+    database(None, True)
+    
     # Imports after installDependencies()
     import pandas as pd
     import glob
