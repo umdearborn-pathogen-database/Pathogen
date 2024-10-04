@@ -1,5 +1,68 @@
 import pandas as pd
 
+# def averageMassSpectra(l, labels, method="mean"):
+#     """
+#     Averages or sums mass spectra data by given labels.
+    
+#     Parameters:
+#     l (list): List of pandas DataFrames containing mass spectra data.
+#     labels (list): List of labels for grouping the DataFrames.
+#     method (str): Aggregation method to use, either 'mean', 'median', or 'sum'.
+    
+#     Returns:
+#     pd.DataFrame: DataFrame of aggregated values, grouped by the provided labels.
+#     """
+#     # Check if method is valid
+#     if method not in ["mean", "median", "sum"]:
+#         raise ValueError("Method must be one of 'mean', 'median', or 'sum'.")
+    
+#     # Concatenate the list of DataFrames into one
+#     df_combined = pd.concat(l, keys=labels, names=['Label', 'Index'])
+    
+#     # Group by 'Label' to apply the aggregation method
+#     if method == "mean":
+#         result = df_combined.groupby('Label').mean()
+#     elif method == "median":
+#         result = df_combined.groupby('Label').median()
+#     elif method == "sum":
+#         result = df_combined.groupby('Label').sum()
+    
+#     return result
+
+# rewriting this to return a list of data frames
+# def averageMassSpectra(l, labels, method="mean"):
+#     """
+#     Averages or sums mass spectra data by given labels.
+    
+#     Parameters:
+#     l (list): List of pandas DataFrames containing mass spectra data.
+#     labels (list): List of labels for grouping the DataFrames.
+#     method (str): Aggregation method to use, either 'mean', 'median', or 'sum'.
+    
+#     Returns:
+#     pd.DataFrame: DataFrame of aggregated values, grouped by the provided labels.
+#     """
+#     # Check if method is valid
+#     if method not in ["mean", "median", "sum"]:
+#         raise ValueError("Method must be one of 'mean', 'median', or 'sum'.")
+    
+#     # Ensure all elements in the list are DataFrames
+#     if not all(isinstance(df, pd.DataFrame) for df in l):
+#         raise ValueError("All items in the list must be pandas DataFrames.")
+    
+#     # Concatenate the list of DataFrames into one
+#     df_combined = pd.concat(l, keys=labels, names=['Label', 'Index'])
+    
+#     # Group by 'Label' to apply the aggregation method
+#     if method == "mean":
+#         result = df_combined.groupby('Label').mean()
+#     elif method == "median":
+#         result = df_combined.groupby('Label').median()
+#     elif method == "sum":
+#         result = df_combined.groupby('Label').sum()
+    
+#     return result
+
 def averageMassSpectra(l, labels, method="mean"):
     """
     Averages or sums mass spectra data by given labels.
@@ -10,24 +73,42 @@ def averageMassSpectra(l, labels, method="mean"):
     method (str): Aggregation method to use, either 'mean', 'median', or 'sum'.
     
     Returns:
-    pd.DataFrame: DataFrame of aggregated values, grouped by the provided labels.
+    list: List of pandas DataFrames, each representing aggregated values for a label.
     """
     # Check if method is valid
     if method not in ["mean", "median", "sum"]:
         raise ValueError("Method must be one of 'mean', 'median', or 'sum'.")
     
+    # Ensure all elements in the list are DataFrames
+    if not all(isinstance(df, pd.DataFrame) for df in l):
+        raise ValueError("All items in the list must be pandas DataFrames.")
+    
     # Concatenate the list of DataFrames into one
-    df_combined = pd.concat(l, keys=labels, names=['Label', 'Index'])
+    df_combined = pd.concat(l, keys=labels, names=['Mass', 'Intensity'])
     
-    # Group by 'Label' to apply the aggregation method
-    if method == "mean":
-        result = df_combined.groupby('Label').mean()
-    elif method == "median":
-        result = df_combined.groupby('Label').median()
-    elif method == "sum":
-        result = df_combined.groupby('Label').sum()
+    # Group by 'Label' and aggregate accordingly
+    grouped = df_combined.groupby('Label')
     
-    return result
+    # Create a list to store the results
+    results = []
+    
+    # Iterate through each group and apply the aggregation method
+    for label, group in grouped:
+        if method == "mean":
+            aggregated = group.mean().reset_index()  # Compute mean and reset index
+        elif method == "median":
+            aggregated = group.median().reset_index()  # Compute median and reset index
+        elif method == "sum":
+            aggregated = group.sum().reset_index()  # Compute sum and reset index
+        
+        # Add the label as a new column
+        aggregated['Label'] = label
+        
+        # Append the resulting DataFrame to the list
+        results.append(aggregated)
+    
+    return results
+
 
 def estimateNoise(df):
     """
