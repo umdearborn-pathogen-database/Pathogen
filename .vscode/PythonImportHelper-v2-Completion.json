@@ -111,14 +111,6 @@
         "documentation": {}
     },
     {
-        "label": "getConfigValue",
-        "importPath": "Dependencies.Global",
-        "description": "Dependencies.Global",
-        "isExtraImport": true,
-        "detail": "Dependencies.Global",
-        "documentation": {}
-    },
-    {
         "label": "snip_baseline_correction",
         "kind": 2,
         "importPath": "Pathogen.BaselineCorrection.BaselineCorrection",
@@ -222,7 +214,7 @@
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "massSpecDataDirectory = \"Data/Import/mass-spec-data\"\nmetaDataFile = \"Data/Import/metadata.csv\"\nconfigFile = \"config.yaml\"\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',\n    'mysql-connector-python',",
+        "peekOfCode": "massSpecDataDirectory = \"Data/Import/MAI-redo-ecoli\"\n# metaDataFile = \"Data/Import/metadata.csv\"\n# TEMP REMOVE\nmetaDataFile = \"Data/Import/info-ecoli-MAI.csv\"\nconfigFile = \"config.yaml\"\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -231,7 +223,7 @@
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "metaDataFile = \"Data/Import/metadata.csv\"\nconfigFile = \"config.yaml\"\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',\n    'mysql-connector-python',\n    'scipy'",
+        "peekOfCode": "metaDataFile = \"Data/Import/info-ecoli-MAI.csv\"\nconfigFile = \"config.yaml\"\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',\n    'mysql-connector-python',\n    'scipy'",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },

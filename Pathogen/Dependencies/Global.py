@@ -3,8 +3,12 @@ import sys
 import pkg_resources
 
 # Variables
-massSpecDataDirectory = "Data/Import/mass-spec-data"
-metaDataFile = "Data/Import/metadata.csv"
+# massSpecDataDirectory = "Data/Import/mass-spec-data"
+# TEMP REMOVE
+massSpecDataDirectory = "Data/Import/MAI-redo-ecoli"
+# metaDataFile = "Data/Import/metadata.csv"
+# TEMP REMOVE
+metaDataFile = "Data/Import/info-ecoli-MAI.csv"
 configFile = "config.yaml"
 packages = [
     'pandas',

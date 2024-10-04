@@ -4,7 +4,6 @@ import os
 # Necessary for __init__.py classes
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from Helper.Helper import print_dataframe_summary
-from Dependencies.Global import getConfigValue
 
 # Main function
 def main():
@@ -20,6 +19,7 @@ def main():
     # Initializes and checks the database connection
     from Dependencies.Global import database
     database(None, True)
+    from Dependencies.Global import getConfigValue
     
     # Imports after installDependencies()
     import pandas as pd
@@ -33,7 +33,8 @@ def main():
     import matplotlib.pyplot as plt
 
     # 1. Move Import
-    metadata_file = pd.read_csv('Data/Import/info-ecoli-MAI.csv')
+    from Dependencies.Global import metaDataFile
+    metadata_file = pd.read_csv(metaDataFile)
 
     # Debugging
     #    print(metadata_file.head())
@@ -42,7 +43,8 @@ def main():
         # spectra_file = pd.read_csv('MAI-redo-ecoli.csv')
 
     # Define the folder path
-    folder_path = 'Data/Import/MAI-redo-ecoli'
+    from Dependencies.Global import massSpecDataDirectory
+    folder_path = massSpecDataDirectory
 
     # Find all CSV files in the folder
     csv_files = glob.glob(os.path.join(folder_path, "*.csv"))
