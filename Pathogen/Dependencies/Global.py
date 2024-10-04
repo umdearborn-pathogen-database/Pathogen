@@ -17,7 +17,8 @@ packages = [
     'pyyaml',
     'statsmodels',
     'mysql-connector-python',
-    'scipy'
+    'scipy',
+    'pybaselines'
 ]
 
 # Escape codes

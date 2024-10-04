@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy.signal import savgol_filter
+from pybaselines import Baseline
 
 # this only takes in a single dataframe. We need to do this over all of the dataframes. Look at the method below.
 # def snip_baseline_correction(signal, iterations=150):
@@ -48,6 +49,69 @@ def snip_baseline_correction(dataframes, iterations=30):
         snipped_dataframes.append(corrected_df)
 
     return snipped_dataframes
+
+
+def apply_snip_baseline_correction(spectra_list, window_size=10):
+    """
+    Applies SNIP baseline correction to a list of mass spec data DataFrames.
+
+    Parameters:
+    spectra_list (list of pd.DataFrame): A list of dataframes containing mass spec data.
+                                          Each dataframe should have two columns: m/z and intensity.
+    window_size (int): The size of the moving average window for smoothing the baseline.
+
+    Returns:
+    list of pd.DataFrame: A list of baseline-corrected spectra as dataframes.
+    """
+    corrected_spectra_list = []
+
+    # Iterate over each spectrum in the list
+    for index, spectrum_df in enumerate(spectra_list):
+        # Ensure that the DataFrame has at least two columns
+        if spectrum_df.shape[1] < 2:
+            raise ValueError(f"DataFrame at index {index} must contain at least two columns: m/z and intensity.")
+        
+        # Extract x and y values (m/z and intensity)
+        # x = spectrum_df.iloc[:, 0].values
+        # y = spectrum_df.iloc[:, 1].values
+        x = spectrum_df["Mass"].values
+        y = spectrum_df["Intensity"].values
+        
+        # Print shapes for debugging
+        print(f"Processing DataFrame {index}:")
+        print(f"x shape: {x.shape}, y shape: {y.shape}")
+        print(f"x type: {type(x)}, y type:  {type(y)}")
+        
+        # Check if x and y are valid
+        if x.ndim != 1 or y.ndim != 1:
+            raise ValueError(f"m/z and intensity values in DataFrame {index} must be one-dimensional arrays.")
+        
+        # Apply SNIP algorithm to get the baseline
+        baseline = Baseline(x, y)
+
+        try:
+            snip_baseline = baseline.snip(decreasing=True)
+            print(f"SNIP baseline shape for DataFrame {index}: {snip_baseline.shape}")
+        except Exception as e:
+            raise RuntimeError(f"An error occurred while applying SNIP to DataFrame {index}: {e}")
+        
+        # Smooth the baseline using a moving average
+        smoothed_baseline = np.convolve(snip_baseline, np.ones(window_size) / window_size, mode='same')
+
+        # Ensure smoothed_baseline has the same length as y
+        if smoothed_baseline.shape != y.shape:
+            raise ValueError(f"The smoothed baseline and intensity in DataFrame {index} must have the same length.")
+        
+        # Subtract the smoothed baseline from the original intensity
+        corrected_spectrum = y - smoothed_baseline
+        
+        # Store the corrected spectrum in a new DataFrame
+        corrected_spectrum_df = pd.DataFrame({'m/z': x, 'intensity': corrected_spectrum})
+        
+        # Add the corrected DataFrame to the list
+        corrected_spectra_list.append(corrected_spectrum_df)
+    
+    return corrected_spectra_list
 
 # def snip_baseline_correction(dataframes, iterations=150, threshold=1e-6):
 #     snipped_dataframes = []

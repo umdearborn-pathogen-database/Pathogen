@@ -145,12 +145,28 @@ def main():
     # signal = [df[['Intensity']] for df in spectrum_df]
 
     # Apply the SNIP baseline correction
-    from BaselineCorrection.BaselineCorrection import snip_baseline_correction
-    baseline = snip_baseline_correction([first_spectrum_df], iterations=50)
-    print("returned first spectra")
-    print(type(baseline))
-    print(baseline[0].head())
-    first_spectrum_df['Baseline'] = baseline[0]['Baseline']
+    from BaselineCorrection.BaselineCorrection import apply_snip_baseline_correction
+    # baseline = snip_baseline_correction([first_spectrum_df], iterations=50)
+    # print("returned first spectra")
+    # print(type(baseline))
+    # print(baseline[0].head())
+    # first_spectrum_df['Baseline'] = baseline[0]['Baseline']
+    
+    corrected_spectra = apply_snip_baseline_correction(spectrum_df, window_size=10)
+    first_spectrum_df = corrected_spectra[0]
+
+    # Plot the results
+    # plt.figure(figsize=(10, 6))
+    # plt.plot(x, y, label='Original Data')
+    # plt.plot(x, snip_baseline, label='SNIP Baseline')
+    # plt.plot(x, smoothed_baseline, label='Smoothed SNIP Baseline')
+    # plt.legend()
+    # plt.show()
+
+
+
+
+
 
     # Optionally: Add the baseline as a new column to your DataFrame
     # spectrum_df['Baseline'] = baseline

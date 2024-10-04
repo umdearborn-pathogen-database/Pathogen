@@ -6,7 +6,7 @@ def trim_spectra(dataframes, mz_range):
     lower_bound, upper_bound = mz_range
     
     for df in dataframes:
-        trimmed_df = df[(df['Mass'] >= lower_bound) & (df['Mass'] <= upper_bound)]
-        trimmed_dataframes.append(trimmed_df)
+        trimmed_df = df[(df['Mass'] >= lower_bound) & (df['Mass'] <= upper_bound)]        
+        trimmed_dataframes.append(pd.DataFrame(trimmed_df))
     
     return trimmed_dataframes
