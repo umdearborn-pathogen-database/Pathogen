@@ -1,7 +1,5 @@
 import numpy as np
-
-# Logging
-from Pathogen.Dependencies.Global import log
+from Pathogen.Dependencies.Global import printMessage
 
 def calibrateIntensity(spectrum, method):
     if(method == "TIC"):
@@ -24,7 +22,7 @@ def calibrateIntensity(spectrum, method):
         spectrum['Intensity'] /= scalingFactor
         return spectrum
     else:
-        log("Error calibrating intensity. Method is incorrectly defined.")
+        printMessage("err", "Issue calibrating intensity. Method is incorrectly defined.")
     
     # Before TIC Normalization
     # Mass   Intensity

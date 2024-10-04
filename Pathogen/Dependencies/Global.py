@@ -271,6 +271,8 @@ def database(statement, initialize=False, fetchOne=True):
         if initialize:
             logInfo(cursor)
 #CREATE INITIALIZATION TABLES HERE
+            cursor.execute("CREATE TABLE IF NOT EXISTS metadata (ID INT PRIMARY KEY, orig VARCHAR(255), experiment VARCHAR(255), location VARCHAR(255), bacteria VARCHAR(255));")
+            cursor.execute("CREATE TABLE IF NOT EXISTS massspec (ID INT, mass DOUBLE, intensity DOUBLE, PRIMARY KEY (ID, mass), FOREIGN KEY (ID) REFERENCES metadata(ID));")
         else:
             return executeQuery(cursor)
     except (mysql.connector.Error if not localEnabled else sqlite3.Error) as e:

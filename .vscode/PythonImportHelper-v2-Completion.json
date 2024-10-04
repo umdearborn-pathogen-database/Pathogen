@@ -70,7 +70,7 @@
         "documentation": {}
     },
     {
-        "label": "log",
+        "label": "printMessage",
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
         "isExtraImport": true,
@@ -78,7 +78,7 @@
         "documentation": {}
     },
     {
-        "label": "log",
+        "label": "printMessage",
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
         "isExtraImport": true,
@@ -108,6 +108,14 @@
         "description": "Helper.Helper",
         "isExtraImport": true,
         "detail": "Helper.Helper",
+        "documentation": {}
+    },
+    {
+        "label": "getConfigValue",
+        "importPath": "Dependencies.Global",
+        "description": "Dependencies.Global",
+        "isExtraImport": true,
+        "detail": "Dependencies.Global",
         "documentation": {}
     },
     {
@@ -448,7 +456,7 @@
         "kind": 2,
         "importPath": "Pathogen.PeakDetection.PeakDetection",
         "description": "Pathogen.PeakDetection.PeakDetection",
-        "peekOfCode": "def warpingFunctionLowess(x, d, **kwargs):\n    lowess = sm.nonparametric.lowess(d, x, **kwargs)\n    if lowess.ndim != 2 or lowess.shape[1] != 2:\n        log(ValueError(\"Lowess result is not a 2D array with two columns.\"))\n    return lowess\ndef warpingFunctionLinear(x, d, **kwargs):\n    coeffs = np.polyfit(x, d, 1)\n    return np.poly1d(coeffs)\ndef warpingFunctionQuadratic(x, d, **kwargs):\n    coeffs = np.polyfit(x, d, 2)",
+        "peekOfCode": "def warpingFunctionLowess(x, d, **kwargs):\n    lowess = sm.nonparametric.lowess(d, x, **kwargs)\n    if lowess.ndim != 2 or lowess.shape[1] != 2:\n        printMessage(\"err\", ValueError(\"Lowess result is not a 2D array with two columns.\"))\n    return lowess\ndef warpingFunctionLinear(x, d, **kwargs):\n    coeffs = np.polyfit(x, d, 1)\n    return np.poly1d(coeffs)\ndef warpingFunctionQuadratic(x, d, **kwargs):\n    coeffs = np.polyfit(x, d, 2)",
         "detail": "Pathogen.PeakDetection.PeakDetection",
         "documentation": {}
     },

@@ -2,8 +2,8 @@ import numpy as np
 from scipy.signal import find_peaks
 import statsmodels.api as sm
 
-from Pathogen.Dependencies.Global import log
 from Helper.Helper import print_dataframe_summary
+from Pathogen.Dependencies.Global import printMessage
 
 def alignSpectra(spectra, halfWindowSize=20, noiseMethod="MAD", SNR=2, reference=None, tolerance=0.002, warpingMethod="lowess", allowNoMatches=False, emptyNoMatches=False, **kwargs):
     peaks = detectPeaks(spectra, halfWindowSize=halfWindowSize, noiseMethod=noiseMethod, SNR=SNR)
@@ -19,7 +19,7 @@ def alignSpectra(spectra, halfWindowSize=20, noiseMethod="MAD", SNR=2, reference
     elif warpingMethod == "cubic":
         wf = warpingFunctionCubic(x, d, **kwargs)
     else:
-        log(f"Unknown warping method: {warpingMethod}")
+        printMessage("err", f"Unknown warping method: {warpingMethod}")
         wf = None
     warpingFunctions.append(wf)
     alignedSpectra = warpMassSpectra(spectra, warpingFunctions, emptyNoMatches=emptyNoMatches)
@@ -58,7 +58,7 @@ def detectPeaks(spectra, halfWindowSize=20, noiseMethod="MAD", SNR=2):
 def warpingFunctionLowess(x, d, **kwargs):
     lowess = sm.nonparametric.lowess(d, x, **kwargs)
     if lowess.ndim != 2 or lowess.shape[1] != 2:
-        log(ValueError("Lowess result is not a 2D array with two columns."))
+        printMessage("err", ValueError("Lowess result is not a 2D array with two columns."))
     return lowess
 
 def warpingFunctionLinear(x, d, **kwargs):

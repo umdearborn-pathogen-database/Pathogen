@@ -4,6 +4,7 @@ import os
 # Necessary for __init__.py classes
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from Helper.Helper import print_dataframe_summary
+from Dependencies.Global import getConfigValue
 
 # Main function
 def main():
@@ -71,8 +72,8 @@ def main():
     #3. Transformational Smoothing
 
     # Define the range to trim and pass the dataframes and range using the pre-processing trim_spectra function
-    xl = getConfigValueCasted('options', 'trim-lower-bounds', int)
-    xu = getConfigValueCasted('options', 'trim-upper-bounds', int)
+    xl = getConfigValue('options', 'trim-lower-bounds', int)
+    xu = getConfigValue('options', 'trim-upper-bounds', int)
     mz_range = (xl, xu)
     from Preprocessing.Preprocessing import trim_spectra
     trimmed_spectra_dfs = trim_spectra(dataframes, mz_range)
@@ -206,17 +207,17 @@ def main():
 
     #5. Intensity Calibration
     from IntensityCalibration.IntensityCalibration import calibrateIntensity
-    trimmed_spectra_baseline_adjusted_calibrated = calibrateIntensity(trimmed_spectra_baseline_adjusted, getConfigValueCasted('options', 'scaling-factor', str))
+    trimmed_spectra_baseline_adjusted_calibrated = calibrateIntensity(trimmed_spectra_baseline_adjusted, getConfigValue('options', 'scaling-factor', str))
     
     #6. Spectra Alignment
-    halfWindowSize = getConfigValueCasted('align-spectra', 'half-window-size', int)
-    noiseMethod = getConfigValueCasted('align-spectra', 'noise-method', str)
-    snr = getConfigValueCasted('align-spectra', 'SNR', int)
+    halfWindowSize = getConfigValue('align-spectra', 'half-window-size', int)
+    noiseMethod = getConfigValue('align-spectra', 'noise-method', str)
+    snr = getConfigValue('align-spectra', 'SNR', int)
     reference = None
-    tolerance = getConfigValueCasted('align-spectra', 'tolerance', float)
-    warpingMethod = getConfigValueCasted('align-spectra', 'warping-method', str)
-    allowNoMatches = getConfigValueCasted('align-spectra', 'allow-no-matches', bool)
-    emptyNoMatches = getConfigValueCasted('align-spectra', 'empty-no-matches', bool)
+    tolerance = getConfigValue('align-spectra', 'tolerance', float)
+    warpingMethod = getConfigValue('align-spectra', 'warping-method', str)
+    allowNoMatches = getConfigValue('align-spectra', 'allow-no-matches', bool)
+    emptyNoMatches = getConfigValue('align-spectra', 'empty-no-matches', bool)
     
     # Align Spectra
     from PeakDetection.PeakDetection import alignSpectra
