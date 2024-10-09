@@ -1,3 +1,21 @@
+# PROGRAM NOTES: 
+#   To-Do:
+#       FeatureMatrix, random forest, database integration, returned pathogen
+#   Comments need cleaning for:
+#       BaselineCorrection.py, FeatureMatrix.py, Helper.py, IntensityCalibration.py, 
+#       PeakBinning.py, PeakDetection.py, Preprocessing.py, QualityControl.py,
+#       Repository.py, Pathogen.py
+#   Code needs formatting
+#   Needs redundancy checks
+#   Needs additional configuration values
+#   Eventually, files/directories need deleting:
+#       Import/*, Reference/*, TestData/*, UML/*, *__pycache__*, pathogens.log,
+#       Issues
+#   Update .gitignore
+#   Needs README.md
+#   Needs GitHub cleanup
+
+# Imports
 import sys
 import os
 # Necessary for __init__.py classes
@@ -42,8 +60,8 @@ def main():
         # spectra_file = pd.read_csv('MAI-redo-ecoli.csv')
 
     # Define the folder path
-    from Dependencies.Global import massSpecDataDirectory
-    folder_path = massSpecDataDirectory
+    from Dependencies.Global import dataDirectory
+    folder_path = dataDirectory
 
     # Find all CSV files in the folder
     csv_files = glob.glob(os.path.join(folder_path, "*.csv"))

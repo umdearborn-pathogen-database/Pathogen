@@ -1,15 +1,19 @@
+# FILE NOTE: Line 235 may need additional SQL statements
+
+# Imports
 import os
 import sys
 import pkg_resources
 
 # Variables
-# massSpecDataDirectory = "Data/Import/mass-spec-data"
-# TEMP REMOVE
-massSpecDataDirectory = "Data/Import/MAI-redo-ecoli"
-# metaDataFile = "Data/Import/metadata.csv"
-# TEMP REMOVE
-metaDataFile = "Data/Import/info-ecoli-MAI.csv"
-configFile = "config.yaml"
+# dataDirectory = "Data/Import/data"            # Directory used for ion mobility data import, DO NOT CHANGE    # Uncomment
+# metaDataFile = "Data/Import/metadata.csv"     # File used for metadata import, DO NOT CHANGE                  # Uncomment
+# \/ USED FOR TESTING, REMOVE AFTER
+dataDirectory = "Data/Import/MAI-redo-ecoli"        # <- USED FOR TESTING, REMOVE AFTER
+metaDataFile = "Data/Import/info-ecoli-MAI.csv"     # <- USED FOR TESTING, REMOVE AFTER
+# /\ USED FOR TESTING, REMOVE AFTER
+configFile = "config.yaml"      # Configuration file used for config functions and values, DO NOT CHANGE
+# Package list for import management, changes here will reflect what is imported
 packages = [
     'pandas',
     'seaborn',
@@ -21,27 +25,14 @@ packages = [
     'pybaselines'
 ]
 
-# Escape codes
-#   
-#   \033[ - Escape character
-#   0m - Resets the formatting to default
-#   
-#   Coloring:
-#       30m - Black
-#       31m - Red
-#       32m - Green
-#       33m - Yellow
-#       34m - Blue
-#       35m - Magenta
-#       36m - Cyan
-#       37m - White
-#   Styles:
-#       1m - Bold
-#       4m - Underline
-#       7m - Swap colors foreground and background
+# Terminal text coloring
+#   Valid inputs <str>: 
+#       "30m" (black), "31m" (red), "32m" (green), "33m" (yellow), "34m" (blue), "35m" (magenta),
+#       "36m" (cyan), "37m" (white), "1m" (bold), "4m" (underline), "7m" (swap colors foreground/background)
 def color(code):
     return f"\033[{code}"
 
+# Prints the welcome message on startup, references the color function for coloring terminal text
 def printWelcomeMsg():
     heading = color("4m") + color("32m")
     body = color("0m") + color("36m")
@@ -53,7 +44,7 @@ def printWelcomeMsg():
     {heading}Welcome to Total Analysis USA's Pathogen Database{body}
     Before you begin, please ensure that the following has been completed:
     - Metadata file is a .csv file located at {fileNames}{metaDataFile}{body}
-    - Mass spectrometry data (.csv files) is placed in {fileNames}{massSpecDataDirectory}{body} folder
+    - Ion mobility data (.csv files) is placed in {fileNames}{dataDirectory}{body} folder
     {question}Is all of the data in the correct place?{body}
     Press {enter}ENTER {body}to continue...
     
@@ -64,6 +55,7 @@ def printWelcomeMsg():
     else:
         print()
 
+# Prints message of types: {"info", "warn", "err"} for logging purposes
 def printMessage(msgType, msg):
     if msgType == "info":
         print(color("32m") + "Info: " + str(msg) + (color("0m")))
@@ -74,18 +66,23 @@ def printMessage(msgType, msg):
     else:
         print(printMessage("err", f"Error printing {msgType}: {msg} with printMessage()") + (color("0m")))
 
+# Installs "package" utilizing subprocess and pip
 def install(package):
     import subprocess
     printMessage("info", f"Installing {package}")
     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
     print("\n\n\n")
-    
+
+# Checks whether "package" is already installed to prevent unnecessary downloads
 def isInstalled(package):
     installedPackages = {pkg.key for pkg in pkg_resources.working_set}
     if package in installedPackages:
         return True
     return False
 
+# Main package install function to check whether a package found in "packages" list
+#   is already installed, if not, installs it. Installed and not installed packages
+#   are also displayed to the user.
 def installPackages():
     alreadyInstalled = []
     needsInstall = []
@@ -103,6 +100,7 @@ def installPackages():
 
 import yaml
 
+# Default config used when config.yaml is not found, utilized for initiating configuration file
 defaultConfig = {
     'database': {
         'local-enabled': True,
@@ -130,6 +128,10 @@ defaultConfig = {
     }
 }
 
+# Initializes config.yaml on startup
+# If config file does not exist, file is created with default values
+# If config file does exist, config values are checked to ensure that nothing
+#   breaks when referenced
 def initializeConfig():
     if not os.path.exists(configFile):
         printMessage("info", f"Config file '{configFile}' does not exist. Creating file with default values...")
@@ -139,6 +141,8 @@ def initializeConfig():
         checkConfig()
         printMessage("info", f"All configuration values have been checked.") 
 
+# Gets config values located at root.branch, casts them to castType, then returns
+#   the casted value for use in the program
 def getConfigValue(root, branch, castType):
     filePath = os.path.join(os.getcwd(), configFile)
     try:
@@ -157,6 +161,7 @@ def getConfigValue(root, branch, castType):
         printMessage("err", f"Failed to cast value to {castType.__name__}: {e}")
         return None
 
+# Checks config values to ensure that all values are of the correct type
 def checkConfig():
     x = getConfigValue('database', 'local-enabled', bool)
     if x:
@@ -179,62 +184,9 @@ def checkConfig():
         getConfigValue('align-spectra', 'allow-no-matches', bool)
         getConfigValue('align-spectra', 'empty-no-matches', bool)
 
-# def initializeConfig(configFile="config.yaml", defaultConfig=defaultConfig):
-#     if not os.path.exists(configFile):
-#         print(f"Config file '{configFile}' does not exist. Creating with default values...")
-#         saveConfig(configFile, defaultConfig)
-#     else:
-#         checkConfigValues()
-
-# def saveConfig(configFile, configData):
-#     with open(configFile, 'w') as file:
-#         yaml.dump(configData, file, default_flow_style=False)
-
-# def getConfig(filePath):
-#     with open(filePath, 'r') as file:
-#         return yaml.safe_load(file)
-
-# def getConfigValue(root, branch):
-#     fileName = 'config.yaml'
-#     filePath = os.path.join(os.getcwd(), fileName)
-#     config = getConfig(filePath)
-#     if root in config and branch in config[root]:
-#         return config[root][branch]
-#     else:
-#         log(f"Error retrieving value. {root} or {branch} not found in the configuration file.")
-
-# def checkConfigValues():
-#     x = getConfigValueCasted('database', 'local-enabled', bool)
-#     getConfigValueCasted('database', 'local-file-name', str)
-#     if x:
-#         getConfigValueCasted('database', 'remote-host', str)
-#         getConfigValueCasted('database', 'remote-port', int)
-#         getConfigValueCasted('database', 'remote-database', str)
-#         getConfigValueCasted('database', 'remote-username', str)
-#         getConfigValueCasted('database', 'remote-password', str)
-#     getConfigValueCasted('options', 'remove-null-valued-spectra', bool)
-#     getConfigValueCasted('options', 'cancel-if-sum-is-zero', bool)
-#     getConfigValueCasted('options', 'trim-lower-bounds', int)
-#     getConfigValueCasted('options', 'trim-upper-bounds', int)
-#     getConfigValueCasted('options', 'scaling-factor', str)
-#     getConfigValueCasted('align-spectra', 'half-window-size', int)
-#     getConfigValueCasted('align-spectra', 'noise-method', str)
-#     getConfigValueCasted('align-spectra', 'SNR', int)
-#     getConfigValueCasted('align-spectra', 'tolerance', float)
-#     getConfigValueCasted('align-spectra', 'warping-method', str)
-#     getConfigValueCasted('align-spectra', 'allow-no-matches', bool)
-#     getConfigValueCasted('align-spectra', 'empty-no-matches', bool)
-
-# def getConfigValueCasted(root, branch, castType):
-#     x = getConfigValue(root, branch)
-#     try:
-#         return castType(x)
-#     except (ValueError, TypeError):
-#         return None
-
-# localEnabled decides which set of values to check against
-localEnabled = getConfigValue('database', 'local-enabled', bool)
-# Set to None originally in case config values have casting errors
+localEnabled = getConfigValue('database', 'local-enabled', bool)    # Checks whether SQLite or MySQL is being used and returns a boolean
+# Set to None originally in case config values have errors if not using certain database,
+#   For instance, if local is being used, there is no need to check remote database values
 localFileName = None
 host = None
 port = None
@@ -242,6 +194,13 @@ database = None
 username = None
 password = None
 
+# Main database function
+#   Checks which type of database is being used, initializes the database on
+#       startup when initialize=True and sends a message to the user.
+#       When initialize=False, function acts as a method of communication 
+#       with the database, sending the "statement" and either returning one or 
+#       all lines that the database sends utilizing "fetchOne"
+#   If not localEnabled, config values for remote database connection are assigned
 def database(statement, initialize=False, fetchOne=True):
     connection = None
     def executeQuery(cursor):

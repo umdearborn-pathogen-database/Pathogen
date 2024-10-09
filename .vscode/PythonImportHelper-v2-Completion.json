@@ -18,19 +18,12 @@
         "documentation": {}
     },
     {
-        "label": "savgol_filter",
-        "importPath": "scipy.signal",
-        "description": "scipy.signal",
+        "label": "pybaselines",
+        "kind": 6,
         "isExtraImport": true,
-        "detail": "scipy.signal",
-        "documentation": {}
-    },
-    {
-        "label": "find_peaks",
-        "importPath": "scipy.signal",
-        "description": "scipy.signal",
-        "isExtraImport": true,
-        "detail": "scipy.signal",
+        "importPath": "pybaselines",
+        "description": "pybaselines",
+        "detail": "pybaselines",
         "documentation": {}
     },
     {
@@ -79,18 +72,26 @@
     },
     {
         "label": "printMessage",
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
+        "importPath": "Dependencies.Global",
+        "description": "Dependencies.Global",
         "isExtraImport": true,
-        "detail": "Pathogen.Dependencies.Global",
+        "detail": "Dependencies.Global",
         "documentation": {}
     },
     {
         "label": "printMessage",
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
+        "importPath": "Dependencies.Global",
+        "description": "Dependencies.Global",
         "isExtraImport": true,
-        "detail": "Pathogen.Dependencies.Global",
+        "detail": "Dependencies.Global",
+        "documentation": {}
+    },
+    {
+        "label": "find_peaks",
+        "importPath": "scipy.signal",
+        "description": "scipy.signal",
+        "isExtraImport": true,
+        "detail": "scipy.signal",
         "documentation": {}
     },
     {
@@ -159,7 +160,7 @@
         "kind": 2,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def color(code):\n    return f\"\\033[{code}\"\ndef printWelcomeMsg():\n    heading = color(\"4m\") + color(\"32m\")\n    body = color(\"0m\") + color(\"36m\")\n    fileNames = color(\"33m\")\n    question = color(\"33m\")\n    enter = color(\"33m\")\n    reset = color(\"0m\")\n    msg = f\"\"\"",
+        "peekOfCode": "def color(code):\n    return f\"\\033[{code}\"\n# Prints the welcome message on startup, references the color function for coloring terminal text\ndef printWelcomeMsg():\n    heading = color(\"4m\") + color(\"32m\")\n    body = color(\"0m\") + color(\"36m\")\n    fileNames = color(\"33m\")\n    question = color(\"33m\")\n    enter = color(\"33m\")\n    reset = color(\"0m\")",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -177,7 +178,7 @@
         "kind": 2,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def printMessage(msgType, msg):\n    if msgType == \"info\":\n        print(color(\"32m\") + \"Info: \" + str(msg) + (color(\"0m\")))\n    elif msgType == \"warn\":\n        print(color(\"33m\") + \"Warning: \" + str(msg) + (color(\"0m\")))\n    elif msgType == \"err\":\n        print(color(\"31m\") + \"Error: \" + str(msg) + (color(\"0m\")))\n    else:\n        print(printMessage(\"err\", f\"Error printing {msgType}: {msg} with printMessage()\") + (color(\"0m\")))\ndef install(package):",
+        "peekOfCode": "def printMessage(msgType, msg):\n    if msgType == \"info\":\n        print(color(\"32m\") + \"Info: \" + str(msg) + (color(\"0m\")))\n    elif msgType == \"warn\":\n        print(color(\"33m\") + \"Warning: \" + str(msg) + (color(\"0m\")))\n    elif msgType == \"err\":\n        print(color(\"31m\") + \"Error: \" + str(msg) + (color(\"0m\")))\n    else:\n        print(printMessage(\"err\", f\"Error printing {msgType}: {msg} with printMessage()\") + (color(\"0m\")))\n# Installs \"package\" utilizing subprocess and pip",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -186,7 +187,7 @@
         "kind": 2,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def install(package):\n    import subprocess\n    printMessage(\"info\", f\"Installing {package}\")\n    subprocess.check_call([sys.executable, \"-m\", \"pip\", \"install\", package])\n    print(\"\\n\\n\\n\")\ndef isInstalled(package):\n    installedPackages = {pkg.key for pkg in pkg_resources.working_set}\n    if package in installedPackages:\n        return True\n    return False",
+        "peekOfCode": "def install(package):\n    import subprocess\n    printMessage(\"info\", f\"Installing {package}\")\n    subprocess.check_call([sys.executable, \"-m\", \"pip\", \"install\", package])\n    print(\"\\n\\n\\n\")\n# Checks whether \"package\" is already installed to prevent unnecessary downloads\ndef isInstalled(package):\n    installedPackages = {pkg.key for pkg in pkg_resources.working_set}\n    if package in installedPackages:\n        return True",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -195,7 +196,7 @@
         "kind": 2,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def isInstalled(package):\n    installedPackages = {pkg.key for pkg in pkg_resources.working_set}\n    if package in installedPackages:\n        return True\n    return False\ndef installPackages():\n    alreadyInstalled = []\n    needsInstall = []\n    for pkg in packages:\n        if isInstalled(pkg):",
+        "peekOfCode": "def isInstalled(package):\n    installedPackages = {pkg.key for pkg in pkg_resources.working_set}\n    if package in installedPackages:\n        return True\n    return False\n# Main package install function to check whether a package found in \"packages\" list\n#   is already installed, if not, installs it. Installed and not installed packages\n#   are also displayed to the user.\ndef installPackages():\n    alreadyInstalled = []",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -213,7 +214,7 @@
         "kind": 2,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def initializeConfig():\n    if not os.path.exists(configFile):\n        printMessage(\"info\", f\"Config file '{configFile}' does not exist. Creating file with default values...\")\n        with open(configFile, 'w') as file:\n            yaml.dump(defaultConfig, file, default_flow_style=False)\n    else:\n        checkConfig()\n        printMessage(\"info\", f\"All configuration values have been checked.\") \ndef getConfigValue(root, branch, castType):\n    filePath = os.path.join(os.getcwd(), configFile)",
+        "peekOfCode": "def initializeConfig():\n    if not os.path.exists(configFile):\n        printMessage(\"info\", f\"Config file '{configFile}' does not exist. Creating file with default values...\")\n        with open(configFile, 'w') as file:\n            yaml.dump(defaultConfig, file, default_flow_style=False)\n    else:\n        checkConfig()\n        printMessage(\"info\", f\"All configuration values have been checked.\") \n# Gets config values located at root.branch, casts them to castType, then returns\n#   the casted value for use in the program",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -254,11 +255,11 @@
         "documentation": {}
     },
     {
-        "label": "massSpecDataDirectory",
+        "label": "dataDirectory",
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "massSpecDataDirectory = \"Data/Import/MAI-redo-ecoli\"\n# metaDataFile = \"Data/Import/metadata.csv\"\n# TEMP REMOVE\nmetaDataFile = \"Data/Import/info-ecoli-MAI.csv\"\nconfigFile = \"config.yaml\"\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',",
+        "peekOfCode": "dataDirectory = \"Data/Import/MAI-redo-ecoli\"        # <- USED FOR TESTING, REMOVE AFTER\nmetaDataFile = \"Data/Import/info-ecoli-MAI.csv\"     # <- USED FOR TESTING, REMOVE AFTER\n# /\\ USED FOR TESTING, REMOVE AFTER\nconfigFile = \"config.yaml\"      # Configuration file used for config functions and values, DO NOT CHANGE\n# Package list for import management, changes here will reflect what is imported\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -267,7 +268,7 @@
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "metaDataFile = \"Data/Import/info-ecoli-MAI.csv\"\nconfigFile = \"config.yaml\"\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',\n    'mysql-connector-python',\n    'scipy',",
+        "peekOfCode": "metaDataFile = \"Data/Import/info-ecoli-MAI.csv\"     # <- USED FOR TESTING, REMOVE AFTER\n# /\\ USED FOR TESTING, REMOVE AFTER\nconfigFile = \"config.yaml\"      # Configuration file used for config functions and values, DO NOT CHANGE\n# Package list for import management, changes here will reflect what is imported\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -276,7 +277,7 @@
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "configFile = \"config.yaml\"\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',\n    'mysql-connector-python',\n    'scipy',\n    'pybaselines'",
+        "peekOfCode": "configFile = \"config.yaml\"      # Configuration file used for config functions and values, DO NOT CHANGE\n# Package list for import management, changes here will reflect what is imported\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',\n    'mysql-connector-python',\n    'scipy',",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -303,7 +304,7 @@
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "localEnabled = getConfigValue('database', 'local-enabled', bool)\n# Set to None originally in case config values have casting errors\nlocalFileName = None\nhost = None\nport = None\ndatabase = None\nusername = None\npassword = None\ndef database(statement, initialize=False, fetchOne=True):\n    connection = None",
+        "peekOfCode": "localEnabled = getConfigValue('database', 'local-enabled', bool)    # Checks whether SQLite or MySQL is being used and returns a boolean\n# Set to None originally in case config values have errors if not using certain database,\n#   For instance, if local is being used, there is no need to check remote database values\nlocalFileName = None\nhost = None\nport = None\ndatabase = None\nusername = None\npassword = None\n# Main database function",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -312,7 +313,7 @@
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "localFileName = None\nhost = None\nport = None\ndatabase = None\nusername = None\npassword = None\ndef database(statement, initialize=False, fetchOne=True):\n    connection = None\n    def executeQuery(cursor):\n        cursor.execute(statement)",
+        "peekOfCode": "localFileName = None\nhost = None\nport = None\ndatabase = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication ",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -321,7 +322,7 @@
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "host = None\nport = None\ndatabase = None\nusername = None\npassword = None\ndef database(statement, initialize=False, fetchOne=True):\n    connection = None\n    def executeQuery(cursor):\n        cursor.execute(statement)\n        return cursor.fetchone() if fetchOne else cursor.fetchall()",
+        "peekOfCode": "host = None\nport = None\ndatabase = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or ",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -330,7 +331,7 @@
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "port = None\ndatabase = None\nusername = None\npassword = None\ndef database(statement, initialize=False, fetchOne=True):\n    connection = None\n    def executeQuery(cursor):\n        cursor.execute(statement)\n        return cursor.fetchone() if fetchOne else cursor.fetchall()\n    def logInfo(cursor):",
+        "peekOfCode": "port = None\ndatabase = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -339,7 +340,7 @@
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "database = None\nusername = None\npassword = None\ndef database(statement, initialize=False, fetchOne=True):\n    connection = None\n    def executeQuery(cursor):\n        cursor.execute(statement)\n        return cursor.fetchone() if fetchOne else cursor.fetchall()\n    def logInfo(cursor):\n        if not localEnabled:",
+        "peekOfCode": "database = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"\n#   If not localEnabled, config values for remote database connection are assigned",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -348,7 +349,7 @@
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "username = None\npassword = None\ndef database(statement, initialize=False, fetchOne=True):\n    connection = None\n    def executeQuery(cursor):\n        cursor.execute(statement)\n        return cursor.fetchone() if fetchOne else cursor.fetchall()\n    def logInfo(cursor):\n        if not localEnabled:\n            cursor.execute(\"SELECT DATABASE();\")",
+        "peekOfCode": "username = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"\n#   If not localEnabled, config values for remote database connection are assigned\ndef database(statement, initialize=False, fetchOne=True):",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -357,7 +358,7 @@
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "password = None\ndef database(statement, initialize=False, fetchOne=True):\n    connection = None\n    def executeQuery(cursor):\n        cursor.execute(statement)\n        return cursor.fetchone() if fetchOne else cursor.fetchall()\n    def logInfo(cursor):\n        if not localEnabled:\n            cursor.execute(\"SELECT DATABASE();\")\n            printMessage(\"info\", f\"Connected to MySQL Server version {info}, database: {cursor.fetchone()}\")",
+        "peekOfCode": "password = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"\n#   If not localEnabled, config values for remote database connection are assigned\ndef database(statement, initialize=False, fetchOne=True):\n    connection = None",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -380,11 +381,20 @@
         "documentation": {}
     },
     {
+        "label": "add_bacteria_column",
+        "kind": 2,
+        "importPath": "Pathogen.Helper.Helper",
+        "description": "Pathogen.Helper.Helper",
+        "peekOfCode": "def add_bacteria_column(df_main, mass_spec_data_list):\n    \"\"\"\n    Adds the 'Bacteria' column value from the main DataFrame to the corresponding \n    DataFrames in the mass_spec_data_list.\n    Parameters:\n    - df_main (pd.DataFrame): DataFrame containing columns 'patientID', 'Bacteria', etc.\n    - mass_spec_data_list (list): List of pandas DataFrames where 'Bacteria' column will be added.\n    Returns:\n    - List of pandas DataFrames with the 'Bacteria' column added.\n    \"\"\"",
+        "detail": "Pathogen.Helper.Helper",
+        "documentation": {}
+    },
+    {
         "label": "calibrateIntensity",
         "kind": 2,
         "importPath": "Pathogen.IntensityCalibration.IntensityCalibration",
         "description": "Pathogen.IntensityCalibration.IntensityCalibration",
-        "peekOfCode": "def calibrateIntensity(spectrum, method):\n    if(method == \"TIC\"):\n        calibrated_dataframes = [] \n        for df in spectrum:\n            scalingFactor = totalIonCurrent(df)\n            df['Intensity'] /= scalingFactor\n            calibrated_dataframes.append(df)\n        return df\n    elif(method == \"PQN\"):\n        tic = totalIonCurrent(spectrum)",
+        "peekOfCode": "def calibrateIntensity(spectra_list, method):\n    calibrated_dataframes = []  # List to hold calibrated DataFrames\n    for spectrum in spectra_list:\n        if method == \"TIC\":\n            scalingFactor = totalIonCurrent(spectrum)\n            spectrum['Intensity'] /= scalingFactor\n            calibrated_dataframes.append(spectrum)\n        elif method == \"PQN\":\n            tic = totalIonCurrent(spectrum)\n            normalized_intensity = spectrum['Intensity'] / tic",
         "detail": "Pathogen.IntensityCalibration.IntensityCalibration",
         "documentation": {}
     },
@@ -411,7 +421,7 @@
         "kind": 2,
         "importPath": "Pathogen.PeakBinning.PeakBinning",
         "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def averageMassSpectra(l, labels, method=\"mean\"):\n    \"\"\"\n    Averages or sums mass spectra data by given labels.\n    Parameters:\n    l (list): List of pandas DataFrames containing mass spectra data.\n    labels (list): List of labels for grouping the DataFrames.\n    method (str): Aggregation method to use, either 'mean', 'median', or 'sum'.\n    Returns:\n    pd.DataFrame: DataFrame of aggregated values, grouped by the provided labels.\n    \"\"\"",
+        "peekOfCode": "def averageMassSpectra(l, labels, method=\"mean\"):\n    \"\"\"\n    Averages or sums mass spectra data by given labels.\n    Parameters:\n    l (list): List of pandas DataFrames containing mass spectra data.\n    labels (list): List of labels for grouping the DataFrames.\n    method (str): Aggregation method to use, either 'mean', 'median', or 'sum'.\n    Returns:\n    list: List of pandas DataFrames, each representing aggregated values for a label.\n    \"\"\"",
         "detail": "Pathogen.PeakBinning.PeakBinning",
         "documentation": {}
     },
@@ -461,65 +471,38 @@
         "documentation": {}
     },
     {
-        "label": "alignSpectra",
+        "label": "align_peaks",
         "kind": 2,
         "importPath": "Pathogen.PeakDetection.PeakDetection",
         "description": "Pathogen.PeakDetection.PeakDetection",
-        "peekOfCode": "def alignSpectra(spectra, halfWindowSize=20, noiseMethod=\"MAD\", SNR=2, reference=None, tolerance=0.002, warpingMethod=\"lowess\", allowNoMatches=False, emptyNoMatches=False, **kwargs):\n    peaks = detectPeaks(spectra, halfWindowSize=halfWindowSize, noiseMethod=noiseMethod, SNR=SNR)\n    warpingFunctions = []\n    x = peaks['Mass']\n    d = np.zeros_like(x)\n    if warpingMethod == \"lowess\":\n        wf = warpingFunctionLowess(x, d, **kwargs)\n    elif warpingMethod == \"linear\":\n        wf = warpingFunctionLinear(x, d, **kwargs)\n    elif warpingMethod == \"quadratic\":",
+        "peekOfCode": "def align_peaks(spectra_list, half_window_size=20, noise_method=\"MAD\", SNR=2, \n                reference=None, tolerance=0.002, warping_method=\"lowess\"):\n    \"\"\"\n    Aligns peaks in a list of mass spectra DataFrames.\n    Parameters:\n    - spectra_list (List[pd.DataFrame]): A list of DataFrames containing mass and intensity data.\n    - half_window_size (int): Half the size of the window for peak detection.\n    - noise_method (str): The method used for noise estimation.\n    - SNR (float): Signal-to-noise ratio for peak detection.\n    - reference (pd.DataFrame): A reference DataFrame for alignment.",
         "detail": "Pathogen.PeakDetection.PeakDetection",
         "documentation": {}
     },
     {
-        "label": "detectPeaks",
+        "label": "detect_peaks",
         "kind": 2,
         "importPath": "Pathogen.PeakDetection.PeakDetection",
         "description": "Pathogen.PeakDetection.PeakDetection",
-        "peekOfCode": "def detectPeaks(spectra, halfWindowSize=20, noiseMethod=\"MAD\", SNR=2):\n    # mass = spectrum_df['mass'].values\n    # intensity = spectrum_df['intensity'].values\n    intensity = spectra['Intensity'].values\n    mass = spectra['Mass'].values\n    peakIndices, _ = find_peaks(intensity, distance=halfWindowSize)\n    return {'Mass': mass[peakIndices], 'Intensity': intensity[peakIndices]}\ndef warpingFunctionLowess(x, d, **kwargs):\n    lowess = sm.nonparametric.lowess(d, x, **kwargs)\n    if lowess.ndim != 2 or lowess.shape[1] != 2:",
+        "peekOfCode": "def detect_peaks(spectrum_df, half_window_size=20, noise_method=\"MAD\", SNR=2):\n    # Placeholder for peak detection implementation\n    mass = spectrum_df['Mass'].values\n    intensity = spectrum_df['Intensity'].values\n    # Simple peak detection based on SNR\n    threshold = np.median(intensity) + SNR * np.std(intensity)\n    peaks = intensity > threshold\n    # Extract peak positions\n    peak_positions = mass[peaks]\n    return pd.DataFrame({'Mass': peak_positions})",
         "detail": "Pathogen.PeakDetection.PeakDetection",
         "documentation": {}
     },
     {
-        "label": "warpingFunctionLowess",
+        "label": "determine_warping_functions",
         "kind": 2,
         "importPath": "Pathogen.PeakDetection.PeakDetection",
         "description": "Pathogen.PeakDetection.PeakDetection",
-        "peekOfCode": "def warpingFunctionLowess(x, d, **kwargs):\n    lowess = sm.nonparametric.lowess(d, x, **kwargs)\n    if lowess.ndim != 2 or lowess.shape[1] != 2:\n        printMessage(\"err\", ValueError(\"Lowess result is not a 2D array with two columns.\"))\n    return lowess\ndef warpingFunctionLinear(x, d, **kwargs):\n    coeffs = np.polyfit(x, d, 1)\n    return np.poly1d(coeffs)\ndef warpingFunctionQuadratic(x, d, **kwargs):\n    coeffs = np.polyfit(x, d, 2)",
+        "peekOfCode": "def determine_warping_functions(peaks, reference=None, tolerance=0.002, method=\"lowess\"):\n    # Placeholder for determining warping functions\n    # In practice, implement the logic to calculate warping functions based on peaks\n    return [None] * len(peaks)  # Replace with actual warping functions\ndef warp_mass_spectra(spectra, warping_functions):\n    warped_spectra = []\n    for spectrum, wf in zip(spectra, warping_functions):\n        if wf is None:  # If no warping function, append original spectrum\n            warped_spectra.append(spectrum)\n            continue",
         "detail": "Pathogen.PeakDetection.PeakDetection",
         "documentation": {}
     },
     {
-        "label": "warpingFunctionLinear",
+        "label": "warp_mass_spectra",
         "kind": 2,
         "importPath": "Pathogen.PeakDetection.PeakDetection",
         "description": "Pathogen.PeakDetection.PeakDetection",
-        "peekOfCode": "def warpingFunctionLinear(x, d, **kwargs):\n    coeffs = np.polyfit(x, d, 1)\n    return np.poly1d(coeffs)\ndef warpingFunctionQuadratic(x, d, **kwargs):\n    coeffs = np.polyfit(x, d, 2)\n    return np.poly1d(coeffs)\ndef warpingFunctionCubic(x, d, **kwargs):\n    coeffs = np.polyfit(x, d, 3)\n    return np.poly1d(coeffs)\ndef warpMassSpectra(spectra, warpingFunctions, emptyNoMatches=False):",
-        "detail": "Pathogen.PeakDetection.PeakDetection",
-        "documentation": {}
-    },
-    {
-        "label": "warpingFunctionQuadratic",
-        "kind": 2,
-        "importPath": "Pathogen.PeakDetection.PeakDetection",
-        "description": "Pathogen.PeakDetection.PeakDetection",
-        "peekOfCode": "def warpingFunctionQuadratic(x, d, **kwargs):\n    coeffs = np.polyfit(x, d, 2)\n    return np.poly1d(coeffs)\ndef warpingFunctionCubic(x, d, **kwargs):\n    coeffs = np.polyfit(x, d, 3)\n    return np.poly1d(coeffs)\ndef warpMassSpectra(spectra, warpingFunctions, emptyNoMatches=False):\n    warpedSpectra = []\n    for spectrum, wf in zip(spectra, warpingFunctions):\n        if wf is None:",
-        "detail": "Pathogen.PeakDetection.PeakDetection",
-        "documentation": {}
-    },
-    {
-        "label": "warpingFunctionCubic",
-        "kind": 2,
-        "importPath": "Pathogen.PeakDetection.PeakDetection",
-        "description": "Pathogen.PeakDetection.PeakDetection",
-        "peekOfCode": "def warpingFunctionCubic(x, d, **kwargs):\n    coeffs = np.polyfit(x, d, 3)\n    return np.poly1d(coeffs)\ndef warpMassSpectra(spectra, warpingFunctions, emptyNoMatches=False):\n    warpedSpectra = []\n    for spectrum, wf in zip(spectra, warpingFunctions):\n        if wf is None:\n            if emptyNoMatches:\n                warpedSpectra.append({'Mass': spectrum['Mass'], 'Intensity': np.zeros_like(spectrum['Mass'])})\n            continue",
-        "detail": "Pathogen.PeakDetection.PeakDetection",
-        "documentation": {}
-    },
-    {
-        "label": "warpMassSpectra",
-        "kind": 2,
-        "importPath": "Pathogen.PeakDetection.PeakDetection",
-        "description": "Pathogen.PeakDetection.PeakDetection",
-        "peekOfCode": "def warpMassSpectra(spectra, warpingFunctions, emptyNoMatches=False):\n    warpedSpectra = []\n    for spectrum, wf in zip(spectra, warpingFunctions):\n        if wf is None:\n            if emptyNoMatches:\n                warpedSpectra.append({'Mass': spectrum['Mass'], 'Intensity': np.zeros_like(spectrum['Mass'])})\n            continue\n        mass = spectrum[0][0:]\n        intensity = spectrum[1][0:]\n        print(\"warpingfunctions\", warpingFunctions)",
+        "peekOfCode": "def warp_mass_spectra(spectra, warping_functions):\n    warped_spectra = []\n    for spectrum, wf in zip(spectra, warping_functions):\n        if wf is None:  # If no warping function, append original spectrum\n            warped_spectra.append(spectrum)\n            continue\n        mass = spectrum['Mass'].values\n        intensity = spectrum['Intensity'].values\n        # Placeholder for applying the warping function\n        # Assuming wf is a function that takes mass and returns warped mass",
         "detail": "Pathogen.PeakDetection.PeakDetection",
         "documentation": {}
     },
