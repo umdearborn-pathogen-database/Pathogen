@@ -1,0 +1,21 @@
+align-spectra:
+  SNR: 2
+  allow-no-matches: false
+  empty-no-matches: false
+  half-window-size: 20
+  noise-method: MAD
+  tolerance: 0.002
+  warping-method: lowess
+database:
+  local-enabled: true
+  local-file-name: pathogens.db
+  remote-database: pathogensdb
+  remote-host: 127.0.0.1
+  remote-password: password
+  remote-port: 3306
+  remote-username: admin
+options:
+  cancel-if-null-valued-spectra: true
+  scaling-factor: TIC
+  trim-lower-bounds: 200
+  trim-upper-bounds: 1995

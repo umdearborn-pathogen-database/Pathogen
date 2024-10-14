@@ -9,4 +9,3 @@
 # Visual Studio
 .vs
 *.pyc
-__pycache__
