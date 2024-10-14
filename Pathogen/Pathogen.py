@@ -349,12 +349,6 @@ def main():
 if __name__ == "__main__":
     main()
 
-#6. Spectra Alignment
-
-#7. Peak Detection
-
-#8. Peak Binning
-
 #9. Feature Matrix
 
 

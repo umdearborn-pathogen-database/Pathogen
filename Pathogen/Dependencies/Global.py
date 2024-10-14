@@ -98,8 +98,6 @@ def installPackages():
         for pkg in needsInstall:
             install(pkg)
 
-import yaml
-
 # Default config used when config.yaml is not found, utilized for initiating configuration file
 defaultConfig = {
     'database': {
@@ -133,17 +131,20 @@ defaultConfig = {
 # If config file does exist, config values are checked to ensure that nothing
 #   breaks when referenced
 def initializeConfig():
+    import yaml
     if not os.path.exists(configFile):
         printMessage("info", f"Config file '{configFile}' does not exist. Creating file with default values...")
         with open(configFile, 'w') as file:
             yaml.dump(defaultConfig, file, default_flow_style=False)
     else:
         checkConfig()
-        printMessage("info", f"All configuration values have been checked.") 
+        printMessage("info", f"All configuration values have been checked.")
+    localEnabled = getConfigValue('database', 'local-enabled', bool)
 
 # Gets config values located at root.branch, casts them to castType, then returns
 #   the casted value for use in the program
 def getConfigValue(root, branch, castType):
+    import yaml
     filePath = os.path.join(os.getcwd(), configFile)
     try:
         with open(filePath, 'r') as file:
@@ -184,9 +185,9 @@ def checkConfig():
         getConfigValue('align-spectra', 'allow-no-matches', bool)
         getConfigValue('align-spectra', 'empty-no-matches', bool)
 
-localEnabled = getConfigValue('database', 'local-enabled', bool)    # Checks whether SQLite or MySQL is being used and returns a boolean
 # Set to None originally in case config values have errors if not using certain database,
 #   For instance, if local is being used, there is no need to check remote database values
+localEnabled = None
 localFileName = None
 host = None
 port = None
