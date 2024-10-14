@@ -20,7 +20,6 @@ import sys
 import os
 # Necessary for __init__.py classes
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from Helper.Helper import print_dataframe_summary
 
 # Main function
 def main():
@@ -48,6 +47,7 @@ def main():
     sc.settings.verbosity = 3
     sc.settings.set_figure_params(dpi=100, facecolor='white',fontsize=12)
     import matplotlib.pyplot as plt
+    from Helper.Helper import print_dataframe_summary
 
     # 1. Move Import
     from Dependencies.Global import metaDataFile
