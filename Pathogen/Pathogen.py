@@ -1,6 +1,6 @@
 # PROGRAM NOTES: 
 #   To-Do:
-#       FeatureMatrix, random forest, database integration, returned pathogen
+#       FeatureMatrix, pca, database integration, cosine ranking, returned pathogen
 #   Comments need cleaning for:
 #       BaselineCorrection.py, FeatureMatrix.py, Helper.py, IntensityCalibration.py, 
 #       PeakBinning.py, PeakDetection.py, Preprocessing.py, QualityControl.py,

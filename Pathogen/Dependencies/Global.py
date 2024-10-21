@@ -203,6 +203,7 @@ password = None
 #       all lines that the database sends utilizing "fetchOne"
 #   If not localEnabled, config values for remote database connection are assigned
 def database(statement, initialize=False, fetchOne=True):
+    localEnabled = getConfigValue('database', 'local-enabled', bool)
     connection = None
     def executeQuery(cursor):
         cursor.execute(statement)

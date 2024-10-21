@@ -62,15 +62,6 @@
         "documentation": {}
     },
     {
-        "label": "yaml",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "yaml",
-        "description": "yaml",
-        "detail": "yaml",
-        "documentation": {}
-    },
-    {
         "label": "printMessage",
         "importPath": "Dependencies.Global",
         "description": "Dependencies.Global",
@@ -101,14 +92,6 @@
         "importPath": "statsmodels.api",
         "description": "statsmodels.api",
         "detail": "statsmodels.api",
-        "documentation": {}
-    },
-    {
-        "label": "print_dataframe_summary",
-        "importPath": "Helper.Helper",
-        "description": "Helper.Helper",
-        "isExtraImport": true,
-        "detail": "Helper.Helper",
         "documentation": {}
     },
     {
@@ -214,7 +197,7 @@
         "kind": 2,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def initializeConfig():\n    if not os.path.exists(configFile):\n        printMessage(\"info\", f\"Config file '{configFile}' does not exist. Creating file with default values...\")\n        with open(configFile, 'w') as file:\n            yaml.dump(defaultConfig, file, default_flow_style=False)\n    else:\n        checkConfig()\n        printMessage(\"info\", f\"All configuration values have been checked.\") \n# Gets config values located at root.branch, casts them to castType, then returns\n#   the casted value for use in the program",
+        "peekOfCode": "def initializeConfig():\n    import yaml\n    if not os.path.exists(configFile):\n        printMessage(\"info\", f\"Config file '{configFile}' does not exist. Creating file with default values...\")\n        with open(configFile, 'w') as file:\n            yaml.dump(defaultConfig, file, default_flow_style=False)\n    else:\n        checkConfig()\n        printMessage(\"info\", f\"All configuration values have been checked.\")\n    localEnabled = getConfigValue('database', 'local-enabled', bool)",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -223,7 +206,7 @@
         "kind": 2,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def getConfigValue(root, branch, castType):\n    filePath = os.path.join(os.getcwd(), configFile)\n    try:\n        with open(filePath, 'r') as file:\n            config = yaml.safe_load(file)\n        if root in config and branch in config[root]:\n            value = config[root][branch]\n            return castType(value)\n        else:\n            printMessage(\"err\", f\"Cannot retrieve config value. '{root}' or '{branch}' not found in configuration file.\")",
+        "peekOfCode": "def getConfigValue(root, branch, castType):\n    import yaml\n    filePath = os.path.join(os.getcwd(), configFile)\n    try:\n        with open(filePath, 'r') as file:\n            config = yaml.safe_load(file)\n        if root in config and branch in config[root]:\n            value = config[root][branch]\n            return castType(value)\n        else:",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -241,7 +224,7 @@
         "kind": 2,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def database(statement, initialize=False, fetchOne=True):\n    connection = None\n    def executeQuery(cursor):\n        cursor.execute(statement)\n        return cursor.fetchone() if fetchOne else cursor.fetchall()\n    def logInfo(cursor):\n        if not localEnabled:\n            cursor.execute(\"SELECT DATABASE();\")\n            printMessage(\"info\", f\"Connected to MySQL Server version {info}, database: {cursor.fetchone()}\")\n        else:",
+        "peekOfCode": "def database(statement, initialize=False, fetchOne=True):\n    localEnabled = getConfigValue('database', 'local-enabled', bool)\n    connection = None\n    def executeQuery(cursor):\n        cursor.execute(statement)\n        return cursor.fetchone() if fetchOne else cursor.fetchall()\n    def logInfo(cursor):\n        if not localEnabled:\n            cursor.execute(\"SELECT DATABASE();\")\n            printMessage(\"info\", f\"Connected to MySQL Server version {info}, database: {cursor.fetchone()}\")",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -304,7 +287,7 @@
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "localEnabled = getConfigValue('database', 'local-enabled', bool)    # Checks whether SQLite or MySQL is being used and returns a boolean\n# Set to None originally in case config values have errors if not using certain database,\n#   For instance, if local is being used, there is no need to check remote database values\nlocalFileName = None\nhost = None\nport = None\ndatabase = None\nusername = None\npassword = None\n# Main database function",
+        "peekOfCode": "localEnabled = None\nlocalFileName = None\nhost = None\nport = None\ndatabase = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -358,7 +341,7 @@
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "password = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"\n#   If not localEnabled, config values for remote database connection are assigned\ndef database(statement, initialize=False, fetchOne=True):\n    connection = None",
+        "peekOfCode": "password = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"\n#   If not localEnabled, config values for remote database connection are assigned\ndef database(statement, initialize=False, fetchOne=True):\n    localEnabled = getConfigValue('database', 'local-enabled', bool)",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
