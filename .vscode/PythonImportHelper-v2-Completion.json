@@ -78,6 +78,14 @@
         "documentation": {}
     },
     {
+        "label": "interp1d",
+        "importPath": "scipy.interpolate",
+        "description": "scipy.interpolate",
+        "isExtraImport": true,
+        "detail": "scipy.interpolate",
+        "documentation": {}
+    },
+    {
         "label": "find_peaks",
         "importPath": "scipy.signal",
         "description": "scipy.signal",
@@ -373,6 +381,51 @@
         "documentation": {}
     },
     {
+        "label": "add_run_column_from_patientID",
+        "kind": 2,
+        "importPath": "Pathogen.Helper.Helper",
+        "description": "Pathogen.Helper.Helper",
+        "peekOfCode": "def add_run_column_from_patientID(df):\n    \"\"\"\n    Adds a 'run' column to the DataFrame by extracting the last part of 'patientID.orig'.\n    Parameters:\n    df (pd.DataFrame): The input DataFrame with columns ['patientID', 'patientID.orig', 'experiment', 'location', 'Bacteria'].\n    Returns:\n    pd.DataFrame: The updated DataFrame with the 'run' column added.\n    \"\"\"\n    # Check if the necessary column exists\n    if 'patientID.orig' not in df.columns:",
+        "detail": "Pathogen.Helper.Helper",
+        "documentation": {}
+    },
+    {
+        "label": "add_metadata_to_dataframes",
+        "kind": 2,
+        "importPath": "Pathogen.Helper.Helper",
+        "description": "Pathogen.Helper.Helper",
+        "peekOfCode": "def add_metadata_to_dataframes(dataframes, metadata):\n    \"\"\"\n    Adds corresponding metadata to each DataFrame in the list.\n    Parameters:\n    dataframes (list of pd.DataFrame): List of DataFrames to which metadata will be added.\n    metadata (pd.DataFrame): DataFrame containing the metadata.\n    Returns:\n    list of pd.DataFrame: List of DataFrames with added metadata columns.\n    \"\"\"\n    for i, df in enumerate(dataframes):",
+        "detail": "Pathogen.Helper.Helper",
+        "documentation": {}
+    },
+    {
+        "label": "combine_dataframes_with_metadata",
+        "kind": 2,
+        "importPath": "Pathogen.Helper.Helper",
+        "description": "Pathogen.Helper.Helper",
+        "peekOfCode": "def combine_dataframes_with_metadata(dataframes, metadata):\n    combined_df = pd.DataFrame()  # Initialize an empty DataFrame\n    for i, df in enumerate(dataframes):\n        metadata_row = metadata.iloc[i]\n        for col in metadata_row.index:\n            df[col] = metadata_row[col]\n        # Append the updated DataFrame to combined_df\n        combined_df = pd.concat([combined_df, df], ignore_index=True)\n    return combined_df\ndef get_sample_names(spectra):",
+        "detail": "Pathogen.Helper.Helper",
+        "documentation": {}
+    },
+    {
+        "label": "get_sample_names",
+        "kind": 2,
+        "importPath": "Pathogen.Helper.Helper",
+        "description": "Pathogen.Helper.Helper",
+        "peekOfCode": "def get_sample_names(spectra):\n    \"\"\"\n    Extract sample names from the spectra.\n    Parameters:\n    spectra (list): List of spectrum objects.\n    Returns:\n    pd.Series: A Series of sample names.\n    \"\"\"\n    return pd.Series([s['patientID'] for s in spectra])\ndef average_mass_spectra(spectra, labels):",
+        "detail": "Pathogen.Helper.Helper",
+        "documentation": {}
+    },
+    {
+        "label": "average_mass_spectra",
+        "kind": 2,
+        "importPath": "Pathogen.Helper.Helper",
+        "description": "Pathogen.Helper.Helper",
+        "peekOfCode": "def average_mass_spectra(spectra, labels):\n    \"\"\"\n    Average the mass spectra based on labels.\n    Parameters:\n    spectra (list): List of spectrum objects.\n    labels (pd.Series): Series of sample names corresponding to each spectrum.\n    Returns:\n    DataFrame: A DataFrame containing averaged spectra.\n    \"\"\"\n    # Create a DataFrame to hold the spectra data",
+        "detail": "Pathogen.Helper.Helper",
+        "documentation": {}
+    },
+    {
         "label": "calibrateIntensity",
         "kind": 2,
         "importPath": "Pathogen.IntensityCalibration.IntensityCalibration",
@@ -404,7 +457,7 @@
         "kind": 2,
         "importPath": "Pathogen.PeakBinning.PeakBinning",
         "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def averageMassSpectra(l, labels, method=\"mean\"):\n    \"\"\"\n    Averages or sums mass spectra data by given labels.\n    Parameters:\n    l (list): List of pandas DataFrames containing mass spectra data.\n    labels (list): List of labels for grouping the DataFrames.\n    method (str): Aggregation method to use, either 'mean', 'median', or 'sum'.\n    Returns:\n    list: List of pandas DataFrames, each representing aggregated values for a label.\n    \"\"\"",
+        "peekOfCode": "def averageMassSpectra(list_dataframes, labels, method=\"mean\"):\n    \"\"\"\n    Averages or sums mass spectra data by given labels.\n    Parameters:\n    l (list): List of pandas DataFrames containing mass spectra data.\n    labels (list): List of labels for grouping the DataFrames.\n    method (str): Aggregation method to use, either 'mean', 'median', or 'sum'.\n    Returns:\n    list: List of pandas DataFrames, each representing aggregated values for a label.\n    \"\"\"",
         "detail": "Pathogen.PeakBinning.PeakBinning",
         "documentation": {}
     },
@@ -431,7 +484,7 @@
         "kind": 2,
         "importPath": "Pathogen.PeakBinning.PeakBinning",
         "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def grouperStrict(mass, intensities, samples, tolerance):\n    # Implement strict grouping logic here\n    return mass\ndef grouperRelaxed(mass, intensities, samples, tolerance):\n    # Implement relaxed grouping logic here\n    return mass\ndef grouperRelaxedHighestAtReference(mass, intensities, samples, tolerance):\n    # Implement reference grouping logic here\n    return mass",
+        "peekOfCode": "def grouperStrict(mass, intensities, samples, tolerance):\n    # Implement strict grouping logic here\n    return mass\ndef grouperRelaxed(mass, intensities, samples, tolerance):\n    # Implement relaxed grouping logic here\n    return mass\ndef grouperRelaxedHighestAtReference(mass, intensities, samples, tolerance):\n    # Implement reference grouping logic here\n    return mass\ndef average_by_bacteria(list_dataframes):",
         "detail": "Pathogen.PeakBinning.PeakBinning",
         "documentation": {}
     },
@@ -440,7 +493,7 @@
         "kind": 2,
         "importPath": "Pathogen.PeakBinning.PeakBinning",
         "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def grouperRelaxed(mass, intensities, samples, tolerance):\n    # Implement relaxed grouping logic here\n    return mass\ndef grouperRelaxedHighestAtReference(mass, intensities, samples, tolerance):\n    # Implement reference grouping logic here\n    return mass",
+        "peekOfCode": "def grouperRelaxed(mass, intensities, samples, tolerance):\n    # Implement relaxed grouping logic here\n    return mass\ndef grouperRelaxedHighestAtReference(mass, intensities, samples, tolerance):\n    # Implement reference grouping logic here\n    return mass\ndef average_by_bacteria(list_dataframes):\n    \"\"\"\n    Averages the DataFrames based on the 'patientID' column and returns a list of DataFrames.\n    Parameters:",
         "detail": "Pathogen.PeakBinning.PeakBinning",
         "documentation": {}
     },
@@ -449,7 +502,43 @@
         "kind": 2,
         "importPath": "Pathogen.PeakBinning.PeakBinning",
         "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def grouperRelaxedHighestAtReference(mass, intensities, samples, tolerance):\n    # Implement reference grouping logic here\n    return mass",
+        "peekOfCode": "def grouperRelaxedHighestAtReference(mass, intensities, samples, tolerance):\n    # Implement reference grouping logic here\n    return mass\ndef average_by_bacteria(list_dataframes):\n    \"\"\"\n    Averages the DataFrames based on the 'patientID' column and returns a list of DataFrames.\n    Parameters:\n    list_dataframes (list): List of pandas DataFrames with columns 'Mass', 'Intensity', and 'patientID'.\n    Returns:\n    list: A list of DataFrames, each representing averaged values for a unique patientID.",
+        "detail": "Pathogen.PeakBinning.PeakBinning",
+        "documentation": {}
+    },
+    {
+        "label": "average_by_bacteria",
+        "kind": 2,
+        "importPath": "Pathogen.PeakBinning.PeakBinning",
+        "description": "Pathogen.PeakBinning.PeakBinning",
+        "peekOfCode": "def average_by_bacteria(list_dataframes):\n    \"\"\"\n    Averages the DataFrames based on the 'patientID' column and returns a list of DataFrames.\n    Parameters:\n    list_dataframes (list): List of pandas DataFrames with columns 'Mass', 'Intensity', and 'patientID'.\n    Returns:\n    list: A list of DataFrames, each representing averaged values for a unique patientID.\n    \"\"\"\n    # Concatenate all DataFrames into one\n    combined_df = pd.concat(list_dataframes, ignore_index=True)",
+        "detail": "Pathogen.PeakBinning.PeakBinning",
+        "documentation": {}
+    },
+    {
+        "label": "average_by_patient_id",
+        "kind": 2,
+        "importPath": "Pathogen.PeakBinning.PeakBinning",
+        "description": "Pathogen.PeakBinning.PeakBinning",
+        "peekOfCode": "def average_by_patient_id(list_dataframes):\n    \"\"\"\n    Averages the DataFrames based on the 'PatientId' column and returns a list of DataFrames.\n    Parameters:\n    list_dataframes (list): List of pandas DataFrames with columns 'Mass', 'Intensity', and 'PatientId'.\n    Returns:\n    list: A list of DataFrames, each representing averaged values for a unique PatientId.\n    \"\"\"\n    # Concatenate all DataFrames into one\n    combined_df = pd.concat(list_dataframes, ignore_index=True)",
+        "detail": "Pathogen.PeakBinning.PeakBinning",
+        "documentation": {}
+    },
+    {
+        "label": "average_mass_spectra",
+        "kind": 2,
+        "importPath": "Pathogen.PeakBinning.PeakBinning",
+        "description": "Pathogen.PeakBinning.PeakBinning",
+        "peekOfCode": "def average_mass_spectra(dataframes, labels, method=\"mean\"):\n    \"\"\"\n    Averages mass spectra based on the given labels.\n    Parameters:\n    dataframes (list): List of pandas DataFrames containing 'Mass', 'Intensity', and other metadata.\n    labels (list): List of labels for grouping the DataFrames.\n    method (str): Aggregation method to use, either 'mean', 'median', or 'sum'.\n    Returns:\n    DataFrame: A DataFrame with averaged values for each label.\n    \"\"\"",
+        "detail": "Pathogen.PeakBinning.PeakBinning",
+        "documentation": {}
+    },
+    {
+        "label": "average_mass_spectra_objects",
+        "kind": 2,
+        "importPath": "Pathogen.PeakBinning.PeakBinning",
+        "description": "Pathogen.PeakBinning.PeakBinning",
+        "peekOfCode": "def average_mass_spectra_objects(spectra_list, method=\"mean\"):\n    \"\"\"\n    Averages MassSpectrum objects represented as pandas DataFrames.\n    Parameters:\n    spectra_list (list): List of pandas DataFrames.\n    method (str): Aggregation method ('mean', 'median', 'sum').\n    Returns:\n    DataFrame: A new DataFrame representing the averaged values.\n    \"\"\"\n    # Use the first non-empty spectrum as reference",
         "detail": "Pathogen.PeakBinning.PeakBinning",
         "documentation": {}
     },
