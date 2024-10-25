@@ -1,5 +1,5 @@
-#import pandas as pd
-import numpy as np
+import pandas as pd
+#import numpy as np
 
 # Assuming dataframes is your list of DataFrames and 'Mass' is the column name for the m/z values
 def trim_spectra(dataframes, mz_range):
