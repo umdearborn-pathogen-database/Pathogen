@@ -1,15 +1,3 @@
-# PROGRAM NOTES: 
-#   To-Do:
-#       FeatureMatrix, pca, database integration, cosine ranking, returned pathogen
-#   Comments need cleaning for:
-#       BaselineCorrection.py, FeatureMatrix.py, Helper.py, IntensityCalibration.py, 
-#       PeakBinning.py, PeakDetection.py, Preprocessing.py, QualityControl.py,
-#       Repository.py, Pathogen.py
-
-#   Update .gitignore
-#   Needs README.md
-#   Needs GitHub cleanup
-
 # Imports
 import sys
 import os
