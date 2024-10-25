@@ -1,4 +1,6 @@
 import pandas as pd
+import numpy as np
+from scipy.interpolate import interp1d
 
 # def averageMassSpectra(l, labels, method="mean"):
 #     """
@@ -63,7 +65,7 @@ import pandas as pd
     
 #     return result
 
-def averageMassSpectra(l, labels, method="mean"):
+def averageMassSpectra(list_dataframes, labels, method="mean"):
     """
     Averages or sums mass spectra data by given labels.
     
@@ -80,11 +82,13 @@ def averageMassSpectra(l, labels, method="mean"):
         raise ValueError("Method must be one of 'mean', 'median', or 'sum'.")
     
     # Ensure all elements in the list are DataFrames
-    if not all(isinstance(df, pd.DataFrame) for df in l):
+    if not all(isinstance(df, pd.DataFrame) for df in list_dataframes):
         raise ValueError("All items in the list must be pandas DataFrames.")
+
+    labels_list = labels.tolist()  # or labels.values
     
     # Concatenate the list of DataFrames into one
-    df_combined = pd.concat(l, keys=labels, names=['Mass', 'Intensity'])
+    df_combined = pd.concat(list_dataframes, keys=labels_list, names=['Mass', 'Intensity'])
     
     # Group by 'Label' and aggregate accordingly
     grouped = df_combined.groupby('Label')
@@ -270,3 +274,139 @@ def grouperRelaxedHighestAtReference(mass, intensities, samples, tolerance):
     # Implement reference grouping logic here
     return mass
 
+
+
+def average_by_bacteria(list_dataframes):
+    """
+    Averages the DataFrames based on the 'patientID' column and returns a list of DataFrames.
+
+    Parameters:
+    list_dataframes (list): List of pandas DataFrames with columns 'Mass', 'Intensity', and 'patientID'.
+
+    Returns:
+    list: A list of DataFrames, each representing averaged values for a unique patientID.
+    """
+    # Concatenate all DataFrames into one
+    combined_df = pd.concat(list_dataframes, ignore_index=True)
+
+    # Group by 'Bacteria' and calculate the mean for 'Mass' and 'Intensity'
+    # averaged_df = combined_df.groupby('patientID').agg({'Mass': 'mean', 'Intensity': 'mean'}).reset_index()
+    averaged_df = combined_df.groupby('patientID').agg({'Mass': 'mean', 'Intensity': 'mean'})
+
+    # Create a list of DataFrames for each unique Bacteria
+    unique_patientID = averaged_df['patientID'].unique()
+    list_of_dfs = [averaged_df[averaged_df['patientID'] == b] for b in unique_patientID]
+
+    return list_of_dfs
+
+def average_by_patient_id(list_dataframes):
+    """
+    Averages the DataFrames based on the 'PatientId' column and returns a list of DataFrames.
+
+    Parameters:
+    list_dataframes (list): List of pandas DataFrames with columns 'Mass', 'Intensity', and 'PatientId'.
+
+    Returns:
+    list: A list of DataFrames, each representing averaged values for a unique PatientId.
+    """
+    # Concatenate all DataFrames into one
+    combined_df = pd.concat(list_dataframes, ignore_index=True)
+
+    # Group by 'PatientId' and calculate the mean for 'Mass' and 'Intensity'
+    averaged_df = combined_df.groupby('patientID').agg({'Mass': 'mean', 'Intensity': 'mean'}).reset_index()
+
+    # Create a list of DataFrames for each unique PatientId
+    unique_patient_ids = averaged_df['patientID'].unique()
+    list_of_dfs = [averaged_df[averaged_df['patientID'] == patient_id] for patient_id in unique_patient_ids]
+
+    return list_of_dfs
+
+
+
+
+
+
+
+
+
+
+# New
+def average_mass_spectra(dataframes, labels, method="mean"):
+    """
+    Averages mass spectra based on the given labels.
+
+    Parameters:
+    dataframes (list): List of pandas DataFrames containing 'Mass', 'Intensity', and other metadata.
+    labels (list): List of labels for grouping the DataFrames.
+    method (str): Aggregation method to use, either 'mean', 'median', or 'sum'.
+
+    Returns:
+    DataFrame: A DataFrame with averaged values for each label.
+    """
+    # Validate input
+    if not isinstance(dataframes, list) or not all(isinstance(df, pd.DataFrame) for df in dataframes):
+        raise ValueError("Input must be a list of pandas DataFrames.")
+
+    method = method.lower()
+    if method not in ['mean', 'median', 'sum']:
+        raise ValueError("Method must be one of 'mean', 'median', or 'sum'.")
+
+    # Group DataFrames by labels
+    label_df = pd.DataFrame({'DataFrame': dataframes, 'Labels': labels})
+
+    # Initialize a list to hold the averaged DataFrames
+    averaged_results = []
+
+    print("label columns")
+    print(label_df.columns)
+    print("type of label_df")
+    print(type(label_df))
+
+    for label in label_df['Labels'].unique():
+        # Filter DataFrames for the current label
+        grouped_dfs = label_df[label_df['patientID'] == label]['DataFrame'].tolist()
+
+        # Average the spectra for this label
+        averaged_df = average_mass_spectra_objects(grouped_dfs, method)
+        averaged_results.append(averaged_df)
+
+    return averaged_results
+
+def average_mass_spectra_objects(spectra_list, method="mean"):
+    """
+    Averages MassSpectrum objects represented as pandas DataFrames.
+
+    Parameters:
+    spectra_list (list): List of pandas DataFrames.
+    method (str): Aggregation method ('mean', 'median', 'sum').
+
+    Returns:
+    DataFrame: A new DataFrame representing the averaged values.
+    """
+    # Use the first non-empty spectrum as reference
+    non_empty_spectra = [s for s in spectra_list if not s.empty]
+    if not non_empty_spectra:
+        return pd.DataFrame(columns=['Mass', 'Intensity'])
+
+    # Use the mass values from the first non-empty DataFrame
+    mass_values = non_empty_spectra[0]['Mass'].values
+
+    # Interpolate intensities for all DataFrames
+    intensity_matrix = []
+    for df in spectra_list:
+        interp_func = interp1d(df['Mass'], df['Intensity'], bounds_error=False, fill_value=0)
+        intensity_values = interp_func(mass_values)
+        intensity_matrix.append(intensity_values)
+
+    # Stack intensities and calculate the aggregate
+    intensity_array = np.vstack(intensity_matrix)
+
+    if method == 'mean':
+        aggregated_intensity = np.nanmean(intensity_array, axis=0)
+    elif method == 'median':
+        aggregated_intensity = np.nanmedian(intensity_array, axis=0)
+    elif method == 'sum':
+        aggregated_intensity = np.nansum(intensity_array, axis=0)
+
+    # Create a new DataFrame for the averaged results
+    return pd.DataFrame({'Mass': mass_values, 'Intensity': aggregated_intensity})
