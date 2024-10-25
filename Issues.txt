@@ -6,7 +6,7 @@ Issues:
 			Database integration
 			Cosine ranking?
 			Returned pathogen
-			
+
 			Code needs formatting
 			Needs redundancy checks
 			Needs additional configuration values
@@ -16,18 +16,17 @@ Issues:
 				- TestData/*
 				- UML/*
 				- *__pycache__*
-				- pathogens.log
 			Comments need cleaning for:
-				- BaselineCorrection.py
+				- BaselineCorrection.py			-> Jaanvir
 				- FeatureMatrix.py
-				- Helper.py
-				- IntensityCalibration.py
-				- PeakBinning.py
+				- Helper.py						-> Jaanvir
+				- IntensityCalibration.py		-> Jaanvir
+				- PeakBinning.py				-> Jaanvir
 				- PeakDetection.py
 				- Preprocessing.py
-				- QualityControl.py,
+				- QualityControl.py
 				- Repository.py
-				- Pathogen.py
+				- Pathogen.py					-> Jaanvir
 			Update .gitignore
 			Needs README.md
 			Needs GitHub cleanup
