@@ -31,30 +31,18 @@ Issues:
 			Needs README.md
 			Needs GitHub cleanup
 
-    #U1. Major - UNRESOLVED
-	    Description: 
-	    	R script has a collection of lists combined into one variable: spectrum 			- ex: [    [], [], []    ]	<- remains separate
-	    	The Python script has a collection of lists appended to one dataframe: dataframes 	- ex: [ ... + ... + ... ]	<- does not remain separate
-	    	Because of the 3D-aspect of the R script vs. the 2D-aspect of the Python script,
-	    	data has to be reworked.
-	    Other possible problems related:
-	    	Any code that is based off of a dataframe will require a simple data change
-	    Possible fix:
-			Rework the data to be a 3D-array or dataframe so that it is structured as:
-				['ID', 'm/z', 'intensity', 'pathogen']
-				so that files:
-					<MAI-redo-RCE-BL21-1a.csv> 	are stored differently
-					<MAI-redo-RCE-BL21-1b.csv> 	inside of the dataframe
-				looking similar to:
-					['1', <m/z data>, <intensity-data>, 'BL21']
-				This will allow for all dataframes to remain separate but connected in one major dataframe
-
-	#U2. Major - UNRESOLVED
+	#U1. Major - UNRESOLVED
 		Description:
-			Trouble finding a way of implementing the labeling of the pathogens in the plotting after 
-			already creating the original dataframe
+			Iteration of inputting data files into dataframe are not in alphabetical order or in the order they
+			appear in the directory. For example: 00 dataframe is the BL21-1c csv file, 07 is BL21-1a.
+			This causes issues with direct relationship to R script and R studio-run script, fixing this will
+			allow for the iteration of the patientID over the existing dataframes without having to add them
+			at the beginning.
 		Possible fix:
-			Utilizing the possible fix for #U1
+			Iterate through a for loop that pays attention to the file names and also possibly stores the name
+			of the bacteria to solve #U2.
+
+# RESOLVED
 
 	#R1. Major - RESOLVED
 		Description:

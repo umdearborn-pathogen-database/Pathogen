@@ -1,7 +1,9 @@
 # Imports
 import sys
 import os
+
 # Necessary for __init__.py classes
+# Adds the current file's directory to the system path, allowing the program to locate __init__.py classes from within subdirectories
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Main function
