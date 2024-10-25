@@ -52,6 +52,7 @@ def main():
     csv_files = glob.glob(os.path.join(folder_path, "*.csv"))
 
     # Load each CSV file into a DataFrame and store in a list
+    csv_files.sort()
     dataframes = [pd.read_csv(file) for file in csv_files]
 
     # commenting this out for now. Where to start off next time. Need to sort out the meta data and grouping for the average mass spec.
