@@ -5,12 +5,7 @@
 #       BaselineCorrection.py, FeatureMatrix.py, Helper.py, IntensityCalibration.py, 
 #       PeakBinning.py, PeakDetection.py, Preprocessing.py, QualityControl.py,
 #       Repository.py, Pathogen.py
-#   Code needs formatting
-#   Needs redundancy checks
-#   Needs additional configuration values
-#   Eventually, files/directories need deleting:
-#       Import/*, Reference/*, TestData/*, UML/*, *__pycache__*, pathogens.log,
-#       Issues
+
 #   Update .gitignore
 #   Needs README.md
 #   Needs GitHub cleanup
@@ -155,13 +150,21 @@ def main():
     # # trimmed_spectra_dfs is a list of trimmed spectra DataFrames
     # # Apply the baseline correction to the first DataFrame
     spectrum_df = trimmed_spectra_dfs
-    print("list spectra")
-    print(type(spectrum_df))
-    print(spectrum_df[0].head())
+
+    # Testing Block
+#    print("list spectra")
+#    print(type(spectrum_df))
+#    print(spectrum_df[0].head())
+    # End Testing Block
+
     first_spectrum_df = trimmed_spectra_dfs[0]
-    print("first spectra")
-    print(type(first_spectrum_df))
-    print(first_spectrum_df.head())
+
+    # Testing Block
+#    print("first spectra")
+#    print(type(first_spectrum_df))
+#    print(first_spectrum_df.head())
+    # End Testing Block
+
     # get just the intensity values from the list of data frames
     # signal = [df[['Intensity']] for df in spectrum_df]
 
@@ -277,6 +280,9 @@ def main():
 
     # Estimate Noise
     from PeakBinning.PeakBinning import estimateNoise
+
+# ASK TRISTAN
+
     noise = estimateNoise(trimmed_spectra_baseline_adjuted_calibrated_aligned_averaged[0])
 
     # Print the noise
@@ -313,6 +319,8 @@ def main():
 
     from PeakBinning.PeakBinning import binPeaks
     binned_peaks = binPeaks(peaks)
+
+    
 
     # data to save to SQL
     # save raw data / trimmed (at which point? ask Darrell)

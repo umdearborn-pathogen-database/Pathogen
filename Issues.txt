@@ -1,0 +1,74 @@
+Issues:
+	#ONGOING
+		Description:
+			FeatureMatrix
+			PCA
+			Database integration
+			Cosine ranking?
+			Returned pathogen
+			
+			Code needs formatting
+			Needs redundancy checks
+			Needs additional configuration values
+			Eventually, files/directories need deleting:
+				- Import/*
+				- Reference/*
+				- TestData/*
+				- UML/*
+				- *__pycache__*
+				- pathogens.log
+			Comments need cleaning for:
+				- BaselineCorrection.py
+				- FeatureMatrix.py
+				- Helper.py
+				- IntensityCalibration.py
+				- PeakBinning.py
+				- PeakDetection.py
+				- Preprocessing.py
+				- QualityControl.py,
+				- Repository.py
+				- Pathogen.py
+			Update .gitignore
+			Needs README.md
+			Needs GitHub cleanup
+
+    #U1. Major - UNRESOLVED
+	    Description: 
+	    	R script has a collection of lists combined into one variable: spectrum 			- ex: [    [], [], []    ]	<- remains separate
+	    	The Python script has a collection of lists appended to one dataframe: dataframes 	- ex: [ ... + ... + ... ]	<- does not remain separate
+	    	Because of the 3D-aspect of the R script vs. the 2D-aspect of the Python script,
+	    	data has to be reworked.
+	    Other possible problems related:
+	    	Any code that is based off of a dataframe will require a simple data change
+	    Possible fix:
+			Rework the data to be a 3D-array or dataframe so that it is structured as:
+				['ID', 'm/z', 'intensity', 'pathogen']
+				so that files:
+					<MAI-redo-RCE-BL21-1a.csv> 	are stored differently
+					<MAI-redo-RCE-BL21-1b.csv> 	inside of the dataframe
+				looking similar to:
+					['1', <m/z data>, <intensity-data>, 'BL21']
+				This will allow for all dataframes to remain separate but connected in one major dataframe
+
+	#U2. Major - UNRESOLVED
+		Description:
+			Trouble finding a way of implementing the labeling of the pathogens in the plotting after 
+			already creating the original dataframe
+		Possible fix:
+			Utilizing the possible fix for #U1
+
+	#R1. Major - RESOLVED
+		Description:
+			Any values that are related to dataframes have a type error surrounding it: int vs. str indices
+
+		Fix:
+			Data type assumed to be of type dataframe, but were of type list instead, change of type fixed the error.
+
+	#R2. Major - RESOLVED
+		Description:
+			If BaselineCorrection is applied to every single line import, the load on most computers would not support
+			the amount of data being processed at one time.
+		
+		Fix:
+			After reviewing with the client, BaselineCorrection only applies to the first set of data, reducing the load
+			and acting in a similar function to the R script.
