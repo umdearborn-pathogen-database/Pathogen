@@ -55,10 +55,23 @@ def main():
     csv_files.sort()
     dataframes = [pd.read_csv(file) for file in csv_files]
 
-    # commenting this out for now. Where to start off next time. Need to sort out the meta data and grouping for the average mass spec.
-    from Helper.Helper import add_bacteria_column
-    # dataframes = add_bacteria_column(dataframes, metadata_file)
+    # Load each CSV file into a DataFrame, adding a new column for the filename
+    dataframes = [
+        pd.read_csv(file).assign(Source_File=os.path.splitext(os.path.basename(file))[0])  # Add the filename as a new column
+        for file in csv_files
+    ]
+    # dataframes_with_source_file = [
+    #     pd.read_csv(file).assign(Source_File=os.path.splitext(os.path.basename(file))[0])  # Add the filename as a new column
+    #     for file in csv_files
+    # ]
 
+
+    # Moving this to after the computation
+    # from Helper.Helper import add_run_column_from_patientID
+    # metadata_file_with_run = add_run_column_from_patientID(metadata_file)
+
+    # from Helper.Helper import add_metadata_to_dataframes
+    # dataframes = add_metadata_to_dataframes(dataframes_with_source_file, metadata_file_with_run)
 
     #2. Quality Control
 
@@ -261,13 +274,40 @@ def main():
     # trimmed_spectra_baseline_adjusted_calibrated_aligned = align_peaks(trimmed_spectra_baseline_adjusted_calibrated, halfWindowSize, noiseMethod, snr, reference, tolerance, warpingMethod, allowNoMatches, emptyNoMatches)
     trimmed_spectra_baseline_adjusted_calibrated_aligned = align_peaks(trimmed_spectra_baseline_adjusted_calibrated, half_window_size=20, noise_method="MAD", SNR=2, reference=None, tolerance=0.002, warping_method="lowess")
     
+    # Moving this to after the computation - Here - Raw data with meta data
+    from Helper.Helper import add_run_column_from_patientID
+    metadata_file_with_run = add_run_column_from_patientID(metadata_file)
+
+    # Add meta data as additional columns
+    from Helper.Helper import add_metadata_to_dataframes
+    trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged = add_metadata_to_dataframes(trimmed_spectra_baseline_adjusted_calibrated_aligned, metadata_file_with_run)
+    
+    # Add meta data and create a tuple
+    # from Helper.Helper import combine_dataframes_with_metadata
+    # trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged = combine_dataframes_with_metadata(trimmed_spectra_baseline_adjusted_calibrated_aligned, metadata_file_with_run)
+
+
+    # not sure we even  need this
+    from Helper.Helper import get_sample_names
+    sample_names = get_sample_names(trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged)
+
+
     # Average Mass Spectra
-    from PeakBinning.PeakBinning import averageMassSpectra
-    trimmed_spectra_baseline_adjuted_calibrated_aligned_averaged = averageMassSpectra(trimmed_spectra_baseline_adjusted_calibrated_aligned, metadata_file['patientID'].unique())
+    # from PeakBinning.PeakBinning import averageMassSpectra
+    # trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged = averageMassSpectra(trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged, labels=sample_names)
+    
+    from PeakBinning.PeakBinning import average_mass_spectra
+    trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged = average_mass_spectra(trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged, labels=sample_names)
+
+
+    # from PeakBinning.PeakBinning import average_by_patient_id
+    # trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged = average_by_patient_id(trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged)
+    # trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged = averageMassSpectra(trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged, trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged['Bacteria'].unique())
     # trimmed_spectra_baseline_adjuted_calibrated_aligned_averaged.attrs = metadata_file['patientID'].unique()
     # print_dataframe_summary(trimmed_spectra_baseline_adjuted_calibrated_aligned_averaged)
     # Create a DataFrame with unique patient IDs
-    avg_spectra_info = metadata_file[~metadata_file['patientID'].duplicated()].reset_index(drop=True)
+
+    # avg_spectra_info = metadata_file[~metadata_file['patientID'].duplicated()].reset_index(drop=True)
 
     # Estimate Noise
     from PeakBinning.PeakBinning import estimateNoise
@@ -310,6 +350,7 @@ def main():
 
     from PeakBinning.PeakBinning import binPeaks
     binned_peaks = binPeaks(peaks)
+    test_peaks = binned_peaks
 
     
 
@@ -336,8 +377,7 @@ def main():
     # plot(hClust, hang=-1)
     # write.csv(featureMatrix, file = "PCA1.csv")
     # z <- read.csv(file = 'PCA1.csv', header = TRUE)
-
-
+    # random foress?
 
     # pca <- prcomp(z[,-1], scale.=TRUE)
     # gr <- factor(z[,1], labels=avgSpectra.info$Bacteria)
