@@ -494,7 +494,7 @@
         "kind": 2,
         "importPath": "Pathogen.Preprocessing.Preprocessing",
         "description": "Pathogen.Preprocessing.Preprocessing",
-        "peekOfCode": "def trim_spectra(dataframes, mz_range):\n    trimmed_dataframes = []\n    lower_bound, upper_bound = mz_range\n    for df in dataframes:\n        trimmed_df = df[(df['Mass'] >= lower_bound) & (df['Mass'] <= upper_bound)]        \n        trimmed_dataframes.append(pd.DataFrame(trimmed_df))\n    return trimmed_dataframes",
+        "peekOfCode": "def trim_spectra(dataframes, mz_range):\n    trimmed_dataframes = []\n    lower_bound, upper_bound = mz_range\n    for df in dataframes:\n        trimmed_df = df[(df['Mass'] >= lower_bound) & (df['Mass'] <= upper_bound)]        \n        trimmed_dataframes.append(pd.DataFrame(trimmed_df))\n    return trimmed_dataframes\n# def trim_spectra(dataframes, mz_range):\n#     trimmed_spectra = []\n#     for spectrum in dataframes:",
         "detail": "Pathogen.Preprocessing.Preprocessing",
         "documentation": {}
     },

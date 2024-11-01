@@ -1,7 +1,11 @@
 import pandas as pd
 
 def print_dataframe_summary(df_list):
+    print("type")
+    print(type(df_list))
     for idx, df in enumerate(df_list):
+        print("type of df")
+        print(type(df))
         print(f"\nDataFrame {idx + 1}:")
         print("-" * 50)
         
@@ -26,8 +30,8 @@ def print_dataframe_summary(df_list):
         print("-" * 50)
 
         # Review of some pandas dataframe concepts
-        # print("df")
-        # print(df)
+        print("df")
+        print(df)
 
         # print("sum down each column (default = axis = 0)")
         # print(df.sum(axis=0))
@@ -35,10 +39,10 @@ def print_dataframe_summary(df_list):
         # print("sum accross each row")
         # print(df.sum(axis=1))
 
-        ## Apply np.sqrt column-wise (default behavior)
+        # Apply np.sqrt column-wise (default behavior)
         # print(df.apply(np.sqrt))  # Equivalent to df.apply(np.sqrt, axis=0)
 
-        ## Apply np.sqrt row-wise
+        # Apply np.sqrt row-wise
         # print(df.apply(np.sqrt, axis=1))
 
 # Example usage:
@@ -97,3 +101,155 @@ def add_bacteria_column(df_main, mass_spec_data_list):
         spectrum_df['Bacteria'] = bacteria_value
     
     return mass_spec_data_list
+
+# def merge_metadata_with_raw_data(dataframes, metadata):
+#     """
+#     Merges a list of raw data DataFrames with a metadata DataFrame.
+
+#     Parameters:
+#     dataframes (list): A list of DataFrames containing raw data.
+#     metadata (DataFrame): A DataFrame containing metadata.
+
+#     Returns:
+#     DataFrame: A single DataFrame with merged data.
+#     """
+#     merged_dataframes = []
+
+#     for raw_data in dataframes:
+#         # Extract patientID.orig from the first row of the raw data
+#         # Assuming the filename or a specific column contains this information
+#         patientID_orig = raw_data['source_file'].str.split('-').str[-1].iloc[0]  # Modify as needed
+#         bacteria_value_orig = raw_data['source_file'].str.split('-').str[-2].iloc[0]
+
+#         # Find the corresponding row in the metadata
+#         # Find the corresponding row in the metadata
+#         matching_metadata = metadata[
+#             (metadata['run'] == patientID_orig) &
+#             (metadata['Bacteria'] == bacteria_value_orig)
+#         ]
+      
+#         # If a match is found, merge the metadata with the raw data
+#         if matching_metadata is not None and isinstance(matching_metadata, pd.DataFrame) and not matching_metadata.empty:
+#             merged_data = raw_data.assign(
+#                 patientID=matching_metadata['patientID'].values[0],
+#                 patientID_orig=matching_metadata['patientID.orig'].values[0],
+#                 experiment=matching_metadata['experiment'].values[0],
+#                 location=matching_metadata['location'].values[0],
+#                 Bacteria=matching_metadata['Bacteria'].values[0],
+#                 run=matching_metadata['run'].values[0]
+#             )
+#             merged_dataframes.append(merged_data)
+
+#     # Concatenate all merged DataFrames into one
+#     final_data = pd.concat(merged_dataframes, ignore_index=True)
+#     return final_data
+
+def add_run_column_from_patientID(df):
+    """
+    Adds a 'run' column to the DataFrame by extracting the last part of 'patientID.orig'.
+
+    Parameters:
+    df (pd.DataFrame): The input DataFrame with columns ['patientID', 'patientID.orig', 'experiment', 'location', 'Bacteria'].
+
+    Returns:
+    pd.DataFrame: The updated DataFrame with the 'run' column added.
+    """
+    # Check if the necessary column exists
+    if 'patientID.orig' not in df.columns:
+        raise ValueError("DataFrame must contain a 'patientID.orig' column.")
+    
+    # Create the 'run' column by extracting the last part from 'patientID.orig'
+    df['run'] = df['patientID.orig'].apply(lambda x: x.split('-')[-1])
+
+    return df
+
+def add_metadata_to_dataframes(dataframes, metadata):
+    """
+    Adds corresponding metadata to each DataFrame in the list.
+
+    Parameters:
+    dataframes (list of pd.DataFrame): List of DataFrames to which metadata will be added.
+    metadata (pd.DataFrame): DataFrame containing the metadata.
+
+    Returns:
+    list of pd.DataFrame: List of DataFrames with added metadata columns.
+    """
+    for i, df in enumerate(dataframes):
+        # Get the corresponding row from the metadata
+        metadata_row = metadata.iloc[i]
+        
+        # Add metadata as new columns to the DataFrame
+        for col in metadata_row.index:
+            df[col] = metadata_row[col]
+    
+    return dataframes
+
+# rewriting this below
+# def combine_dataframes_with_metadata(dataframes, metadata):
+#     """
+#     Combines each DataFrame with its corresponding metadata into tuples.
+
+#     Parameters:
+#     dataframes (list of pd.DataFrame): List of DataFrames.
+#     metadata (pd.DataFrame): DataFrame containing the metadata.
+
+#     Returns:
+#     list of tuples: List of tuples where each tuple contains a DataFrame and its corresponding metadata row.
+#     """
+#     combined_data = []
+
+#     for i, df in enumerate(dataframes):
+#         metadata_row = metadata.iloc[i]
+#         combined_data.append((df, metadata_row))
+
+#     return combined_data
+
+    # Example usage
+    # dataframes_with_source_file = [...]  # Your list of DataFrames
+    # metadata_file_with_run = pd.DataFrame(...)  # Your metadata DataFrame
+    # combined_data = combine_dataframes_with_metadata(dataframes_with_source_file, metadata_file_with_run)
+
+def combine_dataframes_with_metadata(dataframes, metadata):
+    combined_df = pd.DataFrame()  # Initialize an empty DataFrame
+
+    for i, df in enumerate(dataframes):
+        metadata_row = metadata.iloc[i]
+        for col in metadata_row.index:
+            df[col] = metadata_row[col]
+        
+        # Append the updated DataFrame to combined_df
+        combined_df = pd.concat([combined_df, df], ignore_index=True)
+
+    return combined_df
+
+def get_sample_names(spectra):
+    """
+    Extract sample names from the spectra.
+    
+    Parameters:
+    spectra (list): List of spectrum objects.
+    
+    Returns:
+    pd.Series: A Series of sample names.
+    """
+    return pd.Series([s['patientID'] for s in spectra])
+
+def average_mass_spectra(spectra, labels):
+    """
+    Average the mass spectra based on labels.
+    
+    Parameters:
+    spectra (list): List of spectrum objects.
+    labels (pd.Series): Series of sample names corresponding to each spectrum.
+    
+    Returns:
+    DataFrame: A DataFrame containing averaged spectra.
+    """
+    # Create a DataFrame to hold the spectra data
+    spectrum_data = pd.DataFrame([s.intensity for s in spectra])  # Assuming each spectrum has an 'intensity' attribute
+    spectrum_data['sample'] = labels
+    
+    # Group by the sample names and calculate the mean for each group
+    averaged_spectra = spectrum_data.groupby('sample').mean().reset_index()
+    
+    return averaged_spectra
