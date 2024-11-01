@@ -101,8 +101,8 @@ def main():
     trimmed_spectra_dfs = trim_spectra(dataframes, mz_range)
 
     # Debugging - Prints some visuals of the dataframe
-    print("Object characteristics")
-    print(print_dataframe_summary(trimmed_spectra_dfs))
+    # print("Object characteristics")
+    # print(print_dataframe_summary(trimmed_spectra_dfs))
 
 
     #4. Baseline Correction
@@ -288,16 +288,16 @@ def main():
 
 
     # not sure we even  need this
-    from Helper.Helper import get_sample_names
-    sample_names = get_sample_names(trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged)
+    # from Helper.Helper import get_sample_names
+    # sample_names = get_sample_names(trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged)
 
 
     # Average Mass Spectra
     # from PeakBinning.PeakBinning import averageMassSpectra
     # trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged = averageMassSpectra(trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged, labels=sample_names)
-    
-    from PeakBinning.PeakBinning import average_mass_spectra
-    trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged = average_mass_spectra(trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged, labels=sample_names)
+    # print_dataframe_summary(trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged)
+    from PeakBinning.PeakBinning import average_spectra
+    trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged = average_spectra(trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged)
 
 
     # from PeakBinning.PeakBinning import average_by_patient_id
@@ -312,20 +312,23 @@ def main():
     # Estimate Noise
     from PeakBinning.PeakBinning import estimateNoise
 
-# ASK TRISTAN
+    # ASK TRISTAN
 
-    noise = estimateNoise(trimmed_spectra_baseline_adjuted_calibrated_aligned_averaged[0])
+    noise = estimateNoise(trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged[0])
+    first_trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged = trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged[0]
 
     # Print the noise
     # Assuming 'trimmed_spectra_baseline_adjuted_calibrated_aligned_averaged' is your DataFrame with 'm/z', 'intensity', and 'baseline' columns
     # Plot the original spectrum
-    plt.plot(trimmed_spectra_baseline_adjuted_calibrated_aligned_averaged['Mass'], trimmed_spectra_baseline_adjuted_calibrated_aligned_averaged['Intensity'], label='Original Spectrum', color='blue')
+    plt.plot(first_trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged['Mass'], first_trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged['Intensity'], label='Original Spectrum', color='blue')
 
     # Plot the noise data
-    plt.plot(noise[:, 0], noise[:, 1], color='red', label="SNR == 1")
+    # plt.plot(noise[:, 0], noise[:, 1], color='red', label="SNR == 1")
+    plt.plot(noise['Mass'], noise['Intensity'], color='red', label="Noise")
 
     # Plot 2 * noise[:, 1] in blue
-    plt.plot(noise[:, 0], 2 * noise[:, 1], color='blue', label="2 * Noise")
+    # plt.plot(noise[:, 0], 2 * noise[:, 1], color='blue', label="2 * Noise")
+    plt.plot(noise['Mass'], 2 * noise['Intensity'], color='green', label="2 * Noise")
 
     # Add labels, legend, and title if needed
     plt.xlabel('X-axis label')
@@ -344,13 +347,26 @@ def main():
     # Show the plot
     plt.show()
 
-    # Detect Peaks 
-    from PeakDetection.PeakDetection import detectPeaks
-    peaks = detectPeaks(trimmed_spectra_baseline_adjuted_calibrated_aligned_averaged, SNR=2, halfWindowSize=20)
+
+    # newest comment out
+    # # Detect Peaks 
+    # from PeakDetection.PeakDetection import detectPeaks
+    # peaks = detectPeaks(trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged, SNR=2, halfWindowSize=20)
+
+    # Detect Peaks -  https://rdrr.io/cran/MALDIquant/src/R/detectPeaks-methods.R
+    from PeakDetection.PeakDetection import detectPeaksInList
+    peaks = detectPeaksInList(trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged, SNR=2, half_window_size=20)
 
     from PeakBinning.PeakBinning import binPeaks
     binned_peaks = binPeaks(peaks)
-    test_peaks = binned_peaks
+
+
+    labels = [df['Bacteria'].values[0] for df in binned_peaks]  # Get the first Bacteria value from each DataFrame
+
+    from PeakBinning.PeakBinning import filter_peaks
+    # binned_peaks = filter_peaks(binned_peaks, labels=labels)
+    binned_peaks = filter_peaks(binned_peaks)
+    peaks = binned_peaks
 
     
 
