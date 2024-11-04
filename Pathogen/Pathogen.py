@@ -365,10 +365,10 @@ def main():
 
     from PeakBinning.PeakBinning import filter_peaks
     # binned_peaks = filter_peaks(binned_peaks, labels=labels)
-    binned_peaks = filter_peaks(binned_peaks)
+    binned_peaks = filter_peaks(binned_peaks, min_frequency=0.2, min_number=None, merge_whitelists=True)
     peaks = binned_peaks
 
-    
+    print(peaks)
 
     # data to save to SQL
     # save raw data / trimmed (at which point? ask Darrell)

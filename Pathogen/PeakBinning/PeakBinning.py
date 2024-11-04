@@ -703,67 +703,154 @@ def average_spectra(dataframes):
 #             peaks_list[j] = peaks_list[j][mask]
     
 #     return peaks_list
+# import pandas as pd
 
-def filter_peaks(peaks_list, min_frequency=0.2, min_number=1, labels=None, merge_whitelists=True):
+# # Example list of dataframes, each with 'bacteria', 'mass', and 'intensity' columns
+# dataframes = [
+#     pd.DataFrame({'bacteria': ['A', 'A', 'B'], 'mass': [100, 200, 300], 'intensity': [10, 150, 30]}),
+#     pd.DataFrame({'bacteria': ['A', 'B', 'B'], 'mass': [110, 210, 310], 'intensity': [5, 100, 20]}),
+#     # Add more dataframes as needed
+# ]
+
+# # Define the filtering function to handle a list of dataframes
+# def filter_peaks(dataframes, intensity_threshold=0.2, mass_range=(200, 1995)):
+#     # Initialize list to store filtered dataframes
+#     filtered_dataframes = []
+
+#     # Iterate over each dataframe in the list
+#     for df in dataframes:
+#         filtered_groups = []
+#         # Group by 'bacteria' and filter each group by intensity and mass range
+#         for group in df.groupby('bacteria'):
+#             filtered_group = group[(group['intensity'] >= intensity_threshold) & (group['mass'].between(mass_range[0], mass_range[1]))]
+#             filtered_groups.append(filtered_group)
+        
+#         # Concatenate filtered groups for this dataframe
+#         filtered_df = pd.concat(filtered_groups) if filtered_groups else pd.DataFrame()
+#         filtered_dataframes.append(filtered_df)
+
+#     return filtered_dataframes
+
+def filter_peaks(dataframes, min_frequency=None, min_number=None, merge_whitelists=False):
     """
-    Filters peaks which are not frequently represented in different samples.
-    
+    Filter peaks which are not frequently represented in different samples based on 'bacteria' labels.
+
     Parameters:
-    - peaks_list: list of DataFrames, each containing 'Mass', 'Intensity', 'SNR', and 'patientID' columns.
-    - min_frequency: float, minimal frequency of a peak to be not removed.
-    - min_number: int, minimal (absolute) number of peaks to be not removed.
-    - labels: list or None, labelwise filtering (if None, uses a default).
-    - merge_whitelists: bool, apply whitelists local (False) or global (True).
-    
+    - dataframes: list of pandas DataFrames, each containing 'mass', 'intensity', and 'bacteria' columns.
+    - min_frequency: float, minimal frequency of a peak to be not removed (defaults to None).
+    - min_number: int, minimal (absolute) number of peaks to be not removed (defaults to None).
+    - merge_whitelists: bool, apply whitelists locally (False) or globally (True).
+
     Returns:
-    - list of DataFrames with adjusted peaks.
+    - list of filtered pandas DataFrames.
     """
-    # Test arguments
-    if labels is None:
-        labels = [0] * len(peaks_list)
     
-    # Convert labels to a categorical type to preserve order
-    labels = pd.Series(labels).astype('category')
+    # Validate input
+    if not isinstance(dataframes, list) or not all(isinstance(df, pd.DataFrame) for df in dataframes):
+        raise ValueError("Input should be a list of pandas DataFrames.")
     
-    # Check that the number of labels matches the number of peak DataFrames
-    if len(labels) != len(peaks_list):
-        raise ValueError("For each item in 'peaks_list', there must be a label in 'labels'!")
+    # Default minimum values if not provided
+    if min_frequency is None:
+        min_frequency = 0  # Set to 0 if not specified
     
-    ll = labels.cat.categories
-    nl = len(ll)
+    if min_number is None:
+        min_number = 0  # Set to 0 if not specified
 
-    # Recycle arguments if needed
-    min_frequency = [min_frequency] * nl if isinstance(min_frequency, (int, float)) else min_frequency
-    min_number = [min_number] * nl if isinstance(min_number, (int, float)) else min_number
-    merge_whitelists = bool(merge_whitelists)
+    # Create a dictionary to hold whitelists for each bacteria label
+    whitelists = {}
 
-    # Create occurrence list
-    occurrence_list = as_occurrence_list(peaks_list)
+    # Process each DataFrame individually
+    for df in dataframes:
+        # Group by 'mass' and 'bacteria' to count occurrences
+        peak_counts = df.groupby(['Mass']).size().reset_index(name='count')
 
-    # Group indices by labels
-    idx = [labels[labels == x].index.tolist() for x in ll]
+        # Calculate frequency of each mass
+        frequency = peak_counts['count'] / len(df)  # Frequency as count/total samples in this DataFrame
+        peak_counts['frequency'] = frequency
 
-    # Collect whitelists
-    w = pd.DataFrame(False, index=range(nl), columns=occurrence_list['mass'])
+        # Create whitelist based on min frequency and min number
+        whitelist = peak_counts[
+            (peak_counts['frequency'] >= min_frequency) | 
+            (peak_counts['count'] >= min_number)
+        ]['Mass'].unique()
 
-    for i in range(nl):
-        wl = whitelist(occurrence_list, idx[i], min_frequency[i], min_number[i])
-        if wl.sum() > 0:
-            if merge_whitelists:
-                w.iloc[i] = w.iloc[i] | wl
-            else:
-                w.iloc[i] = w.iloc[i] | wl
+        # Store the whitelist by bacteria label
+        bacteria_label = df['Bacteria'].iloc[0]  # Assuming all rows have the same bacteria label
+        if bacteria_label not in whitelists:
+            whitelists[bacteria_label] = whitelist
         else:
-            print(f"Warning: Empty peak whitelist for level {ll[i]}.")
+            if merge_whitelists:
+                whitelists[bacteria_label] = pd.concat([pd.Series(whitelists[bacteria_label]), pd.Series(whitelist)]).unique()
 
-    # Turn matrix back into DataFrames
-    for i in range(nl):
-        for j in idx[i]:
-            mask = occurrence_list['sample'] == j  # Create the boolean mask
-            # Use mask to select columns in w corresponding to the samples
-            peaks_list[j] = peaks_list[j][w.iloc[i][mask].values]  # Use .iloc to select boolean index
+    # Filter the original dataframes based on the whitelist
+    filtered_dataframes = []
+    for df in dataframes:
+        bacteria_label = df['Bacteria'].iloc[0]  # Assuming all rows have the same bacteria label
+        filtered_df = df[df['Mass'].isin(whitelists.get(bacteria_label, []))]
+        filtered_dataframes.append(filtered_df)
+
+    return filtered_dataframes
+
+# def filter_peaks(peaks_list, min_frequency=0.2, min_number=1, labels=None, merge_whitelists=True):
+#     """
+#     Filters peaks which are not frequently represented in different samples.
     
-    return peaks_list
+#     Parameters:
+#     - peaks_list: list of DataFrames, each containing 'Mass', 'Intensity', 'SNR', and 'patientID' columns.
+#     - min_frequency: float, minimal frequency of a peak to be not removed.
+#     - min_number: int, minimal (absolute) number of peaks to be not removed.
+#     - labels: list or None, labelwise filtering (if None, uses a default).
+#     - merge_whitelists: bool, apply whitelists local (False) or global (True).
+    
+#     Returns:
+#     - list of DataFrames with adjusted peaks.
+#     """
+#     # Test arguments
+#     if labels is None:
+#         labels = [0] * len(peaks_list)
+    
+#     # Convert labels to a categorical type to preserve order
+#     labels = pd.Series(labels).astype('category')
+    
+#     # Check that the number of labels matches the number of peak DataFrames
+#     if len(labels) != len(peaks_list):
+#         raise ValueError("For each item in 'peaks_list', there must be a label in 'labels'!")
+    
+#     ll = labels.cat.categories
+#     nl = len(ll)
+
+#     # Recycle arguments if needed
+#     min_frequency = [min_frequency] * nl if isinstance(min_frequency, (int, float)) else min_frequency
+#     min_number = [min_number] * nl if isinstance(min_number, (int, float)) else min_number
+#     merge_whitelists = bool(merge_whitelists)
+
+#     # Create occurrence list
+#     occurrence_list = as_occurrence_list(peaks_list)
+
+#     # Group indices by labels
+#     idx = [labels[labels == x].index.tolist() for x in ll]
+
+#     # Collect whitelists
+#     w = pd.DataFrame(False, index=range(nl), columns=occurrence_list['mass'])
+
+#     for i in range(nl):
+#         wl = whitelist(occurrence_list, idx[i], min_frequency[i], min_number[i])
+#         if wl.sum() > 0:
+#             if merge_whitelists:
+#                 w.iloc[i] = w.iloc[i] | wl
+#             else:
+#                 w.iloc[i] = w.iloc[i] | wl
+#         else:
+#             print(f"Warning: Empty peak whitelist for level {ll[i]}.")
+
+#     # Turn matrix back into DataFrames
+#     for i in range(nl):
+#         for j in idx[i]:
+#             mask = occurrence_list['sample'] == j  # Create the boolean mask
+#             # Use mask to select columns in w corresponding to the samples
+#             peaks_list[j] = peaks_list[j][w.iloc[i][mask].values]  # Use .iloc to select boolean index
+    
+#     return peaks_list
 
 def whitelist(occurrence_list, rows, min_frequency, min_number):
     """
