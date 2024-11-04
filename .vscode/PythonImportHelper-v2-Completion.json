@@ -543,11 +543,11 @@
         "documentation": {}
     },
     {
-        "label": "filter_peaks",
+        "label": "filter_peaks_labeled",
         "kind": 2,
         "importPath": "Pathogen.PeakBinning.PeakBinning",
         "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def filter_peaks(dataframes, min_frequency=None, min_number=None, merge_whitelists=False):\n    \"\"\"\n    Filter peaks which are not frequently represented in different samples based on 'bacteria' labels.\n    Parameters:\n    - dataframes: list of pandas DataFrames, each containing 'mass', 'intensity', and 'bacteria' columns.\n    - min_frequency: float, minimal frequency of a peak to be not removed (defaults to None).\n    - min_number: int, minimal (absolute) number of peaks to be not removed (defaults to None).\n    - merge_whitelists: bool, apply whitelists locally (False) or globally (True).\n    Returns:\n    - list of filtered pandas DataFrames.",
+        "peekOfCode": "def filter_peaks_labeled(dataframes, min_frequency=None, min_number=None, merge_whitelists=False):\n    \"\"\"\n    Filter peaks which are not frequently represented in different samples based on 'bacteria' labels.\n    Parameters:\n    - dataframes: list of pandas DataFrames, each containing 'mass', 'intensity', and 'bacteria' columns.\n    - min_frequency: float, minimal frequency of a peak to be not removed (defaults to None).\n    - min_number: int, minimal (absolute) number of peaks to be not removed (defaults to None).\n    - merge_whitelists: bool, apply whitelists locally (False) or globally (True).\n    Returns:\n    - list of filtered pandas DataFrames.",
         "detail": "Pathogen.PeakBinning.PeakBinning",
         "documentation": {}
     },

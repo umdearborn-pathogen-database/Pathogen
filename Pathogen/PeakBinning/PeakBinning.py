@@ -731,7 +731,7 @@ def average_spectra(dataframes):
 
 #     return filtered_dataframes
 
-def filter_peaks(dataframes, min_frequency=None, min_number=None, merge_whitelists=False):
+def filter_peaks_labeled(dataframes, min_frequency=None, min_number=None, merge_whitelists=False):
     """
     Filter peaks which are not frequently represented in different samples based on 'bacteria' labels.
 

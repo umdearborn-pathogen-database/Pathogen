@@ -363,9 +363,9 @@ def main():
 
     labels = [df['Bacteria'].values[0] for df in binned_peaks]  # Get the first Bacteria value from each DataFrame
 
-    from PeakBinning.PeakBinning import filter_peaks
+    from PeakBinning.PeakBinning import filter_peaks_labeled
     # binned_peaks = filter_peaks(binned_peaks, labels=labels)
-    binned_peaks = filter_peaks(binned_peaks, min_frequency=0.2, min_number=None, merge_whitelists=True)
+    binned_peaks = filter_peaks_labeled(binned_peaks, min_frequency=0.2, min_number=None, merge_whitelists=True)
     peaks = binned_peaks
 
     print(peaks)
