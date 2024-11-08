@@ -1168,7 +1168,6 @@ def filter_peaks(peaks_list, min_frequency=0.2, min_number=1, labels=None, merge
 #         'SNR': [2.136343, 5.711939, 10.545748, 14.890700, 13.967135]
 #     }
 #     df1 = pd.DataFrame(example_data)
-    
 #     # Create a list of similar DataFrames (just for demonstration)
 #     peaks_list = [df1]  # In reality, this would contain up to 34 DataFrames
     
