@@ -31,16 +31,17 @@ Issues:
 			Needs README.md
 			Needs GitHub cleanup
 
+# UNRESOLVED
+
 	#U1. Major - UNRESOLVED
 		Description:
-			Iteration of inputting data files into dataframe are not in alphabetical order or in the order they
-			appear in the directory. For example: 00 dataframe is the BL21-1c csv file, 07 is BL21-1a.
-			This causes issues with direct relationship to R script and R studio-run script, fixing this will
-			allow for the iteration of the patientID over the existing dataframes without having to add them
-			at the beginning.
-		Possible fix:
-			Iterate through a for loop that pays attention to the file names and also possibly stores the name
-			of the bacteria to solve #U2.
+			Averaging the dataframes that are not of the same size causes
+			issues with the potential of incorrect data, errors, and incorrect
+			utilization of interpolation.
+		
+		Possible Fix:
+			Utilize a package, word correctly to ChatGPT, or reverse engineer
+			R script (last resort)
 
 # RESOLVED
 
@@ -59,3 +60,21 @@ Issues:
 		Fix:
 			After reviewing with the client, BaselineCorrection only applies to the first set of data, reducing the load
 			and acting in a similar function to the R script.
+	
+	#R3. Major - RESOLVED
+		Description:
+			Iteration of inputting data files into dataframe are not in alphabetical order or in the order they
+			appear in the directory. For example: 00 dataframe is the BL21-1c csv file, 07 is BL21-1a.
+			This causes issues with direct relationship to R script and R studio-run script, fixing this will
+			allow for the iteration of the patientID over the existing dataframes without having to add them
+			at the beginning.
+		Fix:
+			Sorted files by name.
+	
+	#R4. Major - RESOLVED
+		Description:
+			Filter peaks labeling
+		Fix:
+			ChatGPT suggested a threshold for mass and intensity, created a whitelist,
+			and with a bit of feeding it better advice, spit out a passing function that
+			needs further review.

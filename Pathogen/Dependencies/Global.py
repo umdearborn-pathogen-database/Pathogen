@@ -22,7 +22,8 @@ packages = [
     'statsmodels',
     'mysql-connector-python',
     'scipy',
-    'pybaselines'
+    'pybaselines',
+    'mass-suite'
 ]
 
 # Terminal text coloring

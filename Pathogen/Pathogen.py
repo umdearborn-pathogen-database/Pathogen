@@ -356,18 +356,29 @@ def main():
     # Detect Peaks -  https://rdrr.io/cran/MALDIquant/src/R/detectPeaks-methods.R
     from PeakDetection.PeakDetection import detectPeaksInList
     peaks = detectPeaksInList(trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged, SNR=2, half_window_size=20)
-
+    from mss import mssmain as masssuite
+    peaks1 = masssuite.peak_pick(trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged, )
+    
     from PeakBinning.PeakBinning import binPeaks
     binned_peaks = binPeaks(peaks)
 
 
     labels = [df['Bacteria'].values[0] for df in binned_peaks]  # Get the first Bacteria value from each DataFrame
 
-    from PeakBinning.PeakBinning import filter_peaks
-    # binned_peaks = filter_peaks(binned_peaks, labels=labels)
-    binned_peaks = filter_peaks(binned_peaks)
-    peaks = binned_peaks
+    # from PeakBinning.PeakBinning import filter_peaks
+    # # binned_peaks = filter_peaks(binned_peaks, labels=labels)
+    # binned_peaks = filter_peaks(binned_peaks)
+    # peaks = binned_peaks
 
+    # from Helper.Helper import remove_columns_from_dataframes
+    # remove_columns_from_dataframes(trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged, ["Bacteria"])
+    # msdf = trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged
+    # from msalign import align
+    # aligned_peaks = align(msdf, mass_tolerance=0.1)
+    # intensity_matrix = msalign.build_intensity_matrix(align_peaks)
+    
+    from mss import dm
+    dm.
     
 
     # data to save to SQL

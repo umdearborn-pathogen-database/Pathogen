@@ -1,4 +1,5 @@
 import pandas as pd
+from Dependencies.Global import printMessage
 
 def print_dataframe_summary(df_list):
     print("type")
@@ -253,3 +254,28 @@ def average_mass_spectra(spectra, labels):
     averaged_spectra = spectrum_data.groupby('sample').mean().reset_index()
     
     return averaged_spectra
+    
+def combine_dataframes(list_of_dataframes):
+    combined_df = pd.concat(list_of_dataframes, ignore_index=True)
+    return combined_df
+
+# Ensure that the input is a list 
+def remove_columns_from_dataframes(dataframes, column, inPlace=True, ignoreErrors=True):
+    errors = 'ignore' if (ignoreErrors == True) else 'raise'
+    if isinstance(dataframes, pd.DataFrame):
+        dataframes.drop(columns=column, inplace=True, errors=errors)
+    else:
+        for df in dataframes:
+            if isinstance(df, pd.DataFrame):
+                df.drop(columns=column, inplace=True, errors=errors)
+            else:
+                printMessage("err", "Error removing column from DataFrame. Input is not a list of DataFrames or single DataFrame.")
+
+def sort_single_dataframe_by_column(dataframe, column, resetIndex=True, ascending=True, dropIndex=True):
+    sorted_dataframe = dataframe
+    if isinstance(dataframe, pd.DataFrame):
+        sorted_dataframe = dataframe.sort_values(by=column, ascending=ascending)
+        if resetIndex: sorted_dataframe.reset_index(drop=dropIndex)
+    else:
+        printMessage("err", "Error sorting DataFrame. Input is not a DataFrame.")
+    return sorted_dataframe
