@@ -365,7 +365,7 @@ def main():
 
     from PeakBinning.PeakBinning import filter_peaks
     # binned_peaks = filter_peaks(binned_peaks, labels=labels)
-    binned_peaks = filter_peaks(binned_peaks)
+    binned_peaks = filter_peaks(binned_peaks, labels=labels)
     peaks = binned_peaks
 
     

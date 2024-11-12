@@ -704,6 +704,8 @@ def average_spectra(dataframes):
     
 #     return peaks_list
 
+
+# commenting this out and replacing it with tom's filter_peaks method
 def filter_peaks(peaks_list, min_frequency=0.2, min_number=1, labels=None, merge_whitelists=True):
     """
     Filters peaks which are not frequently represented in different samples.
