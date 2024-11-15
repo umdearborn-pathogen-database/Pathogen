@@ -202,6 +202,53 @@ def main():
     featureMatrix = intensity_matrix(peaks,trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged)
     featureMatrixCopy = featureMatrix
 
+# Debug from here
+
+    #10. SDA
+    from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+    lda = LinearDiscriminantAnalysis(solver='lsqr', shrinkage='auto')
+    lda.fit(featureMatrix, labels)
+    
+    #11. Distance Matrix
+    from scipy.spatial.distance import pdist
+    distance_matrix = pdist(featureMatrix, metric='euclidean')
+    
+    #12. Hierarchical Clustering
+    from scipy.cluster.hierarchy import linkage
+    hClust = linkage(distance_matrix, method='complete')
+    
+    #13. Export Feature Matrix
+    featureMatrix.to_csv('matrix_export.csv', index=False, header=True)
+    
+    #14. PCA
+    from sklearn.decomposition import PCA
+    from sklearn.preprocessing import StandardScaler
+    scaler = StandardScaler()
+    data_scaled = scaler.fit_transform(featureMatrix)
+
+    pca = PCA(n_components=2)  # number of components to keep per R script
+    pca_result = pca.fit_transform(data_scaled)
+    
+    gr = pd.Categorical(featureMatrix.iloc[:, 0], categories=labels)
+
+    # If you want the result as a pandas Series
+    gr = pd.Series(gr)
+    print(gr)
+    
+    # Opt. Perform Hierarchical Clustering on PCA results
+    from sklearn.cluster import AgglomerativeClustering
+    hc = AgglomerativeClustering(n_clusters=2)
+    labels = hc.fit_predict(pca_result)
+    
+    # Opt. Create Dendrogram
+    from scipy.cluster.hierarchy import dendrogram
+    linkage_matrix = linkage(pca_result, method='ward')
+    dendrogram(linkage_matrix)
+    plt.title("Hierarchical Clustering Dendrogram")
+    plt.xlabel("Samples")
+    plt.ylabel("Distance")
+    plt.show()
+    
     # going to review this last bit with Darrell tomorrow
     # rownames(featureMatrix) <- avgSpectra.info$patientID
     # Xtrain <- featureMatrix
@@ -218,6 +265,9 @@ def main():
     # pca <- prcomp(z[,-1], scale.=TRUE)
     # gr <- factor(z[,1], labels=avgSpectra.info$Bacteria)
     # summary(gr)
+    
+    # Break
+    
     # pca2d(pca, group=gr, legend="topleft")
     # pca3d(pca, group=gr, show.ellipses=TRUE, ellipse.ci=0.75, show.plane=FALSE, legend="topleft")
 
@@ -225,7 +275,7 @@ def main():
     # res.hcpc <- HCPC(res.pca, graph = FALSE)
     # fviz_dend(res.hcpc,cex = 0.55, palette = "jco", rect = TRUE, rect_fill = FALSE, rect_border = "jco", labels_track_height = 300.0,H =0.5)
 
-
+    # Database
 
 if __name__ == "__main__":
     main()
