@@ -459,18 +459,42 @@ def average_spectra(dataframes):
     for i in range(0, len(dataframes), 3):
         # Concatenate the three data frames for the current patient
         combined_df = pd.concat(dataframes[i:i+3], axis=0, ignore_index=True)
-        combined_df = combined_df.sort_values(by=['patientID', 'Mass']).reset_index(drop=True)
+        print('Head combined_df')
+        print(combined_df.head())
+        print('Shape combined_df')
+        print(combined_df.shape)
+        sorted_combined_df = combined_df.sort_values(by=['patientID', 'Mass']).reset_index(drop=True)
+
+        print('Head sorted_combined_df')
+        print(combined_df.head())
+        print('Shape sorted_combined_df')
+        print(combined_df.shape)
 
         # Average the Intensity for each unique Mass value
-        averaged_df = combined_df.groupby(['Mass', 'patientID','Bacteria']).agg({
+        averaged_df = sorted_combined_df.groupby(['Mass', 'patientID','Bacteria']).agg({
             'Intensity': 'mean'
         }).reset_index()
+
+        print('Head averaged_df')
+        print(combined_df.head())
+        print('Shape averaged_df')
+        print(combined_df.shape)
         
         # Sort the result for consistency
         averaged_df = averaged_df.sort_values(by=['patientID', 'Mass','Bacteria']).reset_index(drop=True)
 
+        print('Head averaged_df')
+        print(combined_df.head())
+        print('Shape averaged_df')
+        print(combined_df.shape)
+
         # Add the averaged data frame for the current patient to the list
         averaged_results.append(averaged_df)
+
+        print('Head averaged_results')
+        print(combined_df.head())
+        print('Shape averaged_results')
+        print(combined_df.shape)
 
     return averaged_results  # This will be a list of 35 averaged data frames
 
