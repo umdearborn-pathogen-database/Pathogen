@@ -86,37 +86,25 @@ def main():
     from Preprocessing.Preprocessing import trim_spectra
     trimmed_spectra_dfs = trim_spectra(dataframes, mz_range)
 
-
     #4. Baseline Correction
     # # trimmed_spectra_dfs is a list of trimmed spectra DataFrames
     # # Apply the baseline correction to the first DataFrame
     spectrum_df = trimmed_spectra_dfs
     first_spectrum_df = trimmed_spectra_dfs[0]
-
-    # Apply the SNIP baseline correction
     from BaselineCorrection.BaselineCorrection import apply_snip_baseline_correction    
     trimmed_spectra_baseline_adjusted = apply_snip_baseline_correction(spectrum_df, window_size=10)
     first_trimmed_spectra_baseline_adjusted = trimmed_spectra_baseline_adjusted[0]
 
-    # plt.plot(x, y, label='Original data')
-    # Assuming 'spectrum_df' is your DataFrame with 'm/z', 'intensity', and 'baseline' columns
-    # Plot the original spectrum
-    plt.plot(first_trimmed_spectra_baseline_adjusted['Mass'], first_trimmed_spectra_baseline_adjusted['Intensity'], label='Original Spectrum', color='blue')
-
-    # Plot the baseline
-    plt.plot(first_trimmed_spectra_baseline_adjusted['Mass'], first_trimmed_spectra_baseline_adjusted['Baseline'], label='Baseline', color='red', linestyle='--')
-
-    # Add labels and title
-    plt.xlabel('m/z')
-    plt.ylabel('Intensity')
-    plt.title('First Spectrum with Baseline Correction')
-
-    # Add a legend
-    plt.legend()
-
-    # Show the plot
-    plt.show()
-
+    # Opt. Plot Baseline and Original Spectrum
+    if(getConfigValue('options', 'plot-baseline', bool) == True):
+        plt.plot(first_trimmed_spectra_baseline_adjusted['Mass'], first_trimmed_spectra_baseline_adjusted['Intensity'], label='Original Spectrum', color='blue')
+        # Plot the baseline
+        plt.plot(first_trimmed_spectra_baseline_adjusted['Mass'], first_trimmed_spectra_baseline_adjusted['Baseline'], label='Baseline', color='red', linestyle='--')
+        plt.xlabel('m/z')
+        plt.ylabel('Intensity')
+        plt.title('First Spectrum with Baseline Correction')
+        plt.legend()
+        plt.show()
 
     #5. Intensity Calibration
     from IntensityCalibration.IntensityCalibration import calibrateIntensity
@@ -129,12 +117,10 @@ def main():
     reference = None
     tolerance = getConfigValue('align-spectra', 'tolerance', float)
     warpingMethod = getConfigValue('align-spectra', 'warping-method', str)
-    allowNoMatches = getConfigValue('align-spectra', 'allow-no-matches', bool)
-    emptyNoMatches = getConfigValue('align-spectra', 'empty-no-matches', bool)
     
     # Align Spectra
     from PeakDetection.PeakDetection import align_peaks
-    trimmed_spectra_baseline_adjusted_calibrated_aligned = align_peaks(trimmed_spectra_baseline_adjusted_calibrated, half_window_size=20, noise_method="MAD", SNR=2, reference=None, tolerance=0.002, warping_method="lowess")
+    trimmed_spectra_baseline_adjusted_calibrated_aligned = align_peaks(trimmed_spectra_baseline_adjusted_calibrated, half_window_size=halfWindowSize, noise_method=noiseMethod, SNR=snr, reference=reference, tolerance=tolerance, warping_method=warpingMethod)
     
     # Moving this to after the computation - Here - Raw data with meta data
     from Helper.Helper import add_run_column_from_patientID
@@ -144,7 +130,6 @@ def main():
     from Helper.Helper import add_metadata_to_dataframes
     trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged = add_metadata_to_dataframes(trimmed_spectra_baseline_adjusted_calibrated_aligned, metadata_file_with_run)
     
-
     # Average Mass Spectra
     from PeakBinning.PeakBinning import average_spectra
     trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged = average_spectra(trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged)
@@ -154,32 +139,20 @@ def main():
     noise = estimateNoise(trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged[0])
     first_trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged = trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged[0]
 
-    # Print the noise
-    # Assuming 'trimmed_spectra_baseline_adjuted_calibrated_aligned_averaged' is your DataFrame with 'm/z', 'intensity', and 'baseline' columns
-    # Plot the original spectrum
-    plt.plot(first_trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged['Mass'], first_trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged['Intensity'], label='Original Spectrum', color='blue')
-
-    # Plot the noise data
-    plt.plot(noise['Mass'], noise['Intensity'], color='red', label="Noise")
-
-    plt.plot(noise['Mass'], 2 * noise['Intensity'], color='green', label="2 * Noise")
-
-    # Add labels, legend, and title if needed
-    plt.xlabel('X-axis label')
-    plt.ylabel('Y-axis label')
-    plt.legend()
-    plt.title('Plot of avgSpectra and noise')
-
-    # Add labels and title
-    plt.xlabel('m/z')
-    plt.ylabel('Intensity')
-    plt.title('Spectrum with Noise')
-
-    # Add a legend
-    plt.legend()
-
-    # Show the plot
-    plt.show()
+    # Opt. Plot the Noise
+    if(getConfigValue('options', 'plot-noise', bool) == True):
+        plt.plot(first_trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged['Mass'], first_trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged['Intensity'], label='Original Spectrum', color='blue')
+        plt.plot(noise['Mass'], noise['Intensity'], color='red', label="Noise")
+        plt.plot(noise['Mass'], 2 * noise['Intensity'], color='green', label="2 * Noise")
+        plt.xlabel('X-axis label')
+        plt.ylabel('Y-axis label')
+        plt.legend()
+        plt.title('Plot of avgSpectra and noise')
+        plt.xlabel('m/z')
+        plt.ylabel('Intensity')
+        plt.title('Spectrum with Noise')
+        plt.legend()
+        plt.show()
 
     # Detect Peaks -  https://rdrr.io/cran/MALDIquant/src/R/detectPeaks-methods.R
     from PeakDetection.PeakDetection import detectPeaksInList
@@ -188,7 +161,6 @@ def main():
     from PeakBinning.PeakBinning import binPeaks
     binned_peaks = binPeaks(peaks)
 
-
     labels = [df['Bacteria'].values[0] for df in binned_peaks]  # Get the first Bacteria value from each DataFrame
 
     from PeakBinning.PeakBinning import filter_peaks
@@ -196,17 +168,13 @@ def main():
     binned_peaks = filter_peaks(binned_peaks,min_frequency=0.2,labels=labels,merge_whitelists=True)
     peaks = binned_peaks
 
-
     #9. Feature Matrix 
     from FeatureMatrix.FeatureMatrix import intensity_matrix
     featureMatrix = intensity_matrix(peaks,trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged)
-    featureMatrixCopy = featureMatrix
 
-# Debug from here
-
-    #10. SDA
+    #10. SDA - using svd solver to ensure correct data and accuracy
     from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-    lda = LinearDiscriminantAnalysis(solver='lsqr', shrinkage='auto')
+    lda = LinearDiscriminantAnalysis(solver='svd')
     lda.fit(featureMatrix, labels)
     
     #11. Distance Matrix
@@ -218,64 +186,40 @@ def main():
     hClust = linkage(distance_matrix, method='complete')
     
     #13. Export Feature Matrix
-    featureMatrix.to_csv('matrix_export.csv', index=False, header=True)
+    if(getConfigValue('options', 'export-feature-matrix-CSV-file', bool) == True):
+        from Dependencies.Global import printMessage
+        printMessage("info", "Exporting Feature Matrix to 'matrix_export.csv...")
+        featureMatrix1 = pd.DataFrame(featureMatrix)
+        featureMatrix1.to_csv('matrix_export.csv', index=False, header=True)
     
     #14. PCA
     from sklearn.decomposition import PCA
     from sklearn.preprocessing import StandardScaler
     scaler = StandardScaler()
     data_scaled = scaler.fit_transform(featureMatrix)
-
     pca = PCA(n_components=2)  # number of components to keep per R script
     pca_result = pca.fit_transform(data_scaled)
     
-    gr = pd.Categorical(featureMatrix.iloc[:, 0], categories=labels)
+    #gr = pd.Categorical(featureMatrix.iloc[:, 0], categories=labels)
 
     # If you want the result as a pandas Series
-    gr = pd.Series(gr)
-    print(gr)
+    #gr = pd.Series(gr)
+    #print(gr)
     
-    # Opt. Perform Hierarchical Clustering on PCA results
+    # Perform Hierarchical Clustering on PCA results
     from sklearn.cluster import AgglomerativeClustering
     hc = AgglomerativeClustering(n_clusters=2)
     labels = hc.fit_predict(pca_result)
     
     # Opt. Create Dendrogram
-    from scipy.cluster.hierarchy import dendrogram
-    linkage_matrix = linkage(pca_result, method='ward')
-    dendrogram(linkage_matrix)
-    plt.title("Hierarchical Clustering Dendrogram")
-    plt.xlabel("Samples")
-    plt.ylabel("Distance")
-    plt.show()
-    
-    # going to review this last bit with Darrell tomorrow
-    # rownames(featureMatrix) <- avgSpectra.info$patientID
-    # Xtrain <- featureMatrix
-    # Ytrain <- avgSpectra.info$Bacteria
-    # ddar <- sda.ranking(Xtrain=featureMatrix, L=Ytrain, fdr=FALSE,diagonal=TRUE)
-    # distanceMatrix <- dist(featureMatrix, method="euclidean")
-    # hClust <- hclust(distanceMatrix, method="complete")
-    # plot(hClust, hang=-1)
-    # write.csv(featureMatrix, file = "PCA1.csv")
-    # z <- read.csv(file = 'PCA1.csv', header = TRUE)
-
-
-
-    # pca <- prcomp(z[,-1], scale.=TRUE)
-    # gr <- factor(z[,1], labels=avgSpectra.info$Bacteria)
-    # summary(gr)
-    
-    # Break
-    
-    # pca2d(pca, group=gr, legend="topleft")
-    # pca3d(pca, group=gr, show.ellipses=TRUE, ellipse.ci=0.75, show.plane=FALSE, legend="topleft")
-
-    # res.pca <- PCA(featureMatrix, scale.unit=TRUE, ncp=2,graph = FALSE)
-    # res.hcpc <- HCPC(res.pca, graph = FALSE)
-    # fviz_dend(res.hcpc,cex = 0.55, palette = "jco", rect = TRUE, rect_fill = FALSE, rect_border = "jco", labels_track_height = 300.0,H =0.5)
-
-    # Database
+    if(getConfigValue('options', 'plot-dendrogram', bool) == True):
+        from scipy.cluster.hierarchy import dendrogram
+        linkage_matrix = linkage(pca_result, method='ward')
+        dendrogram(linkage_matrix)
+        plt.title("Hierarchical Clustering Dendrogram")
+        plt.xlabel("Samples")
+        plt.ylabel("Distance")
+        plt.show()
 
 if __name__ == "__main__":
     main()

@@ -113,7 +113,11 @@ defaultConfig = {
         'cancel-if-null-valued-spectra': False,
         'trim-lower-bounds': 200,
         'trim-upper-bounds': 1995,
-        'scaling-factor': 'TIC'
+        'scaling-factor': 'TIC',
+        'export-feature-matrix-CSV-file': True,
+        'plot-baseline': True,
+        'plot-noise': True,
+        'plot-dendrogram': True
     },
     'align-spectra': {
         'half-window-size': 20,
@@ -121,8 +125,6 @@ defaultConfig = {
         'SNR': 2,
         'tolerance': 0.002,
         'warping-method': 'lowess',
-        'allow-no-matches': False,
-        'empty-no-matches': False
     }
 }
 
@@ -177,13 +179,15 @@ def checkConfig():
         getConfigValue('options', 'trim-lower-bounds', int)
         getConfigValue('options', 'trim-upper-bounds', int)
         getConfigValue('options', 'scaling-factor', str)
+        getConfigValue('options', 'export-feature-matrix-CSV-file', bool)
+        getConfigValue('options', 'plot-baseline', bool)
+        getConfigValue('options', 'plot-noise', bool)
+        getConfigValue('options', 'plot-dendrogram', bool)
         getConfigValue('align-spectra', 'half-window-size', int)
         getConfigValue('align-spectra', 'noise-method', str)
         getConfigValue('align-spectra', 'SNR', int)
         getConfigValue('align-spectra', 'tolerance', float)
         getConfigValue('align-spectra', 'warping-method', str)
-        getConfigValue('align-spectra', 'allow-no-matches', bool)
-        getConfigValue('align-spectra', 'empty-no-matches', bool)
 
 # Set to None originally in case config values have errors if not using certain database,
 #   For instance, if local is being used, there is no need to check remote database values

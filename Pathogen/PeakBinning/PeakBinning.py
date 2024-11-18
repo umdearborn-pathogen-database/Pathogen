@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from scipy.interpolate import interp1d
-
+from Dependencies.Global import printMessage
 
 def averageMassSpectra(list_dataframes, labels, method="mean"):
     """
@@ -347,7 +347,7 @@ def average_spectra(dataframes):
         averaged_dataframes.append(averaged_df)
 
     # Return the list of averaged DataFrames
-    print("Number of averaged dataframes:", len(averaged_dataframes))
+#    print("Number of averaged dataframes:", len(averaged_dataframes))
     return averaged_dataframes
 
 
@@ -415,8 +415,6 @@ def as_occurrence_list(peaks_list) -> dict:
         'sample': np.array(sample_indices)
     }
 
-
-
 def create_whitelist(occurrence_list, 
                     rows, 
                     min_frequency,
@@ -437,14 +435,14 @@ def create_whitelist(occurrence_list,
     
     if min_frequency is not None and min_frequency < 0:
         min_frequency = 0
-        print("Warning: min_frequency < 0 does not make sense! Using 0 instead.")
+        printMessage("warn", "min_frequency < 0 does not make sense! Using 0 instead.")
     
     if min_number is not None and min_number < 0:
         min_number = 0
-        print("Warning: min_number < 0 does not make sense! Using 0 instead.")
+        printMessage("warn", "min_number < 0 does not make sense! Using 0 instead.")
     
     if min_frequency is not None and min_number is not None:
-        print("Warning: min_frequency and min_number arguments are given. Choosing the higher one.")
+        printMessage("warn", "min_frequency and min_number arguments are given. Choosing the higher one.")
     
     # Calculate minimal number of peaks
     min_peak_number = max(
@@ -481,11 +479,11 @@ def filter_peaks(peaks_list, min_frequency=0.2, min_number=1, labels=None, merge
     """
     # Validate input
     if not all(isinstance(df, pd.DataFrame) for df in peaks_list):
-        raise TypeError("All elements must be pandas DataFrames")
+        printMessage("err", "All elements must be DataFrames.")
     
     required_columns = {'Mass', 'Intensity', 'SNR', 'patientID', 'Bacteria'}
     if not all(required_columns.issubset(df.columns) for df in peaks_list):
-        raise ValueError(f"All DataFrames must contain columns: {required_columns}")
+        printMessage("err", f"All DataFrames must contain columns: {required_columns}")
     
     if labels is None:
         labels = [0] * len(peaks_list)
@@ -496,7 +494,7 @@ def filter_peaks(peaks_list, min_frequency=0.2, min_number=1, labels=None, merge
     labels = [label_to_idx[label] for label in labels]
     
     if len(labels) != len(peaks_list):
-        raise ValueError("For each DataFrame there must be a label in labels!")
+        printMessage("err", "For each DataFrame there must be a label in labels!")
     
     # Convert to numpy arrays and handle recycling
     n_levels = len(unique_labels)
@@ -511,31 +509,15 @@ def filter_peaks(peaks_list, min_frequency=0.2, min_number=1, labels=None, merge
     
     # Create occurrence list
     occurrence_list = as_occurrence_list(peaks_list)
-
-    print('occurrence_list')
-    debug_variable(occurrence_list)
-    print(type(occurrence_list))
     
     # Group indices by labels
     label_indices = [
         [i for i, label in enumerate(labels) if label == level]
         for level in range(n_levels)
     ]
-    
-    print('label_indices type')
-    debug_variable(label_indices)
-    print(type(label_indices))
-
 
     # Collect whitelists
     whitelists = np.zeros((n_levels, len(occurrence_list['mass'])), dtype=bool)
-    print('whitelists')
-    debug_variable(whitelists)
-    print(type(whitelists))
-
-    print('occurrence_list')
-    debug_variable(occurrence_list)
-    print(type(occurrence_list))
     
     for i, idx in enumerate(label_indices):
         whitelist = create_whitelist(
@@ -551,7 +533,7 @@ def filter_peaks(peaks_list, min_frequency=0.2, min_number=1, labels=None, merge
             else:
                 whitelists[i] = whitelist
         else:
-            print(f"Warning: Empty peak whitelist for level '{unique_labels[i]}'.")
+            printMessage("warn", f"Warning: Empty peak whitelist for level '{unique_labels[i]}'.")
     
     # Apply whitelists to DataFrames
     filtered_list = []

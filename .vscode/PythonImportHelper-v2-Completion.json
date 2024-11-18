@@ -18,15 +18,6 @@
         "documentation": {}
     },
     {
-        "label": "pybaselines",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "pybaselines",
-        "description": "pybaselines",
-        "detail": "pybaselines",
-        "documentation": {}
-    },
-    {
         "label": "Baseline",
         "importPath": "pybaselines",
         "description": "pybaselines",
@@ -102,6 +93,14 @@
         "documentation": {}
     },
     {
+        "label": "printMessage",
+        "importPath": "Dependencies.Global",
+        "description": "Dependencies.Global",
+        "isExtraImport": true,
+        "detail": "Dependencies.Global",
+        "documentation": {}
+    },
+    {
         "label": "find_peaks",
         "importPath": "scipy.signal",
         "description": "scipy.signal",
@@ -158,7 +157,7 @@
         "kind": 2,
         "importPath": "Pathogen.BaselineCorrection.BaselineCorrection",
         "description": "Pathogen.BaselineCorrection.BaselineCorrection",
-        "peekOfCode": "def apply_snip_baseline_correction(spectra_list, window_size=10):\n    \"\"\"\n    Applies SNIP baseline correction to a list of mass spec data DataFrames.\n    Parameters:\n    spectra_list (list of pd.DataFrame): A list of dataframes containing mass spec data.\n                                          Each dataframe should have two columns: m/z and intensity.\n    window_size (int): The size of the moving average window for smoothing the baseline.\n    Returns:\n    list of pd.DataFrame: A list of baseline-corrected spectra as dataframes.\n    \"\"\"",
+        "peekOfCode": "def apply_snip_baseline_correction(spectra_list, window_size=10):\n    \"\"\"\n    Applies SNIP baseline correction to a list of mass spec data DataFrames.\n    Parameters:\n    spectra_list (list of pd.DataFrame): A list of dataframes containing mass spec data.\n    Each dataframe should have two columns: m/z and intensity.\n    window_size (int): The size of the moving average window for smoothing the baseline.\n    Returns:\n    list of pd.DataFrame: A list of baseline-corrected spectra as dataframes.\n    \"\"\"",
         "detail": "Pathogen.BaselineCorrection.BaselineCorrection",
         "documentation": {}
     },
@@ -581,7 +580,7 @@
         "kind": 2,
         "importPath": "Pathogen.PeakBinning.PeakBinning",
         "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def average_spectra(dataframes):\n    averaged_results = []\n    # Process every 3 data frames as a batch\n    for i in range(0, len(dataframes), 3):\n        # Concatenate the three data frames for the current patient\n        combined_df = pd.concat(dataframes[i:i+3], axis=0, ignore_index=True)\n        combined_df = combined_df.sort_values(by=['patientID', 'Mass']).reset_index(drop=True)\n        # Average the Intensity for each unique Mass value\n        averaged_df = combined_df.groupby(['Mass', 'patientID','Bacteria']).agg({\n            'Intensity': 'mean'",
+        "peekOfCode": "def average_spectra(dataframes):\n    # Group the dataframes in sets of 3\n    grouped_dataframes = [dataframes[i:i+3] for i in range(0, len(dataframes), 3)]\n    # List to store the averaged dataframes\n    averaged_dataframes = []\n    for group in grouped_dataframes:\n        # Retrieve the metadata from the first row of the first dataframe in the group\n        metadata = group[0].loc[0, ['patientID', 'patientID.orig', 'experiment', 'loctation', 'Bacteria', 'run']]\n        # Concatenate the Mass and Intensity columns across the group\n        mass_columns = pd.concat([df['Mass'] for df in group], axis=1)",
         "detail": "Pathogen.PeakBinning.PeakBinning",
         "documentation": {}
     },

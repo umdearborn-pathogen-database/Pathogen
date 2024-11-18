@@ -1,7 +1,5 @@
 align-spectra:
   SNR: 2
-  allow-no-matches: false
-  empty-no-matches: false
   half-window-size: 20
   noise-method: MAD
   tolerance: 0.002
@@ -15,7 +13,11 @@ database:
   remote-port: 3306
   remote-username: admin
 options:
-  cancel-if-null-valued-spectra: true
+  cancel-if-null-valued-spectra: false
+  export-feature-matrix-CSV-file: true
+  plot-baseline: false
+  plot-dendrogram: true
+  plot-noise: false
   scaling-factor: TIC
   trim-lower-bounds: 200
   trim-upper-bounds: 1995
