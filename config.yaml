@@ -15,6 +15,7 @@ database:
 options:
   cancel-if-null-valued-spectra: false
   export-feature-matrix-CSV-file: true
+  plot-PCA: false
   plot-baseline: false
   plot-dendrogram: true
   plot-noise: false

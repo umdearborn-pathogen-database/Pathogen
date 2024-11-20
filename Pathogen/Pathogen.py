@@ -205,22 +205,42 @@ def main():
     # If you want the result as a pandas Series
     #gr = pd.Series(gr)
     #print(gr)
+    if(getConfigValue('options', 'plot-PCA', bool) == True):
+        plt.scatter(
+            pca_result[:, 0],  # First principal component (x-axis)
+            pca_result[:, 1],  # Second principal component (y-axis)
+            alpha=0.7,         # Transparency to handle overlapping points
+            edgecolor='k'      # Optional: Black edges around points for better contrast
+        )
+        plt.title("PCA Result", fontsize=16)  # Title for context
+        plt.xlabel("Principal Component 1", fontsize=14)  # Label for x-axis
+        plt.ylabel("Principal Component 2", fontsize=14)  # Label for y-axis
+        plt.grid(True) # Add gridlines for better readability
+        plt.show()
     
     # Perform Hierarchical Clustering on PCA results
     from sklearn.cluster import AgglomerativeClustering
     hc = AgglomerativeClustering(n_clusters=2)
-    labels = hc.fit_predict(pca_result)
+    labels1 = hc.fit_predict(pca_result)
     
     # Opt. Create Dendrogram
     if(getConfigValue('options', 'plot-dendrogram', bool) == True):
         from scipy.cluster.hierarchy import dendrogram
         linkage_matrix = linkage(pca_result, method='ward')
-        dendrogram(linkage_matrix)
+        dendrogram(
+            linkage_matrix,
+            labels=labels,
+            leaf_rotation=90,
+            leaf_font_size=10
+        )
         plt.title("Hierarchical Clustering Dendrogram")
         plt.xlabel("Samples")
         plt.ylabel("Distance")
         plt.show()
 
+    #15. Database
+    
+    
 if __name__ == "__main__":
     main()
 

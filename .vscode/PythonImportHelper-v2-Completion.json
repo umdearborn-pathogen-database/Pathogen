@@ -252,11 +252,110 @@
         "documentation": {}
     },
     {
+        "label": "initializeTables",
+        "kind": 2,
+        "importPath": "Pathogen.Dependencies.Global",
+        "description": "Pathogen.Dependencies.Global",
+        "peekOfCode": "def initializeTables(cursor):\n    cursor.execute(\"\"\"\n    CREATE TABLE IF NOT EXISTS Bacteria (\n        BacteriaID INTEGER PRIMARY KEY,\n        Bacteria TEXT NOT NULL,\n        CollectionDate DATE NOT NULL\n    );\n    \"\"\")\n    cursor.execute(\"\"\"\n    CREATE TABLE IF NOT EXISTS ApplicationRun (",
+        "detail": "Pathogen.Dependencies.Global",
+        "documentation": {}
+    },
+    {
+        "label": "getConnection",
+        "kind": 2,
+        "importPath": "Pathogen.Dependencies.Global",
+        "description": "Pathogen.Dependencies.Global",
+        "peekOfCode": "def getConnection():\n    localEnabled = getConfigValue('database', 'local-enabled', bool)\n    connection = None\n    if localEnabled == False:\n        host = getConfigValue('database', 'remote-host', str)\n        port = getConfigValue('database', 'remote-port', int)\n        database = getConfigValue('database', 'remote-database', str)\n        username = getConfigValue('database', 'remote-username', str)\n        password = getConfigValue('database', 'remote-password', str)\n        import mysql.connector",
+        "detail": "Pathogen.Dependencies.Global",
+        "documentation": {}
+    },
+    {
         "label": "getColumnValues",
         "kind": 2,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def getColumnValues(dataframesList, colName):\n    for index, data in enumerate(dataframesList):\n        if data.shape[1] < 2:\n            printMessage(\"err\", f\"DataFrame at index {index} must contain at least two columns.\")\n        else:\n            return data[colName].values",
+        "peekOfCode": "def getColumnValues(dataframesList, colName):\n    for index, data in enumerate(dataframesList):\n        if data.shape[1] < 2:\n            printMessage(\"err\", f\"DataFrame at index {index} must contain at least two columns.\")\n        else:\n            return data[colName].values\ndef insert_metadata(metadata_df, conn=getConnection()):\n    metadata_df.to_sql(\"Metadata\", conn, if_exists=\"append\", index=False)\ndef insert_preprocessed_spectra(spectra_dfs, conn=getConnection()):\n    import pandas as pd",
+        "detail": "Pathogen.Dependencies.Global",
+        "documentation": {}
+    },
+    {
+        "label": "insert_metadata",
+        "kind": 2,
+        "importPath": "Pathogen.Dependencies.Global",
+        "description": "Pathogen.Dependencies.Global",
+        "peekOfCode": "def insert_metadata(metadata_df, conn=getConnection()):\n    metadata_df.to_sql(\"Metadata\", conn, if_exists=\"append\", index=False)\ndef insert_preprocessed_spectra(spectra_dfs, conn=getConnection()):\n    import pandas as pd\n    spectra_combined = pd.concat(\n        [df.assign(SampleID=df['Source_File'].iloc[0]) for df in spectra_dfs]\n    )\n    spectra_combined = spectra_combined[['SampleID', 'Mass', 'Intensity']]\n    spectra_combined.to_sql(\"PreprocessedSpectra\", conn, if_exists=\"append\", index=False)\ndef insert_feature_matrix(feature_matrix, sample_ids, conn=getConnection()):",
+        "detail": "Pathogen.Dependencies.Global",
+        "documentation": {}
+    },
+    {
+        "label": "insert_preprocessed_spectra",
+        "kind": 2,
+        "importPath": "Pathogen.Dependencies.Global",
+        "description": "Pathogen.Dependencies.Global",
+        "peekOfCode": "def insert_preprocessed_spectra(spectra_dfs, conn=getConnection()):\n    import pandas as pd\n    spectra_combined = pd.concat(\n        [df.assign(SampleID=df['Source_File'].iloc[0]) for df in spectra_dfs]\n    )\n    spectra_combined = spectra_combined[['SampleID', 'Mass', 'Intensity']]\n    spectra_combined.to_sql(\"PreprocessedSpectra\", conn, if_exists=\"append\", index=False)\ndef insert_feature_matrix(feature_matrix, sample_ids, conn=getConnection()):\n    import pandas as pd\n    feature_df = pd.DataFrame(feature_matrix)",
+        "detail": "Pathogen.Dependencies.Global",
+        "documentation": {}
+    },
+    {
+        "label": "insert_feature_matrix",
+        "kind": 2,
+        "importPath": "Pathogen.Dependencies.Global",
+        "description": "Pathogen.Dependencies.Global",
+        "peekOfCode": "def insert_feature_matrix(feature_matrix, sample_ids, conn=getConnection()):\n    import pandas as pd\n    feature_df = pd.DataFrame(feature_matrix)\n    feature_df['SampleID'] = sample_ids\n    feature_df = feature_df.melt(id_vars=[\"SampleID\"], var_name=\"FeatureID\", value_name=\"Intensity\")\n    feature_df.to_sql(\"FeatureMatrix\", conn, if_exists=\"append\", index=False)\ndef insert_pca_results(pca_result, sample_ids, conn=getConnection()):\n    import pandas as pd\n    pca_df = pd.DataFrame(pca_result, columns=[\"PC1\", \"PC2\"])\n    pca_df['SampleID'] = sample_ids",
+        "detail": "Pathogen.Dependencies.Global",
+        "documentation": {}
+    },
+    {
+        "label": "insert_pca_results",
+        "kind": 2,
+        "importPath": "Pathogen.Dependencies.Global",
+        "description": "Pathogen.Dependencies.Global",
+        "peekOfCode": "def insert_pca_results(pca_result, sample_ids, conn=getConnection()):\n    import pandas as pd\n    pca_df = pd.DataFrame(pca_result, columns=[\"PC1\", \"PC2\"])\n    pca_df['SampleID'] = sample_ids\n    pca_df.to_sql(\"PCAResults\", conn, if_exists=\"append\", index=False)\ndef insert_cluster_analysis(sample_ids, labels, distances, conn=getConnection()):\n    import pandas as pd\n    cluster_df = pd.DataFrame({\n        \"SampleID\": sample_ids,\n        \"ClusterLabel\": labels,",
+        "detail": "Pathogen.Dependencies.Global",
+        "documentation": {}
+    },
+    {
+        "label": "insert_cluster_analysis",
+        "kind": 2,
+        "importPath": "Pathogen.Dependencies.Global",
+        "description": "Pathogen.Dependencies.Global",
+        "peekOfCode": "def insert_cluster_analysis(sample_ids, labels, distances, conn=getConnection()):\n    import pandas as pd\n    cluster_df = pd.DataFrame({\n        \"SampleID\": sample_ids,\n        \"ClusterLabel\": labels,\n        \"Distance\": distances\n    })\n    cluster_df.to_sql(\"ClusterAnalysis\", conn, if_exists=\"append\", index=False)\ndef fetch_metadata(conn=getConnection()):\n    import pandas as pd",
+        "detail": "Pathogen.Dependencies.Global",
+        "documentation": {}
+    },
+    {
+        "label": "fetch_metadata",
+        "kind": 2,
+        "importPath": "Pathogen.Dependencies.Global",
+        "description": "Pathogen.Dependencies.Global",
+        "peekOfCode": "def fetch_metadata(conn=getConnection()):\n    import pandas as pd\n    return pd.read_sql_query(\"SELECT * FROM Metadata\", conn)\ndef fetch_feature_matrix(conn=getConnection()):\n    import pandas as pd\n    return pd.read_sql_query(\"SELECT * FROM FeatureMatrix\", conn)\ndef fetch_pca_results(conn=getConnection()):\n    import pandas as pd\n    return pd.read_sql_query(\"SELECT * FROM PCAResults\", conn)\ndef fetch_cluster_analysis(conn=getConnection()):",
+        "detail": "Pathogen.Dependencies.Global",
+        "documentation": {}
+    },
+    {
+        "label": "fetch_feature_matrix",
+        "kind": 2,
+        "importPath": "Pathogen.Dependencies.Global",
+        "description": "Pathogen.Dependencies.Global",
+        "peekOfCode": "def fetch_feature_matrix(conn=getConnection()):\n    import pandas as pd\n    return pd.read_sql_query(\"SELECT * FROM FeatureMatrix\", conn)\ndef fetch_pca_results(conn=getConnection()):\n    import pandas as pd\n    return pd.read_sql_query(\"SELECT * FROM PCAResults\", conn)\ndef fetch_cluster_analysis(conn=getConnection()):\n    import pandas as pd\n    return pd.read_sql_query(\"SELECT * FROM ClusterAnalysis\", conn)",
+        "detail": "Pathogen.Dependencies.Global",
+        "documentation": {}
+    },
+    {
+        "label": "fetch_pca_results",
+        "kind": 2,
+        "importPath": "Pathogen.Dependencies.Global",
+        "description": "Pathogen.Dependencies.Global",
+        "peekOfCode": "def fetch_pca_results(conn=getConnection()):\n    import pandas as pd\n    return pd.read_sql_query(\"SELECT * FROM PCAResults\", conn)\ndef fetch_cluster_analysis(conn=getConnection()):\n    import pandas as pd\n    return pd.read_sql_query(\"SELECT * FROM ClusterAnalysis\", conn)",
+        "detail": "Pathogen.Dependencies.Global",
+        "documentation": {}
+    },
+    {
+        "label": "fetch_cluster_analysis",
+        "kind": 2,
+        "importPath": "Pathogen.Dependencies.Global",
+        "description": "Pathogen.Dependencies.Global",
+        "peekOfCode": "def fetch_cluster_analysis(conn=getConnection()):\n    import pandas as pd\n    return pd.read_sql_query(\"SELECT * FROM ClusterAnalysis\", conn)",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
