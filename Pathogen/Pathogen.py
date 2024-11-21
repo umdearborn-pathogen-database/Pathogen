@@ -8,18 +8,14 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Main function
 def main():
-    # Installs necessary imports for the entirety of the program
     from Dependencies.Global import installPackages
-    installPackages()
-    # Prints the welcome message
+    installPackages() # Installs necessary imports for the entirety of the program
     from Dependencies.Global import printWelcomeMsg
-    printWelcomeMsg()
-    # Initializes the configuration file
+    printWelcomeMsg() # Prints the welcome message
     from Dependencies.Global import initializeConfig
-    initializeConfig()
-    # Initializes and checks the database connection
+    initializeConfig() # Initializes the configuration file
     from Dependencies.Global import database
-    database(None, True)
+    database(None, True) # Initializes and checks the database connection
     from Dependencies.Global import getConfigValue
     
     # Imports after installDependencies()
@@ -173,9 +169,7 @@ def main():
     featureMatrix = intensity_matrix(peaks,trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged)
 
     #10. SDA - using svd solver to ensure correct data and accuracy
-    from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-    lda = LinearDiscriminantAnalysis(solver='svd')
-    lda.fit(featureMatrix, labels)
+    # Moved below PCA
     
     #11. Distance Matrix
     from scipy.spatial.distance import pdist
@@ -199,12 +193,15 @@ def main():
     data_scaled = scaler.fit_transform(featureMatrix)
     pca = PCA(n_components=2)  # number of components to keep per R script
     pca_result = pca.fit_transform(data_scaled)
+    # Add LDA after instead with shrinkage="auto"
     
-    #gr = pd.Categorical(featureMatrix.iloc[:, 0], categories=labels)
-
-    # If you want the result as a pandas Series
-    #gr = pd.Series(gr)
-    #print(gr)
+    from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+    lda = LinearDiscriminantAnalysis(solver='svd')
+    # Commented out for potential use in future builds
+    lda.fit(pca_result, labels)
+    lda_result = lda.transform(pca_result)
+    print(lda_result.shape)
+    
     if(getConfigValue('options', 'plot-PCA', bool) == True):
         plt.scatter(
             pca_result[:, 0],  # First principal component (x-axis)
@@ -218,10 +215,11 @@ def main():
         plt.grid(True) # Add gridlines for better readability
         plt.show()
     
-    # Perform Hierarchical Clustering on PCA results
-    from sklearn.cluster import AgglomerativeClustering
-    hc = AgglomerativeClustering(n_clusters=2)
-    labels1 = hc.fit_predict(pca_result)
+    # Per R script, but not necessary for this, here for potential use in future builds
+    # # Perform Hierarchical Clustering on PCA results
+    # from sklearn.cluster import AgglomerativeClustering
+    # hc = AgglomerativeClustering(n_clusters=2)
+    # labels1 = hc.fit_predict(pca_result)
     
     # Opt. Create Dendrogram
     if(getConfigValue('options', 'plot-dendrogram', bool) == True):
@@ -238,13 +236,8 @@ def main():
         plt.ylabel("Distance")
         plt.show()
 
-    #15. Database
-    
+    #15. Database - using 'lda_result' as features from PCA
+    # Schema can be altered by user
     
 if __name__ == "__main__":
     main()
-
-
-# Useful links
-# https://pandas.pydata.org/docs/user_guide/style.html
-# https://github.com/sgibb/MALDIquant/blob/master/R/alignSpectra-functions.R

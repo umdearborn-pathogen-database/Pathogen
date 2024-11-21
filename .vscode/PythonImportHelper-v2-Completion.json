@@ -823,7 +823,7 @@
         "kind": 2,
         "importPath": "Pathogen.Pathogen",
         "description": "Pathogen.Pathogen",
-        "peekOfCode": "def main():\n    # Installs necessary imports for the entirety of the program\n    from Dependencies.Global import installPackages\n    installPackages()\n    # Prints the welcome message\n    from Dependencies.Global import printWelcomeMsg\n    printWelcomeMsg()\n    # Initializes the configuration file\n    from Dependencies.Global import initializeConfig\n    initializeConfig()",
+        "peekOfCode": "def main():\n    from Dependencies.Global import installPackages\n    installPackages() # Installs necessary imports for the entirety of the program\n    from Dependencies.Global import printWelcomeMsg\n    printWelcomeMsg() # Prints the welcome message\n    from Dependencies.Global import initializeConfig\n    initializeConfig() # Initializes the configuration file\n    from Dependencies.Global import database\n    database(None, True) # Initializes and checks the database connection\n    from Dependencies.Global import getConfigValue",
         "detail": "Pathogen.Pathogen",
         "documentation": {}
     }
