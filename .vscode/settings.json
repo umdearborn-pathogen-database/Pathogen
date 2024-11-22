@@ -1,6 +1,9 @@
 {
     "cSpell.words": [
+        "allclose",
         "dataframe",
-        "dataframes"
+        "dataframes",
+        "interp",
+        "scanpy"
     ]
 }
