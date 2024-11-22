@@ -259,6 +259,7 @@ def main():
     from Helper import sendValuesToDatabase
     from Helper import getValuesFromDatabase
     returned_df = getValuesFromDatabase(num_components)
+    from Global import getSimilarity
     if returned_df is not None:
         send_np = send_df.to_numpy()
         send_np_refined = send_np[:, 1:num_components+1]
@@ -273,7 +274,7 @@ def main():
                 currentData = currentData.reshape(1, -1)
                 previousData = previousData.reshape(1, -1)
                 cs = cosine_similarity(currentData, previousData)
-                if cs >= 0.95:
+                if cs >= getSimilarity():
                     matches.append(f"Sample: {send_np[i][0]} matches Database SampleID: {returned_np[j][0]}, Bacteria: {returned_np[j][num_components+1]}, Similarity: {cs[0]}")
         if matches:
             for i in matches:

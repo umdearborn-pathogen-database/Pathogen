@@ -115,7 +115,8 @@ defaultConfig = {
         'plot-noise': True,
         'plot-PCA': True,
         'plot-dendrogram': True,
-        'num-components': 10
+        'num-components': 10,
+        'similarity-threshold': 0.95
     },
     'align-spectra': {
         'half-window-size': 20,
@@ -183,6 +184,7 @@ def checkConfig():
         getConfigValue('options', 'plot-PCA', bool)
         getConfigValue('options', 'plot-dendrogram', bool)
         getConfigValue('options', 'num-components', int)
+        getConfigValue('options', 'similarity-threshold', float)
         getConfigValue('align-spectra', 'half-window-size', int)
         getConfigValue('align-spectra', 'noise-method', str)
         getConfigValue('align-spectra', 'SNR', int)
@@ -198,6 +200,7 @@ port = None
 database = None
 username = None
 password = None
+similarity = None
 
 # Main database function
 #   Checks which type of database is being used, initializes the database on
@@ -206,6 +209,13 @@ password = None
 #       with the database, sending the "statement" and either returning one or 
 #       all lines that the database sends utilizing "fetchOne"
 #   If not localEnabled, config values for remote database connection are assigned
+
+def getSimilarity():
+    y = getConfigValue('options', 'similarity-threshold', float)
+    if (not((y > 0) and (y < 1))):
+        printMessage("warn", "Similarity threshold must be between 0-1. Defaulting to 0.95")
+        return 0.95
+    else: return y
 
 def database(statement, initialize=False, fetchOne=True):
     localEnabled = getConfigValue('database', 'local-enabled', bool)

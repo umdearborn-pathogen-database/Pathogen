@@ -15,11 +15,12 @@ database:
 options:
   cancel-if-null-valued-spectra: false
   export-feature-matrix-CSV-file: false
-  num-components: 3
+  num-components: 10
   plot-PCA: false
   plot-baseline: false
   plot-dendrogram: false
   plot-noise: false
   scaling-factor: TIC
+  similarity-threshold: 0.95
   trim-lower-bounds: 200
   trim-upper-bounds: 1995
