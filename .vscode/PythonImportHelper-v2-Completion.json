@@ -228,6 +228,15 @@
         "documentation": {}
     },
     {
+        "label": "getSimilarity",
+        "kind": 2,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "def getSimilarity():\n    y = getConfigValue('options', 'similarity-threshold', float)\n    if (not((y > 0) and (y < 1))):\n        printMessage(\"warn\", \"Similarity threshold must be between 0-1. Defaulting to 0.95\")\n        return 0.95\n    else: return y\ndef database(statement, initialize=False, fetchOne=True):\n    localEnabled = getConfigValue('database', 'local-enabled', bool)\n    connection = None\n    def executeQuery(cursor):",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
         "label": "database",
         "kind": 2,
         "importPath": "Global",
@@ -313,7 +322,7 @@
         "kind": 5,
         "importPath": "Global",
         "description": "Global",
-        "peekOfCode": "localEnabled = None\nlocalFileName = None\nhost = None\nport = None\ndatabase = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.",
+        "peekOfCode": "localEnabled = None\nlocalFileName = None\nhost = None\nport = None\ndatabase = None\nusername = None\npassword = None\nsimilarity = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on",
         "detail": "Global",
         "documentation": {}
     },
@@ -322,7 +331,7 @@
         "kind": 5,
         "importPath": "Global",
         "description": "Global",
-        "peekOfCode": "localFileName = None\nhost = None\nport = None\ndatabase = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication ",
+        "peekOfCode": "localFileName = None\nhost = None\nport = None\ndatabase = None\nusername = None\npassword = None\nsimilarity = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.",
         "detail": "Global",
         "documentation": {}
     },
@@ -331,7 +340,7 @@
         "kind": 5,
         "importPath": "Global",
         "description": "Global",
-        "peekOfCode": "host = None\nport = None\ndatabase = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or ",
+        "peekOfCode": "host = None\nport = None\ndatabase = None\nusername = None\npassword = None\nsimilarity = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication ",
         "detail": "Global",
         "documentation": {}
     },
@@ -340,7 +349,7 @@
         "kind": 5,
         "importPath": "Global",
         "description": "Global",
-        "peekOfCode": "port = None\ndatabase = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"",
+        "peekOfCode": "port = None\ndatabase = None\nusername = None\npassword = None\nsimilarity = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or ",
         "detail": "Global",
         "documentation": {}
     },
@@ -349,7 +358,7 @@
         "kind": 5,
         "importPath": "Global",
         "description": "Global",
-        "peekOfCode": "database = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"\n#   If not localEnabled, config values for remote database connection are assigned",
+        "peekOfCode": "database = None\nusername = None\npassword = None\nsimilarity = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"",
         "detail": "Global",
         "documentation": {}
     },
@@ -358,7 +367,7 @@
         "kind": 5,
         "importPath": "Global",
         "description": "Global",
-        "peekOfCode": "username = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"\n#   If not localEnabled, config values for remote database connection are assigned\ndef database(statement, initialize=False, fetchOne=True):",
+        "peekOfCode": "username = None\npassword = None\nsimilarity = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"\n#   If not localEnabled, config values for remote database connection are assigned",
         "detail": "Global",
         "documentation": {}
     },
@@ -367,7 +376,16 @@
         "kind": 5,
         "importPath": "Global",
         "description": "Global",
-        "peekOfCode": "password = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"\n#   If not localEnabled, config values for remote database connection are assigned\ndef database(statement, initialize=False, fetchOne=True):\n    localEnabled = getConfigValue('database', 'local-enabled', bool)",
+        "peekOfCode": "password = None\nsimilarity = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"\n#   If not localEnabled, config values for remote database connection are assigned\ndef getSimilarity():",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "similarity",
+        "kind": 5,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "similarity = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"\n#   If not localEnabled, config values for remote database connection are assigned\ndef getSimilarity():\n    y = getConfigValue('options', 'similarity-threshold', float)",
         "detail": "Global",
         "documentation": {}
     },
