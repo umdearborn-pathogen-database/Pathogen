@@ -14,10 +14,11 @@ database:
   remote-username: admin
 options:
   cancel-if-null-valued-spectra: false
-  export-feature-matrix-CSV-file: true
+  export-feature-matrix-CSV-file: false
+  num-components: 10
   plot-PCA: false
   plot-baseline: false
-  plot-dendrogram: true
+  plot-dendrogram: false
   plot-noise: false
   scaling-factor: TIC
   trim-lower-bounds: 200

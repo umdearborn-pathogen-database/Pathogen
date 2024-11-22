@@ -253,3 +253,28 @@ def average_mass_spectra(spectra, labels):
     averaged_spectra = spectrum_data.groupby('sample').mean().reset_index()
     
     return averaged_spectra
+
+def sendValuesToDatabase(df):
+    from Dependencies.Global import getConnection
+    conn = getConnection()
+    num = (df.shape[1] - 2)
+    table = f"PathogensCOMP{num}"
+    df.to_sql(table, conn, if_exists='append', index=False)
+
+def getValuesFromDatabase(df):
+    from Dependencies.Global import database
+    from Dependencies.Global import printMessage
+    num = (df.shape[1] - 2)
+    table = f"PathogensCOMP{num}"
+    statement = f"SELECT COUNT(*) FROM {table}"
+    msg = database(statement, initialize=False, fetchOne=True)
+    if msg[0] == 0:
+        printMessage("info", f"Table: {table} is empty. First values have been added.")
+        return None
+    else:
+        print(msg)
+        printMessage("info", f"Fetching data from table: {table}...")
+        from Dependencies.Global import getConnection
+        conn = getConnection()
+        df = pd.read_sql_query(f"SELECT * FROM {table}", conn)
+        return df

@@ -167,7 +167,7 @@ def main():
     #9. Feature Matrix 
     from FeatureMatrix.FeatureMatrix import intensity_matrix
     featureMatrix = intensity_matrix(peaks,trimmed_spectra_baseline_adjusted_calibrated_aligned_metadata_merged_averaged)
-
+    
     #10. SDA - using svd solver to ensure correct data and accuracy
     # Moved below PCA
     
@@ -191,16 +191,17 @@ def main():
     from sklearn.preprocessing import StandardScaler
     scaler = StandardScaler()
     data_scaled = scaler.fit_transform(featureMatrix)
-    pca = PCA(n_components=2)  # number of components to keep per R script
+    num_components = getConfigValue('options', 'num-components', int)
+    pca = PCA(n_components=num_components)  # number of components to keep per R script
     pca_result = pca.fit_transform(data_scaled)
-    # Add LDA after instead with shrinkage="auto"
     
     from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
     lda = LinearDiscriminantAnalysis(solver='svd')
     # Commented out for potential use in future builds
     lda.fit(pca_result, labels)
     lda_result = lda.transform(pca_result)
-    print(lda_result.shape)
+    
+    # Add LDA after instead with shrinkage="auto"
     
     if(getConfigValue('options', 'plot-PCA', bool) == True):
         plt.scatter(
@@ -238,6 +239,39 @@ def main():
 
     #15. Database - using 'lda_result' as features from PCA
     # Schema can be altered by user
-    
+    send_df = pd.DataFrame(lda_result)
+    send_df_new_columns = []
+    for i in range(num_components):
+        send_df_new_columns.append(f'PC{i+1}')
+    send_df.columns = send_df_new_columns
+    send_df['Bacteria'] = labels
+    send_df.insert(0, 'SampleID', labels)
+    from Helper.Helper import sendValuesToDatabase
+    from Helper.Helper import getValuesFromDatabase
+    returned_df = getValuesFromDatabase(send_df)
+    if returned_df is not None:
+        send_np = send_df.to_numpy()
+        send_np_refined = send_np[:, 1:num_components+1]
+        returned_np = returned_df.to_numpy()
+        returned_np_refined = returned_np[:, 2:num_components+2]
+        matches = []
+        from sklearn.metrics.pairwise import cosine_similarity
+        for i in range(send_np_refined.shape[0]):
+            currentData = send_np_refined[i]
+            for j in range(returned_np_refined.shape[0]):
+                previousData = returned_np_refined[j]
+                currentData = currentData.reshape(1, -1)
+                previousData = previousData.reshape(1, -1)
+                cs = cosine_similarity(currentData, previousData)
+                if cs >= 0.95:
+                    matches.append(f"Sample: {send_np[i][0]} matches Database SampleID: {returned_np[j][0]}, Bacteria: {returned_np[j][num_components+1]}, Similarity: {cs[0]}")
+        if matches:
+            for i in matches:
+                from Dependencies.Global import printMessage
+                printMessage("info", i)
+    else:
+        from Dependencies.Global import printMessage
+        printMessage("info", "No matches were found because the table was empty.")
+    sendValuesToDatabase(send_df)
 if __name__ == "__main__":
     main()

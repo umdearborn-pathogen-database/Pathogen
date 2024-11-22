@@ -126,24 +126,6 @@
         "documentation": {}
     },
     {
-        "label": "alignSpectra",
-        "kind": 2,
-        "importPath": "Data.Reference.MALDIquant.AlignSpectra",
-        "description": "Data.Reference.MALDIquant.AlignSpectra",
-        "peekOfCode": "def alignSpectra(spectra, \n             ## peak detection\n             halfWindowSize=20, noiseMethod=\"MAD\", SNR=2,\n             ## warping\n             reference=None, tolerance=0.002, warpingMethod=\"lowess\",\n             allowNoMatches=False, emptyNoMatches=False, **kwargs):\n    stopIfNotIsMassSpectrumList(spectra)\n    peaks = detectPeaks(spectra, halfWindowSize=halfWindowSize,\n                        method=noiseMethod, SNR=SNR, **kwargs)\n    wf = determineWarpingFunctions(peaks, reference=reference,",
-        "detail": "Data.Reference.MALDIquant.AlignSpectra",
-        "documentation": {}
-    },
-    {
-        "label": "main",
-        "kind": 2,
-        "importPath": "Data.Reference.MALDIquant.Pathogen",
-        "description": "Data.Reference.MALDIquant.Pathogen",
-        "peekOfCode": "def main():\n    print()\nif __name__ == \"__main__\":\n    main()\n### AllClasses.R\n### AllGenerics.R\n### Deprecated.R\n#DONE# alignSpectra-functions.R\n### approxfun-methods.R\n### as-methods.R",
-        "detail": "Data.Reference.MALDIquant.Pathogen",
-        "documentation": {}
-    },
-    {
         "label": "snip_baseline_correction",
         "kind": 2,
         "importPath": "Pathogen.BaselineCorrection.BaselineCorrection",
@@ -256,7 +238,7 @@
         "kind": 2,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def initializeTables(cursor):\n    cursor.execute(\"\"\"\n    CREATE TABLE IF NOT EXISTS Bacteria (\n        BacteriaID INTEGER PRIMARY KEY,\n        Bacteria TEXT NOT NULL,\n        CollectionDate DATE NOT NULL\n    );\n    \"\"\")\n    cursor.execute(\"\"\"\n    CREATE TABLE IF NOT EXISTS ApplicationRun (",
+        "peekOfCode": "def initializeTables(cursor):\n    num_components = getConfigValue('options', 'num-components', int)\n    statement = f\"CREATE TABLE IF NOT EXISTS PathogensCOMP{num_components} (ID INTEGER PRIMARY KEY AUTOINCREMENT, SampleID TEXT,\"\n    for i in range(num_components):\n        if i == num_components - 1:\n            statement += f\" PC{i+1} REAL, Bacteria TEXT);\"\n        else:\n            statement += f\" PC{i+1} REAL,\"\n    cursor.execute(statement)\ndef getConnection():",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -274,88 +256,7 @@
         "kind": 2,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def getColumnValues(dataframesList, colName):\n    for index, data in enumerate(dataframesList):\n        if data.shape[1] < 2:\n            printMessage(\"err\", f\"DataFrame at index {index} must contain at least two columns.\")\n        else:\n            return data[colName].values\ndef insert_metadata(metadata_df, conn=getConnection()):\n    metadata_df.to_sql(\"Metadata\", conn, if_exists=\"append\", index=False)\ndef insert_preprocessed_spectra(spectra_dfs, conn=getConnection()):\n    import pandas as pd",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "insert_metadata",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def insert_metadata(metadata_df, conn=getConnection()):\n    metadata_df.to_sql(\"Metadata\", conn, if_exists=\"append\", index=False)\ndef insert_preprocessed_spectra(spectra_dfs, conn=getConnection()):\n    import pandas as pd\n    spectra_combined = pd.concat(\n        [df.assign(SampleID=df['Source_File'].iloc[0]) for df in spectra_dfs]\n    )\n    spectra_combined = spectra_combined[['SampleID', 'Mass', 'Intensity']]\n    spectra_combined.to_sql(\"PreprocessedSpectra\", conn, if_exists=\"append\", index=False)\ndef insert_feature_matrix(feature_matrix, sample_ids, conn=getConnection()):",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "insert_preprocessed_spectra",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def insert_preprocessed_spectra(spectra_dfs, conn=getConnection()):\n    import pandas as pd\n    spectra_combined = pd.concat(\n        [df.assign(SampleID=df['Source_File'].iloc[0]) for df in spectra_dfs]\n    )\n    spectra_combined = spectra_combined[['SampleID', 'Mass', 'Intensity']]\n    spectra_combined.to_sql(\"PreprocessedSpectra\", conn, if_exists=\"append\", index=False)\ndef insert_feature_matrix(feature_matrix, sample_ids, conn=getConnection()):\n    import pandas as pd\n    feature_df = pd.DataFrame(feature_matrix)",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "insert_feature_matrix",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def insert_feature_matrix(feature_matrix, sample_ids, conn=getConnection()):\n    import pandas as pd\n    feature_df = pd.DataFrame(feature_matrix)\n    feature_df['SampleID'] = sample_ids\n    feature_df = feature_df.melt(id_vars=[\"SampleID\"], var_name=\"FeatureID\", value_name=\"Intensity\")\n    feature_df.to_sql(\"FeatureMatrix\", conn, if_exists=\"append\", index=False)\ndef insert_pca_results(pca_result, sample_ids, conn=getConnection()):\n    import pandas as pd\n    pca_df = pd.DataFrame(pca_result, columns=[\"PC1\", \"PC2\"])\n    pca_df['SampleID'] = sample_ids",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "insert_pca_results",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def insert_pca_results(pca_result, sample_ids, conn=getConnection()):\n    import pandas as pd\n    pca_df = pd.DataFrame(pca_result, columns=[\"PC1\", \"PC2\"])\n    pca_df['SampleID'] = sample_ids\n    pca_df.to_sql(\"PCAResults\", conn, if_exists=\"append\", index=False)\ndef insert_cluster_analysis(sample_ids, labels, distances, conn=getConnection()):\n    import pandas as pd\n    cluster_df = pd.DataFrame({\n        \"SampleID\": sample_ids,\n        \"ClusterLabel\": labels,",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "insert_cluster_analysis",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def insert_cluster_analysis(sample_ids, labels, distances, conn=getConnection()):\n    import pandas as pd\n    cluster_df = pd.DataFrame({\n        \"SampleID\": sample_ids,\n        \"ClusterLabel\": labels,\n        \"Distance\": distances\n    })\n    cluster_df.to_sql(\"ClusterAnalysis\", conn, if_exists=\"append\", index=False)\ndef fetch_metadata(conn=getConnection()):\n    import pandas as pd",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "fetch_metadata",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def fetch_metadata(conn=getConnection()):\n    import pandas as pd\n    return pd.read_sql_query(\"SELECT * FROM Metadata\", conn)\ndef fetch_feature_matrix(conn=getConnection()):\n    import pandas as pd\n    return pd.read_sql_query(\"SELECT * FROM FeatureMatrix\", conn)\ndef fetch_pca_results(conn=getConnection()):\n    import pandas as pd\n    return pd.read_sql_query(\"SELECT * FROM PCAResults\", conn)\ndef fetch_cluster_analysis(conn=getConnection()):",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "fetch_feature_matrix",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def fetch_feature_matrix(conn=getConnection()):\n    import pandas as pd\n    return pd.read_sql_query(\"SELECT * FROM FeatureMatrix\", conn)\ndef fetch_pca_results(conn=getConnection()):\n    import pandas as pd\n    return pd.read_sql_query(\"SELECT * FROM PCAResults\", conn)\ndef fetch_cluster_analysis(conn=getConnection()):\n    import pandas as pd\n    return pd.read_sql_query(\"SELECT * FROM ClusterAnalysis\", conn)",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "fetch_pca_results",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def fetch_pca_results(conn=getConnection()):\n    import pandas as pd\n    return pd.read_sql_query(\"SELECT * FROM PCAResults\", conn)\ndef fetch_cluster_analysis(conn=getConnection()):\n    import pandas as pd\n    return pd.read_sql_query(\"SELECT * FROM ClusterAnalysis\", conn)",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "fetch_cluster_analysis",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def fetch_cluster_analysis(conn=getConnection()):\n    import pandas as pd\n    return pd.read_sql_query(\"SELECT * FROM ClusterAnalysis\", conn)",
+        "peekOfCode": "def getColumnValues(dataframesList, colName):\n    for index, data in enumerate(dataframesList):\n        if data.shape[1] < 2:\n            printMessage(\"err\", f\"DataFrame at index {index} must contain at least two columns.\")\n        else:\n            return data[colName].values",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -364,7 +265,7 @@
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "dataDirectory = \"Data/Import/MAI-redo-ecoli\"        # <- USED FOR TESTING, REMOVE AFTER\nmetaDataFile = \"Data/Import/info-ecoli-MAI.csv\"     # <- USED FOR TESTING, REMOVE AFTER\n# /\\ USED FOR TESTING, REMOVE AFTER\nconfigFile = \"config.yaml\"      # Configuration file used for config functions and values, DO NOT CHANGE\n# Package list for import management, changes here will reflect what is imported\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',",
+        "peekOfCode": "dataDirectory = \"Data\"            # Directory used for ion mobility data import, DO NOT CHANGE\nmetaDataFile = \"metadata.csv\"     # File used for metadata import, DO NOT CHANGE\nconfigFile = \"config.yaml\"      # Configuration file used for config functions and values, DO NOT CHANGE\n# Package list for import management, changes here will reflect what is imported\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -373,7 +274,7 @@
         "kind": 5,
         "importPath": "Pathogen.Dependencies.Global",
         "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "metaDataFile = \"Data/Import/info-ecoli-MAI.csv\"     # <- USED FOR TESTING, REMOVE AFTER\n# /\\ USED FOR TESTING, REMOVE AFTER\nconfigFile = \"config.yaml\"      # Configuration file used for config functions and values, DO NOT CHANGE\n# Package list for import management, changes here will reflect what is imported\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',",
+        "peekOfCode": "metaDataFile = \"metadata.csv\"     # File used for metadata import, DO NOT CHANGE\nconfigFile = \"config.yaml\"      # Configuration file used for config functions and values, DO NOT CHANGE\n# Package list for import management, changes here will reflect what is imported\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',\n    'mysql-connector-python',",
         "detail": "Pathogen.Dependencies.Global",
         "documentation": {}
     },
@@ -563,6 +464,24 @@
         "importPath": "Pathogen.Helper.Helper",
         "description": "Pathogen.Helper.Helper",
         "peekOfCode": "def average_mass_spectra(spectra, labels):\n    \"\"\"\n    Average the mass spectra based on labels.\n    Parameters:\n    spectra (list): List of spectrum objects.\n    labels (pd.Series): Series of sample names corresponding to each spectrum.\n    Returns:\n    DataFrame: A DataFrame containing averaged spectra.\n    \"\"\"\n    # Create a DataFrame to hold the spectra data",
+        "detail": "Pathogen.Helper.Helper",
+        "documentation": {}
+    },
+    {
+        "label": "sendValuesToDatabase",
+        "kind": 2,
+        "importPath": "Pathogen.Helper.Helper",
+        "description": "Pathogen.Helper.Helper",
+        "peekOfCode": "def sendValuesToDatabase(df):\n    from Dependencies.Global import getConnection\n    conn = getConnection()\n    num = (df.shape[1] - 2)\n    table = f\"PathogensCOMP{num}\"\n    df.to_sql(table, conn, if_exists='append', index=False)\ndef getValuesFromDatabase(df):\n    from Dependencies.Global import database\n    from Dependencies.Global import printMessage\n    num = (df.shape[1] - 2)",
+        "detail": "Pathogen.Helper.Helper",
+        "documentation": {}
+    },
+    {
+        "label": "getValuesFromDatabase",
+        "kind": 2,
+        "importPath": "Pathogen.Helper.Helper",
+        "description": "Pathogen.Helper.Helper",
+        "peekOfCode": "def getValuesFromDatabase(df):\n    from Dependencies.Global import database\n    from Dependencies.Global import printMessage\n    num = (df.shape[1] - 2)\n    table = f\"PathogensCOMP{num}\"\n    statement = f\"SELECT COUNT(*) FROM {table}\"\n    msg = database(statement, initialize=False, fetchOne=True)\n    if msg[0] == 0:\n        printMessage(\"info\", f\"Table: {table} is empty. First values have been added.\")\n        return None",
         "detail": "Pathogen.Helper.Helper",
         "documentation": {}
     },

@@ -6,12 +6,8 @@ import sys
 import pkg_resources
 
 # Variables
-# dataDirectory = "Data/Import/data"            # Directory used for ion mobility data import, DO NOT CHANGE    # Uncomment
-# metaDataFile = "Data/Import/metadata.csv"     # File used for metadata import, DO NOT CHANGE                  # Uncomment
-# \/ USED FOR TESTING, REMOVE AFTER
-dataDirectory = "Data/Import/MAI-redo-ecoli"        # <- USED FOR TESTING, REMOVE AFTER
-metaDataFile = "Data/Import/info-ecoli-MAI.csv"     # <- USED FOR TESTING, REMOVE AFTER
-# /\ USED FOR TESTING, REMOVE AFTER
+dataDirectory = "Data"            # Directory used for ion mobility data import, DO NOT CHANGE
+metaDataFile = "metadata.csv"     # File used for metadata import, DO NOT CHANGE
 configFile = "config.yaml"      # Configuration file used for config functions and values, DO NOT CHANGE
 # Package list for import management, changes here will reflect what is imported
 packages = [
@@ -118,7 +114,8 @@ defaultConfig = {
         'plot-baseline': True,
         'plot-noise': True,
         'plot-PCA': True,
-        'plot-dendrogram': True
+        'plot-dendrogram': True,
+        'num-components': 10
     },
     'align-spectra': {
         'half-window-size': 20,
@@ -185,6 +182,7 @@ def checkConfig():
         getConfigValue('options', 'plot-noise', bool)
         getConfigValue('options', 'plot-PCA', bool)
         getConfigValue('options', 'plot-dendrogram', bool)
+        getConfigValue('options', 'num-components', int)
         getConfigValue('align-spectra', 'half-window-size', int)
         getConfigValue('align-spectra', 'noise-method', str)
         getConfigValue('align-spectra', 'SNR', int)
@@ -239,7 +237,7 @@ def database(statement, initialize=False, fetchOne=True):
             import sqlite3
             connection = sqlite3.connect(localFileName)
         cursor = connection.cursor()
-        if initialize:
+        if initialize == True:
             logInfo(cursor)
             initializeTables(cursor)
             connection.commit()
@@ -253,82 +251,14 @@ def database(statement, initialize=False, fetchOne=True):
             connection.close()
 
 def initializeTables(cursor):
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS Bacteria (
-        BacteriaID INTEGER PRIMARY KEY,
-        Bacteria TEXT NOT NULL,
-        CollectionDate DATE NOT NULL
-    );
-    """)
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS ApplicationRun (
-        ApplicationRunID INTEGER PRIMARY KEY,
-        ApplicationRun INTEGER NOT NULL,
-        SampleID INT NOT NULL,
-        CollectionDate DATE NOT NULL
-    );
-    """)
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS Metadata (
-        SampleID INTEGER PRIMARY KEY,
-        PatientID TEXT NOT NULL,
-        PatientIDOriginal TEXT,
-        Experiment TEXT,
-        Location TEXT,
-        BacteriaID INT,
-        CollectionDate DATE NOT NULL,
-        SampleRun INT NOT NULL,
-        FOREIGN KEY(BacteriaID) REFERENCES Bacteria(BacteriaID) ON DELETE CASCADE
-    );
-    """)
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS PreprocessedSpectra (
-        PreprocessedSpectraID INTEGER PRIMARY KEY,
-        SampleID INTEGER,
-        Mass REAL,
-        Intensity REAL,
-        FOREIGN KEY(SampleID) REFERENCES Metadata(SampleID) ON DELETE CASCADE
-    );
-    """)
-    cursor.execute("""
-    CREATE INDEX IF NOT EXISTS idx_preprocessed_spectra_sampleid ON PreprocessedSpectra(SampleID);
-    """)
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS FeatureMatrix (
-        SampleID INTEGER,
-        FeatureID INTEGER,
-        Intensity REAL,
-        PRIMARY KEY(SampleID, FeatureID),
-        FOREIGN KEY(SampleID) REFERENCES Metadata(SampleID) ON DELETE CASCADE
-    );
-    """)
-    cursor.execute("""
-    CREATE INDEX IF NOT EXISTS idx_feature_matrix_sampleid ON FeatureMatrix(SampleID);
-    """)
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS PCAResults (
-        SampleID INTEGER,
-        PC1 REAL,
-        PC2 REAL,
-        PRIMARY KEY(SampleID),
-        FOREIGN KEY(SampleID) REFERENCES Metadata(SampleID) ON DELETE CASCADE
-    );
-    """)
-    cursor.execute("""
-    CREATE INDEX IF NOT EXISTS idx_pca_results_sampleid ON PCAResults(SampleID);
-    """)
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS ClusterAnalysis (
-        SampleID INTEGER,
-        ClusterLabel INTEGER,
-        Distance REAL,
-        PRIMARY KEY(SampleID),
-        FOREIGN KEY(SampleID) REFERENCES Metadata(SampleID) ON DELETE CASCADE
-    );
-    """)
-    cursor.execute("""
-    CREATE INDEX IF NOT EXISTS idx_cluster_analysis_sampleid ON ClusterAnalysis(SampleID);
-    """)
+    num_components = getConfigValue('options', 'num-components', int)
+    statement = f"CREATE TABLE IF NOT EXISTS PathogensCOMP{num_components} (ID INTEGER PRIMARY KEY AUTOINCREMENT, SampleID TEXT,"
+    for i in range(num_components):
+        if i == num_components - 1:
+            statement += f" PC{i+1} REAL, Bacteria TEXT);"
+        else:
+            statement += f" PC{i+1} REAL,"
+    cursor.execute(statement)
 
 def getConnection():
     localEnabled = getConfigValue('database', 'local-enabled', bool)
@@ -353,53 +283,3 @@ def getColumnValues(dataframesList, colName):
             printMessage("err", f"DataFrame at index {index} must contain at least two columns.")
         else:
             return data[colName].values
-
-def insert_metadata(metadata_df, conn=getConnection()):
-    metadata_df.to_sql("Metadata", conn, if_exists="append", index=False)
-
-def insert_preprocessed_spectra(spectra_dfs, conn=getConnection()):
-    import pandas as pd
-    spectra_combined = pd.concat(
-        [df.assign(SampleID=df['Source_File'].iloc[0]) for df in spectra_dfs]
-    )
-    spectra_combined = spectra_combined[['SampleID', 'Mass', 'Intensity']]
-    spectra_combined.to_sql("PreprocessedSpectra", conn, if_exists="append", index=False)
-
-def insert_feature_matrix(feature_matrix, sample_ids, conn=getConnection()):
-    import pandas as pd
-    feature_df = pd.DataFrame(feature_matrix)
-    feature_df['SampleID'] = sample_ids
-    feature_df = feature_df.melt(id_vars=["SampleID"], var_name="FeatureID", value_name="Intensity")
-    feature_df.to_sql("FeatureMatrix", conn, if_exists="append", index=False)
-
-def insert_pca_results(pca_result, sample_ids, conn=getConnection()):
-    import pandas as pd
-    pca_df = pd.DataFrame(pca_result, columns=["PC1", "PC2"])
-    pca_df['SampleID'] = sample_ids
-    pca_df.to_sql("PCAResults", conn, if_exists="append", index=False)
-
-def insert_cluster_analysis(sample_ids, labels, distances, conn=getConnection()):
-    import pandas as pd
-    cluster_df = pd.DataFrame({
-        "SampleID": sample_ids,
-        "ClusterLabel": labels,
-        "Distance": distances
-    })
-    cluster_df.to_sql("ClusterAnalysis", conn, if_exists="append", index=False)
-
-def fetch_metadata(conn=getConnection()):
-    import pandas as pd
-    return pd.read_sql_query("SELECT * FROM Metadata", conn)
-
-def fetch_feature_matrix(conn=getConnection()):
-    import pandas as pd
-    return pd.read_sql_query("SELECT * FROM FeatureMatrix", conn)
-
-def fetch_pca_results(conn=getConnection()):
-    import pandas as pd
-    return pd.read_sql_query("SELECT * FROM PCAResults", conn)
-
-def fetch_cluster_analysis(conn=getConnection()):
-    import pandas as pd
-    return pd.read_sql_query("SELECT * FROM ClusterAnalysis", conn)
-
