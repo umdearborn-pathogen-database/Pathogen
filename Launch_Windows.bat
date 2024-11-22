@@ -2,9 +2,6 @@
 REM Current directory
 cd /d "%~dp0"
 
-REM Sub-directory /Pathogen
-cd Pathogen
-
 REM Run using Python
 python3 Pathogen.py
 
