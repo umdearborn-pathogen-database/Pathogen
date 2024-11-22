@@ -18,20 +18,35 @@
         "documentation": {}
     },
     {
-        "label": "pybaselines",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "pybaselines",
-        "description": "pybaselines",
-        "detail": "pybaselines",
-        "documentation": {}
-    },
-    {
         "label": "Baseline",
         "importPath": "pybaselines",
         "description": "pybaselines",
         "isExtraImport": true,
         "detail": "pybaselines",
+        "documentation": {}
+    },
+    {
+        "label": "interp1d",
+        "importPath": "scipy.interpolate",
+        "description": "scipy.interpolate",
+        "isExtraImport": true,
+        "detail": "scipy.interpolate",
+        "documentation": {}
+    },
+    {
+        "label": "interp1d",
+        "importPath": "scipy.interpolate",
+        "description": "scipy.interpolate",
+        "isExtraImport": true,
+        "detail": "scipy.interpolate",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
         "documentation": {}
     },
     {
@@ -62,671 +77,622 @@
         "documentation": {}
     },
     {
-        "label": "interp1d",
-        "importPath": "scipy.interpolate",
-        "description": "scipy.interpolate",
+        "label": "printMessage",
+        "importPath": "Global",
+        "description": "Global",
         "isExtraImport": true,
-        "detail": "scipy.interpolate",
-        "documentation": {}
-    },
-    {
-        "label": "interp1d",
-        "importPath": "scipy.interpolate",
-        "description": "scipy.interpolate",
-        "isExtraImport": true,
-        "detail": "scipy.interpolate",
-        "documentation": {}
-    },
-    {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
+        "detail": "Global",
         "documentation": {}
     },
     {
         "label": "printMessage",
-        "importPath": "Dependencies.Global",
-        "description": "Dependencies.Global",
+        "importPath": "Global",
+        "description": "Global",
         "isExtraImport": true,
-        "detail": "Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "printMessage",
-        "importPath": "Dependencies.Global",
-        "description": "Dependencies.Global",
-        "isExtraImport": true,
-        "detail": "Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "find_peaks",
-        "importPath": "scipy.signal",
-        "description": "scipy.signal",
-        "isExtraImport": true,
-        "detail": "scipy.signal",
-        "documentation": {}
-    },
-    {
-        "label": "statsmodels.api",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "statsmodels.api",
-        "description": "statsmodels.api",
-        "detail": "statsmodels.api",
-        "documentation": {}
-    },
-    {
-        "label": "print_dataframe_summary",
-        "importPath": "Helper.Helper",
-        "description": "Helper.Helper",
-        "isExtraImport": true,
-        "detail": "Helper.Helper",
-        "documentation": {}
-    },
-    {
-        "label": "alignSpectra",
-        "kind": 2,
-        "importPath": "Data.Reference.MALDIquant.AlignSpectra",
-        "description": "Data.Reference.MALDIquant.AlignSpectra",
-        "peekOfCode": "def alignSpectra(spectra, \n             ## peak detection\n             halfWindowSize=20, noiseMethod=\"MAD\", SNR=2,\n             ## warping\n             reference=None, tolerance=0.002, warpingMethod=\"lowess\",\n             allowNoMatches=False, emptyNoMatches=False, **kwargs):\n    stopIfNotIsMassSpectrumList(spectra)\n    peaks = detectPeaks(spectra, halfWindowSize=halfWindowSize,\n                        method=noiseMethod, SNR=SNR, **kwargs)\n    wf = determineWarpingFunctions(peaks, reference=reference,",
-        "detail": "Data.Reference.MALDIquant.AlignSpectra",
-        "documentation": {}
-    },
-    {
-        "label": "main",
-        "kind": 2,
-        "importPath": "Data.Reference.MALDIquant.Pathogen",
-        "description": "Data.Reference.MALDIquant.Pathogen",
-        "peekOfCode": "def main():\n    print()\nif __name__ == \"__main__\":\n    main()\n### AllClasses.R\n### AllGenerics.R\n### Deprecated.R\n#DONE# alignSpectra-functions.R\n### approxfun-methods.R\n### as-methods.R",
-        "detail": "Data.Reference.MALDIquant.Pathogen",
+        "detail": "Global",
         "documentation": {}
     },
     {
         "label": "snip_baseline_correction",
         "kind": 2,
-        "importPath": "Pathogen.BaselineCorrection.BaselineCorrection",
-        "description": "Pathogen.BaselineCorrection.BaselineCorrection",
+        "importPath": "BaselineCorrection",
+        "description": "BaselineCorrection",
         "peekOfCode": "def snip_baseline_correction(dataframes, iterations=30):\n    snipped_dataframes = []\n    for df in dataframes:\n        n = len(df)\n        baseline = np.copy(df['Intensity'].values)  # Assuming you want to correct 'Intensity'\n        for i in range(iterations):\n            for j in range(1, n - 1):\n                # Use np.minimum to get the element-wise minimum\n                baseline[j] = np.minimum(baseline[j], (baseline[j - 1] + baseline[j + 1]) / 2)\n        # Create a new DataFrame with 'mass' and corrected 'Intensity'",
-        "detail": "Pathogen.BaselineCorrection.BaselineCorrection",
+        "detail": "BaselineCorrection",
         "documentation": {}
     },
     {
         "label": "apply_snip_baseline_correction",
         "kind": 2,
-        "importPath": "Pathogen.BaselineCorrection.BaselineCorrection",
-        "description": "Pathogen.BaselineCorrection.BaselineCorrection",
-        "peekOfCode": "def apply_snip_baseline_correction(spectra_list, window_size=10):\n    \"\"\"\n    Applies SNIP baseline correction to a list of mass spec data DataFrames.\n    Parameters:\n    spectra_list (list of pd.DataFrame): A list of dataframes containing mass spec data.\n                                          Each dataframe should have two columns: m/z and intensity.\n    window_size (int): The size of the moving average window for smoothing the baseline.\n    Returns:\n    list of pd.DataFrame: A list of baseline-corrected spectra as dataframes.\n    \"\"\"",
-        "detail": "Pathogen.BaselineCorrection.BaselineCorrection",
-        "documentation": {}
-    },
-    {
-        "label": "color",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def color(code):\n    return f\"\\033[{code}\"\n# Prints the welcome message on startup, references the color function for coloring terminal text\ndef printWelcomeMsg():\n    heading = color(\"4m\") + color(\"32m\")\n    body = color(\"0m\") + color(\"36m\")\n    fileNames = color(\"33m\")\n    question = color(\"33m\")\n    enter = color(\"33m\")\n    reset = color(\"0m\")",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "printWelcomeMsg",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def printWelcomeMsg():\n    heading = color(\"4m\") + color(\"32m\")\n    body = color(\"0m\") + color(\"36m\")\n    fileNames = color(\"33m\")\n    question = color(\"33m\")\n    enter = color(\"33m\")\n    reset = color(\"0m\")\n    msg = f\"\"\"\n    {heading}Welcome to Total Analysis USA's Pathogen Database{body}\n    Before you begin, please ensure that the following has been completed:",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "printMessage",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def printMessage(msgType, msg):\n    if msgType == \"info\":\n        print(color(\"32m\") + \"Info: \" + str(msg) + (color(\"0m\")))\n    elif msgType == \"warn\":\n        print(color(\"33m\") + \"Warning: \" + str(msg) + (color(\"0m\")))\n    elif msgType == \"err\":\n        print(color(\"31m\") + \"Error: \" + str(msg) + (color(\"0m\")))\n    else:\n        print(printMessage(\"err\", f\"Error printing {msgType}: {msg} with printMessage()\") + (color(\"0m\")))\n# Installs \"package\" utilizing subprocess and pip",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "install",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def install(package):\n    import subprocess\n    printMessage(\"info\", f\"Installing {package}\")\n    subprocess.check_call([sys.executable, \"-m\", \"pip\", \"install\", package])\n    print(\"\\n\\n\\n\")\n# Checks whether \"package\" is already installed to prevent unnecessary downloads\ndef isInstalled(package):\n    installedPackages = {pkg.key for pkg in pkg_resources.working_set}\n    if package in installedPackages:\n        return True",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "isInstalled",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def isInstalled(package):\n    installedPackages = {pkg.key for pkg in pkg_resources.working_set}\n    if package in installedPackages:\n        return True\n    return False\n# Main package install function to check whether a package found in \"packages\" list\n#   is already installed, if not, installs it. Installed and not installed packages\n#   are also displayed to the user.\ndef installPackages():\n    alreadyInstalled = []",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "installPackages",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def installPackages():\n    alreadyInstalled = []\n    needsInstall = []\n    for pkg in packages:\n        if isInstalled(pkg):\n            alreadyInstalled.append(pkg)\n        else:\n            needsInstall.append(pkg)\n    if alreadyInstalled:\n        printMessage(\"info\", f\"Packages {alreadyInstalled} already installed\")",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "initializeConfig",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def initializeConfig():\n    import yaml\n    if not os.path.exists(configFile):\n        printMessage(\"info\", f\"Config file '{configFile}' does not exist. Creating file with default values...\")\n        with open(configFile, 'w') as file:\n            yaml.dump(defaultConfig, file, default_flow_style=False)\n    else:\n        checkConfig()\n        printMessage(\"info\", f\"All configuration values have been checked.\")\n    localEnabled = getConfigValue('database', 'local-enabled', bool)",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "getConfigValue",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def getConfigValue(root, branch, castType):\n    import yaml\n    filePath = os.path.join(os.getcwd(), configFile)\n    try:\n        with open(filePath, 'r') as file:\n            config = yaml.safe_load(file)\n        if root in config and branch in config[root]:\n            value = config[root][branch]\n            return castType(value)\n        else:",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "checkConfig",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def checkConfig():\n    x = getConfigValue('database', 'local-enabled', bool)\n    if x:\n        getConfigValue('database', 'remote-host', str)\n        getConfigValue('database', 'remote-port', int)\n        getConfigValue('database', 'remote-database', str)\n        getConfigValue('database', 'remote-username', str)\n        getConfigValue('database', 'remote-password', str)\n    else:\n        getConfigValue('database', 'local-file-name', str)",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "database",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def database(statement, initialize=False, fetchOne=True):\n    localEnabled = getConfigValue('database', 'local-enabled', bool)\n    connection = None\n    def executeQuery(cursor):\n        cursor.execute(statement)\n        return cursor.fetchone() if fetchOne else cursor.fetchall()\n    def logInfo(cursor):\n        if not localEnabled:\n            cursor.execute(\"SELECT DATABASE();\")\n            printMessage(\"info\", f\"Connected to MySQL Server version {info}, database: {cursor.fetchone()}\")",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "getColumnValues",
-        "kind": 2,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "def getColumnValues(dataframesList, colName):\n    for index, data in enumerate(dataframesList):\n        if data.shape[1] < 2:\n            printMessage(\"err\", f\"DataFrame at index {index} must contain at least two columns.\")\n        else:\n            return data[colName].values",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "dataDirectory",
-        "kind": 5,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "dataDirectory = \"Data/Import/MAI-redo-ecoli\"        # <- USED FOR TESTING, REMOVE AFTER\nmetaDataFile = \"Data/Import/info-ecoli-MAI.csv\"     # <- USED FOR TESTING, REMOVE AFTER\n# /\\ USED FOR TESTING, REMOVE AFTER\nconfigFile = \"config.yaml\"      # Configuration file used for config functions and values, DO NOT CHANGE\n# Package list for import management, changes here will reflect what is imported\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "metaDataFile",
-        "kind": 5,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "metaDataFile = \"Data/Import/info-ecoli-MAI.csv\"     # <- USED FOR TESTING, REMOVE AFTER\n# /\\ USED FOR TESTING, REMOVE AFTER\nconfigFile = \"config.yaml\"      # Configuration file used for config functions and values, DO NOT CHANGE\n# Package list for import management, changes here will reflect what is imported\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "configFile",
-        "kind": 5,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "configFile = \"config.yaml\"      # Configuration file used for config functions and values, DO NOT CHANGE\n# Package list for import management, changes here will reflect what is imported\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',\n    'mysql-connector-python',\n    'scipy',",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "packages",
-        "kind": 5,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "packages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',\n    'mysql-connector-python',\n    'scipy',\n    'pybaselines'\n]",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "defaultConfig",
-        "kind": 5,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "defaultConfig = {\n    'database': {\n        'local-enabled': True,\n        'local-file-name': 'pathogens.db',\n        'remote-host': '127.0.0.1',\n        'remote-port': 3306,\n        'remote-database': 'pathogensdb',\n        'remote-username': 'admin',\n        'remote-password': 'password'\n    },",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "localEnabled",
-        "kind": 5,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "localEnabled = None\nlocalFileName = None\nhost = None\nport = None\ndatabase = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "localFileName",
-        "kind": 5,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "localFileName = None\nhost = None\nport = None\ndatabase = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication ",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "host",
-        "kind": 5,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "host = None\nport = None\ndatabase = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or ",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "port",
-        "kind": 5,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "port = None\ndatabase = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "database",
-        "kind": 5,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "database = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"\n#   If not localEnabled, config values for remote database connection are assigned",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "username",
-        "kind": 5,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "username = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"\n#   If not localEnabled, config values for remote database connection are assigned\ndef database(statement, initialize=False, fetchOne=True):",
-        "detail": "Pathogen.Dependencies.Global",
-        "documentation": {}
-    },
-    {
-        "label": "password",
-        "kind": 5,
-        "importPath": "Pathogen.Dependencies.Global",
-        "description": "Pathogen.Dependencies.Global",
-        "peekOfCode": "password = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"\n#   If not localEnabled, config values for remote database connection are assigned\ndef database(statement, initialize=False, fetchOne=True):\n    localEnabled = getConfigValue('database', 'local-enabled', bool)",
-        "detail": "Pathogen.Dependencies.Global",
+        "importPath": "BaselineCorrection",
+        "description": "BaselineCorrection",
+        "peekOfCode": "def apply_snip_baseline_correction(spectra_list, window_size=10):\n    \"\"\"\n    Applies SNIP baseline correction to a list of mass spec data DataFrames.\n    Parameters:\n    spectra_list (list of pd.DataFrame): A list of dataframes containing mass spec data.\n    Each dataframe should have two columns: m/z and intensity.\n    window_size (int): The size of the moving average window for smoothing the baseline.\n    Returns:\n    list of pd.DataFrame: A list of baseline-corrected spectra as dataframes.\n    \"\"\"",
+        "detail": "BaselineCorrection",
         "documentation": {}
     },
     {
         "label": "validate_peak_dataframes",
         "kind": 2,
-        "importPath": "Pathogen.FeatureMatrix.FeatureMatrix",
-        "description": "Pathogen.FeatureMatrix.FeatureMatrix",
+        "importPath": "FeatureMatrix",
+        "description": "FeatureMatrix",
         "peekOfCode": "def validate_peak_dataframes(peaks: List[pd.DataFrame]) -> bool:\n    \"\"\"\n    Validate that each DataFrame in the peaks list has the required columns.\n    Args:\n        peaks: List of DataFrames to validate\n    Returns:\n        bool: True if valid\n    Raises:\n        ValueError: If DataFrames don't have required columns\n    \"\"\"",
-        "detail": "Pathogen.FeatureMatrix.FeatureMatrix",
+        "detail": "FeatureMatrix",
         "documentation": {}
     },
     {
         "label": "validate_spectra_dataframes",
         "kind": 2,
-        "importPath": "Pathogen.FeatureMatrix.FeatureMatrix",
-        "description": "Pathogen.FeatureMatrix.FeatureMatrix",
+        "importPath": "FeatureMatrix",
+        "description": "FeatureMatrix",
         "peekOfCode": "def validate_spectra_dataframes(spectra: List[pd.DataFrame]) -> bool:\n    \"\"\"\n    Validate that each DataFrame in the spectra list has the required columns.\n    Args:\n        spectra: List of DataFrames to validate\n    Returns:\n        bool: True if valid\n    Raises:\n        ValueError: If DataFrames don't have required columns\n    \"\"\"",
-        "detail": "Pathogen.FeatureMatrix.FeatureMatrix",
+        "detail": "FeatureMatrix",
         "documentation": {}
     },
     {
         "label": "create_intensity_matrix",
         "kind": 2,
-        "importPath": "Pathogen.FeatureMatrix.FeatureMatrix",
-        "description": "Pathogen.FeatureMatrix.FeatureMatrix",
+        "importPath": "FeatureMatrix",
+        "description": "FeatureMatrix",
         "peekOfCode": "def create_intensity_matrix(peaks: List[pd.DataFrame]) -> pd.DataFrame:\n    \"\"\"\n    Convert list of peak DataFrames into a matrix where rows are samples and columns are mass values.\n    Args:\n        peaks: List of DataFrames containing peak data\n    Returns:\n        pd.DataFrame: Matrix of intensity values\n    \"\"\"\n    # Get unique mass values across all peaks\n    all_masses = pd.concat([df['Mass'] for df in peaks]).unique()",
-        "detail": "Pathogen.FeatureMatrix.FeatureMatrix",
+        "detail": "FeatureMatrix",
         "documentation": {}
     },
     {
         "label": "intensity_matrix",
         "kind": 2,
-        "importPath": "Pathogen.FeatureMatrix.FeatureMatrix",
-        "description": "Pathogen.FeatureMatrix.FeatureMatrix",
+        "importPath": "FeatureMatrix",
+        "description": "FeatureMatrix",
         "peekOfCode": "def intensity_matrix(peaks: List[pd.DataFrame], spectra: List[pd.DataFrame] = None) -> pd.DataFrame:\n    \"\"\"\n    Convert a list of peak DataFrames into an expression matrix, with optional interpolation\n    from spectra DataFrames for missing values.\n    Args:\n        peaks: List of DataFrames containing peak data\n        spectra: Optional list of DataFrames containing spectrum data\n    Returns:\n        pd.DataFrame: Matrix of intensity values\n    Raises:",
-        "detail": "Pathogen.FeatureMatrix.FeatureMatrix",
+        "detail": "FeatureMatrix",
         "documentation": {}
     },
     {
-        "label": "print_dataframe_summary",
+        "label": "color",
         "kind": 2,
-        "importPath": "Pathogen.Helper.Helper",
-        "description": "Pathogen.Helper.Helper",
-        "peekOfCode": "def print_dataframe_summary(df_list):\n    print(\"type\")\n    print(type(df_list))\n    for idx, df in enumerate(df_list):\n        print(\"type of df\")\n        print(type(df))\n        print(f\"\\nDataFrame {idx + 1}:\")\n        print(\"-\" * 50)\n        # Number of rows and columns\n        print(f\"Shape: {df.shape}\")",
-        "detail": "Pathogen.Helper.Helper",
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "def color(code):\n    return f\"\\033[{code}\"\n# Prints the welcome message on startup, references the color function for coloring terminal text\ndef printWelcomeMsg():\n    heading = color(\"4m\") + color(\"32m\")\n    body = color(\"0m\") + color(\"36m\")\n    fileNames = color(\"33m\")\n    question = color(\"33m\")\n    enter = color(\"33m\")\n    reset = color(\"0m\")",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "printWelcomeMsg",
+        "kind": 2,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "def printWelcomeMsg():\n    heading = color(\"4m\") + color(\"32m\")\n    body = color(\"0m\") + color(\"36m\")\n    fileNames = color(\"33m\")\n    question = color(\"33m\")\n    enter = color(\"33m\")\n    reset = color(\"0m\")\n    msg = f\"\"\"\n    {heading}Welcome to Total Analysis USA's Pathogen Database{body}\n    Before you begin, please ensure that the following has been completed:",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "printMessage",
+        "kind": 2,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "def printMessage(msgType, msg):\n    if msgType == \"info\":\n        print(color(\"32m\") + \"Info: \" + str(msg) + (color(\"0m\")))\n    elif msgType == \"warn\":\n        print(color(\"33m\") + \"Warning: \" + str(msg) + (color(\"0m\")))\n    elif msgType == \"err\":\n        print(color(\"31m\") + \"Error: \" + str(msg) + (color(\"0m\")))\n    else:\n        print(printMessage(\"err\", f\"Error printing {msgType}: {msg} with printMessage()\") + (color(\"0m\")))\n# Installs \"package\" utilizing subprocess and pip",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "install",
+        "kind": 2,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "def install(package):\n    import subprocess\n    printMessage(\"info\", f\"Installing {package}\")\n    subprocess.check_call([sys.executable, \"-m\", \"pip\", \"install\", package])\n    print(\"\\n\\n\\n\")\n# Checks whether \"package\" is already installed to prevent unnecessary downloads\ndef isInstalled(package):\n    installedPackages = {pkg.key for pkg in pkg_resources.working_set}\n    if package in installedPackages:\n        return True",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "isInstalled",
+        "kind": 2,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "def isInstalled(package):\n    installedPackages = {pkg.key for pkg in pkg_resources.working_set}\n    if package in installedPackages:\n        return True\n    return False\n# Main package install function to check whether a package found in \"packages\" list\n#   is already installed, if not, installs it. Installed and not installed packages\n#   are also displayed to the user.\ndef installPackages():\n    alreadyInstalled = []",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "installPackages",
+        "kind": 2,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "def installPackages():\n    alreadyInstalled = []\n    needsInstall = []\n    for pkg in packages:\n        if isInstalled(pkg):\n            alreadyInstalled.append(pkg)\n        else:\n            needsInstall.append(pkg)\n    if alreadyInstalled:\n        printMessage(\"info\", f\"Packages {alreadyInstalled} already installed\")",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "initializeConfig",
+        "kind": 2,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "def initializeConfig():\n    import yaml\n    if not os.path.exists(configFile):\n        printMessage(\"info\", f\"Config file '{configFile}' does not exist. Creating file with default values...\")\n        with open(configFile, 'w') as file:\n            yaml.dump(defaultConfig, file, default_flow_style=False)\n    else:\n        checkConfig()\n        printMessage(\"info\", f\"All configuration values have been checked.\")\n    localEnabled = getConfigValue('database', 'local-enabled', bool)",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "getConfigValue",
+        "kind": 2,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "def getConfigValue(root, branch, castType):\n    import yaml\n    filePath = os.path.join(os.getcwd(), configFile)\n    try:\n        with open(filePath, 'r') as file:\n            config = yaml.safe_load(file)\n        if root in config and branch in config[root]:\n            value = config[root][branch]\n            return castType(value)\n        else:",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "checkConfig",
+        "kind": 2,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "def checkConfig():\n    x = getConfigValue('database', 'local-enabled', bool)\n    if x:\n        getConfigValue('database', 'remote-host', str)\n        getConfigValue('database', 'remote-port', int)\n        getConfigValue('database', 'remote-database', str)\n        getConfigValue('database', 'remote-username', str)\n        getConfigValue('database', 'remote-password', str)\n    else:\n        getConfigValue('database', 'local-file-name', str)",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "database",
+        "kind": 2,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "def database(statement, initialize=False, fetchOne=True):\n    localEnabled = getConfigValue('database', 'local-enabled', bool)\n    connection = None\n    def executeQuery(cursor):\n        cursor.execute(statement)\n        return cursor.fetchone() if fetchOne else cursor.fetchall()\n    def logInfo(cursor):\n        if not localEnabled:\n            cursor.execute(\"SELECT DATABASE();\")\n            printMessage(\"info\", f\"Connected to MySQL Server version {info}, database: {cursor.fetchone()}\")",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "initializeTables",
+        "kind": 2,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "def initializeTables(num_components):\n    conn = getConnection()\n    statement = f\"CREATE TABLE IF NOT EXISTS PathogensCOMP{num_components} (ID INTEGER PRIMARY KEY AUTOINCREMENT, SampleID TEXT,\"\n    for i in range(num_components):\n        if i == num_components - 1:\n            statement += f\" PC{i+1} REAL, Bacteria TEXT);\"\n        else:\n            statement += f\" PC{i+1} REAL,\"\n    cursor = conn.cursor()\n    cursor.execute(statement)",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "getConnection",
+        "kind": 2,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "def getConnection():\n    localEnabled = getConfigValue('database', 'local-enabled', bool)\n    connection = None\n    if localEnabled == False:\n        host = getConfigValue('database', 'remote-host', str)\n        port = getConfigValue('database', 'remote-port', int)\n        database = getConfigValue('database', 'remote-database', str)\n        username = getConfigValue('database', 'remote-username', str)\n        password = getConfigValue('database', 'remote-password', str)\n        import mysql.connector",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "getColumnValues",
+        "kind": 2,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "def getColumnValues(dataframesList, colName):\n    for index, data in enumerate(dataframesList):\n        if data.shape[1] < 2:\n            printMessage(\"err\", f\"DataFrame at index {index} must contain at least two columns.\")\n        else:\n            return data[colName].values",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "dataDirectory",
+        "kind": 5,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "dataDirectory = \"Data\"            # Directory used for ion mobility data import, DO NOT CHANGE\nmetaDataFile = \"metadata.csv\"     # File used for metadata import, DO NOT CHANGE\nconfigFile = \"config.yaml\"      # Configuration file used for config functions and values, DO NOT CHANGE\n# Package list for import management, changes here will reflect what is imported\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "metaDataFile",
+        "kind": 5,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "metaDataFile = \"metadata.csv\"     # File used for metadata import, DO NOT CHANGE\nconfigFile = \"config.yaml\"      # Configuration file used for config functions and values, DO NOT CHANGE\n# Package list for import management, changes here will reflect what is imported\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',\n    'mysql-connector-python',",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "configFile",
+        "kind": 5,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "configFile = \"config.yaml\"      # Configuration file used for config functions and values, DO NOT CHANGE\n# Package list for import management, changes here will reflect what is imported\npackages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',\n    'mysql-connector-python',\n    'scipy',",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "packages",
+        "kind": 5,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "packages = [\n    'pandas',\n    'seaborn',\n    'scanpy',\n    'pyyaml',\n    'statsmodels',\n    'mysql-connector-python',\n    'scipy',\n    'pybaselines'\n]",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "defaultConfig",
+        "kind": 5,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "defaultConfig = {\n    'database': {\n        'local-enabled': True,\n        'local-file-name': 'pathogens.db',\n        'remote-host': '127.0.0.1',\n        'remote-port': 3306,\n        'remote-database': 'pathogensdb',\n        'remote-username': 'admin',\n        'remote-password': 'password'\n    },",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "localEnabled",
+        "kind": 5,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "localEnabled = None\nlocalFileName = None\nhost = None\nport = None\ndatabase = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "localFileName",
+        "kind": 5,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "localFileName = None\nhost = None\nport = None\ndatabase = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication ",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "host",
+        "kind": 5,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "host = None\nport = None\ndatabase = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or ",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "port",
+        "kind": 5,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "port = None\ndatabase = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "database",
+        "kind": 5,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "database = None\nusername = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"\n#   If not localEnabled, config values for remote database connection are assigned",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "username",
+        "kind": 5,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "username = None\npassword = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"\n#   If not localEnabled, config values for remote database connection are assigned\ndef database(statement, initialize=False, fetchOne=True):",
+        "detail": "Global",
+        "documentation": {}
+    },
+    {
+        "label": "password",
+        "kind": 5,
+        "importPath": "Global",
+        "description": "Global",
+        "peekOfCode": "password = None\n# Main database function\n#   Checks which type of database is being used, initializes the database on\n#       startup when initialize=True and sends a message to the user.\n#       When initialize=False, function acts as a method of communication \n#       with the database, sending the \"statement\" and either returning one or \n#       all lines that the database sends utilizing \"fetchOne\"\n#   If not localEnabled, config values for remote database connection are assigned\ndef database(statement, initialize=False, fetchOne=True):\n    localEnabled = getConfigValue('database', 'local-enabled', bool)",
+        "detail": "Global",
         "documentation": {}
     },
     {
         "label": "add_bacteria_column",
         "kind": 2,
-        "importPath": "Pathogen.Helper.Helper",
-        "description": "Pathogen.Helper.Helper",
+        "importPath": "Helper",
+        "description": "Helper",
         "peekOfCode": "def add_bacteria_column(df_main, mass_spec_data_list):\n    \"\"\"\n    Adds the 'Bacteria' column value from the main DataFrame to the corresponding \n    DataFrames in the mass_spec_data_list.\n    Parameters:\n    - df_main (pd.DataFrame): DataFrame containing columns 'patientID', 'Bacteria', etc.\n    - mass_spec_data_list (list): List of pandas DataFrames where 'Bacteria' column will be added.\n    Returns:\n    - List of pandas DataFrames with the 'Bacteria' column added.\n    \"\"\"",
-        "detail": "Pathogen.Helper.Helper",
+        "detail": "Helper",
         "documentation": {}
     },
     {
         "label": "add_run_column_from_patientID",
         "kind": 2,
-        "importPath": "Pathogen.Helper.Helper",
-        "description": "Pathogen.Helper.Helper",
+        "importPath": "Helper",
+        "description": "Helper",
         "peekOfCode": "def add_run_column_from_patientID(df):\n    \"\"\"\n    Adds a 'run' column to the DataFrame by extracting the last part of 'patientID.orig'.\n    Parameters:\n    df (pd.DataFrame): The input DataFrame with columns ['patientID', 'patientID.orig', 'experiment', 'location', 'Bacteria'].\n    Returns:\n    pd.DataFrame: The updated DataFrame with the 'run' column added.\n    \"\"\"\n    # Check if the necessary column exists\n    if 'patientID.orig' not in df.columns:",
-        "detail": "Pathogen.Helper.Helper",
+        "detail": "Helper",
         "documentation": {}
     },
     {
         "label": "add_metadata_to_dataframes",
         "kind": 2,
-        "importPath": "Pathogen.Helper.Helper",
-        "description": "Pathogen.Helper.Helper",
+        "importPath": "Helper",
+        "description": "Helper",
         "peekOfCode": "def add_metadata_to_dataframes(dataframes, metadata):\n    \"\"\"\n    Adds corresponding metadata to each DataFrame in the list.\n    Parameters:\n    dataframes (list of pd.DataFrame): List of DataFrames to which metadata will be added.\n    metadata (pd.DataFrame): DataFrame containing the metadata.\n    Returns:\n    list of pd.DataFrame: List of DataFrames with added metadata columns.\n    \"\"\"\n    for i, df in enumerate(dataframes):",
-        "detail": "Pathogen.Helper.Helper",
+        "detail": "Helper",
         "documentation": {}
     },
     {
         "label": "combine_dataframes_with_metadata",
         "kind": 2,
-        "importPath": "Pathogen.Helper.Helper",
-        "description": "Pathogen.Helper.Helper",
+        "importPath": "Helper",
+        "description": "Helper",
         "peekOfCode": "def combine_dataframes_with_metadata(dataframes, metadata):\n    combined_df = pd.DataFrame()  # Initialize an empty DataFrame\n    for i, df in enumerate(dataframes):\n        metadata_row = metadata.iloc[i]\n        for col in metadata_row.index:\n            df[col] = metadata_row[col]\n        # Append the updated DataFrame to combined_df\n        combined_df = pd.concat([combined_df, df], ignore_index=True)\n    return combined_df\ndef get_sample_names(spectra):",
-        "detail": "Pathogen.Helper.Helper",
+        "detail": "Helper",
         "documentation": {}
     },
     {
         "label": "get_sample_names",
         "kind": 2,
-        "importPath": "Pathogen.Helper.Helper",
-        "description": "Pathogen.Helper.Helper",
+        "importPath": "Helper",
+        "description": "Helper",
         "peekOfCode": "def get_sample_names(spectra):\n    \"\"\"\n    Extract sample names from the spectra.\n    Parameters:\n    spectra (list): List of spectrum objects.\n    Returns:\n    pd.Series: A Series of sample names.\n    \"\"\"\n    return pd.Series([s['patientID'] for s in spectra])\ndef average_mass_spectra(spectra, labels):",
-        "detail": "Pathogen.Helper.Helper",
+        "detail": "Helper",
         "documentation": {}
     },
     {
         "label": "average_mass_spectra",
         "kind": 2,
-        "importPath": "Pathogen.Helper.Helper",
-        "description": "Pathogen.Helper.Helper",
+        "importPath": "Helper",
+        "description": "Helper",
         "peekOfCode": "def average_mass_spectra(spectra, labels):\n    \"\"\"\n    Average the mass spectra based on labels.\n    Parameters:\n    spectra (list): List of spectrum objects.\n    labels (pd.Series): Series of sample names corresponding to each spectrum.\n    Returns:\n    DataFrame: A DataFrame containing averaged spectra.\n    \"\"\"\n    # Create a DataFrame to hold the spectra data",
-        "detail": "Pathogen.Helper.Helper",
+        "detail": "Helper",
+        "documentation": {}
+    },
+    {
+        "label": "sendValuesToDatabase",
+        "kind": 2,
+        "importPath": "Helper",
+        "description": "Helper",
+        "peekOfCode": "def sendValuesToDatabase(df):\n    from Global import getConnection\n    conn = getConnection()\n    num = (df.shape[1] - 2)\n    table = f\"PathogensCOMP{num}\"\n    df.to_sql(table, conn, if_exists='append', index=False)\ndef getValuesFromDatabase(num_components):\n    from Global import database\n    from Global import printMessage\n    table = f\"PathogensCOMP{num_components}\"",
+        "detail": "Helper",
+        "documentation": {}
+    },
+    {
+        "label": "getValuesFromDatabase",
+        "kind": 2,
+        "importPath": "Helper",
+        "description": "Helper",
+        "peekOfCode": "def getValuesFromDatabase(num_components):\n    from Global import database\n    from Global import printMessage\n    table = f\"PathogensCOMP{num_components}\"\n    statement = f\"SELECT COUNT(*) FROM {table}\"\n    msg = database(statement, initialize=False, fetchOne=True)\n    if (msg == None) or (msg[0] == 0):\n        printMessage(\"info\", f\"Table: {table} is empty. First values have been added.\")\n        return None\n    else:",
+        "detail": "Helper",
         "documentation": {}
     },
     {
         "label": "calibrateIntensity",
         "kind": 2,
-        "importPath": "Pathogen.IntensityCalibration.IntensityCalibration",
-        "description": "Pathogen.IntensityCalibration.IntensityCalibration",
+        "importPath": "IntensityCalibration",
+        "description": "IntensityCalibration",
         "peekOfCode": "def calibrateIntensity(spectra_list, method):\n    calibrated_dataframes = []  # List to hold calibrated DataFrames\n    for spectrum in spectra_list:\n        if method == \"TIC\":\n            scalingFactor = totalIonCurrent(spectrum)\n            spectrum['Intensity'] /= scalingFactor\n            calibrated_dataframes.append(spectrum)\n        elif method == \"PQN\":\n            tic = totalIonCurrent(spectrum)\n            normalized_intensity = spectrum['Intensity'] / tic",
-        "detail": "Pathogen.IntensityCalibration.IntensityCalibration",
+        "detail": "IntensityCalibration",
         "documentation": {}
     },
     {
         "label": "totalIonCurrent",
         "kind": 2,
-        "importPath": "Pathogen.IntensityCalibration.IntensityCalibration",
-        "description": "Pathogen.IntensityCalibration.IntensityCalibration",
+        "importPath": "IntensityCalibration",
+        "description": "IntensityCalibration",
         "peekOfCode": "def totalIonCurrent(spectrum):\n    intensities = spectrum['Intensity'].values\n    masses = spectrum['Mass'].values\n    left = intensities[:-1].astype(np.float64)\n    right = intensities[1:].astype(np.float64)\n    massDiff = np.diff(masses).astype(np.float64)\n    return np.sum(((left + right) / 2.0) * massDiff)\ndef medianScalingFactor(spectrum):\n    return np.median(spectrum['Intensity'])",
-        "detail": "Pathogen.IntensityCalibration.IntensityCalibration",
+        "detail": "IntensityCalibration",
         "documentation": {}
     },
     {
         "label": "medianScalingFactor",
         "kind": 2,
-        "importPath": "Pathogen.IntensityCalibration.IntensityCalibration",
-        "description": "Pathogen.IntensityCalibration.IntensityCalibration",
+        "importPath": "IntensityCalibration",
+        "description": "IntensityCalibration",
         "peekOfCode": "def medianScalingFactor(spectrum):\n    return np.median(spectrum['Intensity'])",
-        "detail": "Pathogen.IntensityCalibration.IntensityCalibration",
-        "documentation": {}
-    },
-    {
-        "label": "averageMassSpectra",
-        "kind": 2,
-        "importPath": "Pathogen.PeakBinning.PeakBinning",
-        "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def averageMassSpectra(list_dataframes, labels, method=\"mean\"):\n    \"\"\"\n    Averages or sums mass spectra data by given labels.\n    Parameters:\n    l (list): List of pandas DataFrames containing mass spectra data.\n    labels (list): List of labels for grouping the DataFrames.\n    method (str): Aggregation method to use, either 'mean', 'median', or 'sum'.\n    Returns:\n    list: List of pandas DataFrames, each representing aggregated values for a label.\n    \"\"\"",
-        "detail": "Pathogen.PeakBinning.PeakBinning",
-        "documentation": {}
-    },
-    {
-        "label": "estimateNoise",
-        "kind": 2,
-        "importPath": "Pathogen.PeakBinning.PeakBinning",
-        "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def estimateNoise(df):\n    \"\"\"\n    Estimates noise in the data by calculating the Median Absolute Deviation (MAD) for each column.\n    Parameters:\n    df (pd.DataFrame): Input DataFrame containing numeric data.\n    Returns:\n    pd.Series: A Series containing the MAD for each column in the DataFrame.\n    \"\"\"\n    # Calculate the median of each column\n    # median = df.median()",
-        "detail": "Pathogen.PeakBinning.PeakBinning",
-        "documentation": {}
-    },
-    {
-        "label": "binPeaks",
-        "kind": 2,
-        "importPath": "Pathogen.PeakBinning.PeakBinning",
-        "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def binPeaks(peak_list, method=\"strict\", tolerance=0.002):\n    \"\"\"\n    Binning peaks by splitting at the largest gap. This is a wrapper around the \n    .binPeaks function which prepares the peak list before and recreates a \n    correct peak list after binning.\n    Parameters:\n    peak_list (list): List of MassPeaks objects (each as a dictionary with 'mass', 'intensity', 'snr').\n    method (str): Method for grouping ('strict', 'relaxed', 'reference').\n    tolerance (float): Maximum deviation of a peak position to be considered as the same peak.\n    Returns:",
-        "detail": "Pathogen.PeakBinning.PeakBinning",
-        "documentation": {}
-    },
-    {
-        "label": "grouperStrict",
-        "kind": 2,
-        "importPath": "Pathogen.PeakBinning.PeakBinning",
-        "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def grouperStrict(mass, intensities, samples, tolerance):\n    # Implement strict grouping logic here\n    return mass\ndef grouperRelaxed(mass, intensities, samples, tolerance):\n    # Implement relaxed grouping logic here\n    return mass\ndef grouperRelaxedHighestAtReference(mass, intensities, samples, tolerance):\n    # Implement reference grouping logic here\n    return mass\ndef average_by_bacteria(list_dataframes):",
-        "detail": "Pathogen.PeakBinning.PeakBinning",
-        "documentation": {}
-    },
-    {
-        "label": "grouperRelaxed",
-        "kind": 2,
-        "importPath": "Pathogen.PeakBinning.PeakBinning",
-        "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def grouperRelaxed(mass, intensities, samples, tolerance):\n    # Implement relaxed grouping logic here\n    return mass\ndef grouperRelaxedHighestAtReference(mass, intensities, samples, tolerance):\n    # Implement reference grouping logic here\n    return mass\ndef average_by_bacteria(list_dataframes):\n    \"\"\"\n    Averages the DataFrames based on the 'patientID' column and returns a list of DataFrames.\n    Parameters:",
-        "detail": "Pathogen.PeakBinning.PeakBinning",
-        "documentation": {}
-    },
-    {
-        "label": "grouperRelaxedHighestAtReference",
-        "kind": 2,
-        "importPath": "Pathogen.PeakBinning.PeakBinning",
-        "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def grouperRelaxedHighestAtReference(mass, intensities, samples, tolerance):\n    # Implement reference grouping logic here\n    return mass\ndef average_by_bacteria(list_dataframes):\n    \"\"\"\n    Averages the DataFrames based on the 'patientID' column and returns a list of DataFrames.\n    Parameters:\n    list_dataframes (list): List of pandas DataFrames with columns 'Mass', 'Intensity', and 'patientID'.\n    Returns:\n    list: A list of DataFrames, each representing averaged values for a unique patientID.",
-        "detail": "Pathogen.PeakBinning.PeakBinning",
-        "documentation": {}
-    },
-    {
-        "label": "average_by_bacteria",
-        "kind": 2,
-        "importPath": "Pathogen.PeakBinning.PeakBinning",
-        "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def average_by_bacteria(list_dataframes):\n    \"\"\"\n    Averages the DataFrames based on the 'patientID' column and returns a list of DataFrames.\n    Parameters:\n    list_dataframes (list): List of pandas DataFrames with columns 'Mass', 'Intensity', and 'patientID'.\n    Returns:\n    list: A list of DataFrames, each representing averaged values for a unique patientID.\n    \"\"\"\n    # Concatenate all DataFrames into one\n    combined_df = pd.concat(list_dataframes, ignore_index=True)",
-        "detail": "Pathogen.PeakBinning.PeakBinning",
-        "documentation": {}
-    },
-    {
-        "label": "average_by_patient_id",
-        "kind": 2,
-        "importPath": "Pathogen.PeakBinning.PeakBinning",
-        "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def average_by_patient_id(list_dataframes):\n    \"\"\"\n    Averages the DataFrames based on the 'PatientId' column and returns a list of DataFrames.\n    Parameters:\n    list_dataframes (list): List of pandas DataFrames with columns 'Mass', 'Intensity', and 'PatientId'.\n    Returns:\n    list: A list of DataFrames, each representing averaged values for a unique PatientId.\n    \"\"\"\n    # Concatenate all DataFrames into one\n    combined_df = pd.concat(list_dataframes, ignore_index=True)",
-        "detail": "Pathogen.PeakBinning.PeakBinning",
-        "documentation": {}
-    },
-    {
-        "label": "average_mass_spectra_objects",
-        "kind": 2,
-        "importPath": "Pathogen.PeakBinning.PeakBinning",
-        "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def average_mass_spectra_objects(spectra_list, method=\"mean\"):\n    \"\"\"\n    Averages MassSpectrum objects represented as pandas DataFrames.\n    Parameters:\n    spectra_list (list): List of pandas DataFrames.\n    method (str): Aggregation method ('mean', 'median', 'sum').\n    Returns:\n    DataFrame: A new DataFrame representing the averaged values.\n    \"\"\"\n    # Use the first non-empty spectrum as reference",
-        "detail": "Pathogen.PeakBinning.PeakBinning",
-        "documentation": {}
-    },
-    {
-        "label": "average_spectra",
-        "kind": 2,
-        "importPath": "Pathogen.PeakBinning.PeakBinning",
-        "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def average_spectra(dataframes):\n    averaged_results = []\n    # Process every 3 data frames as a batch\n    for i in range(0, len(dataframes), 3):\n        # Concatenate the three data frames for the current patient\n        combined_df = pd.concat(dataframes[i:i+3], axis=0, ignore_index=True)\n        combined_df = combined_df.sort_values(by=['patientID', 'Mass']).reset_index(drop=True)\n        # Average the Intensity for each unique Mass value\n        averaged_df = combined_df.groupby(['Mass', 'patientID','Bacteria']).agg({\n            'Intensity': 'mean'",
-        "detail": "Pathogen.PeakBinning.PeakBinning",
-        "documentation": {}
-    },
-    {
-        "label": "debug_variable",
-        "kind": 2,
-        "importPath": "Pathogen.PeakBinning.PeakBinning",
-        "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def debug_variable(var, name=\"Variable\"):\n    print(f\"\\n{name} Debug Info\")\n    print(\"-\" * 30)\n    # Print type\n    print(f\"Type: {type(var)}\")\n    # If it's a DataFrame, print shape, columns, index, and a sample\n    if isinstance(var, pd.DataFrame):\n        print(f\"Shape: {var.shape}\")\n        print(f\"Columns: {var.columns}\")\n        print(f\"Index: {var.index}\")",
-        "detail": "Pathogen.PeakBinning.PeakBinning",
-        "documentation": {}
-    },
-    {
-        "label": "as_occurrence_list",
-        "kind": 2,
-        "importPath": "Pathogen.PeakBinning.PeakBinning",
-        "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def as_occurrence_list(peaks_list) -> dict:\n    \"\"\"Convert list of DataFrames to occurrence format for filtering.\n    Args:\n        peaks_list: List of DataFrames containing mass spec data\n    Returns:\n        Dictionary containing unique masses and their occurrences across samples\n    \"\"\"\n    all_masses = []\n    indices = []\n    sample_indices = []",
-        "detail": "Pathogen.PeakBinning.PeakBinning",
-        "documentation": {}
-    },
-    {
-        "label": "create_whitelist",
-        "kind": 2,
-        "importPath": "Pathogen.PeakBinning.PeakBinning",
-        "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def create_whitelist(occurrence_list, \n                    rows, \n                    min_frequency,\n                    min_number):\n    \"\"\"Create whitelist for filtering peaks.\n    Args:\n        occurrence_list: Dictionary containing mass occurrences\n        rows: List of row indices to consider\n        min_frequency: Minimum frequency threshold for peaks\n        min_number: Minimum number threshold for peaks",
-        "detail": "Pathogen.PeakBinning.PeakBinning",
-        "documentation": {}
-    },
-    {
-        "label": "filter_peaks",
-        "kind": 2,
-        "importPath": "Pathogen.PeakBinning.PeakBinning",
-        "description": "Pathogen.PeakBinning.PeakBinning",
-        "peekOfCode": "def filter_peaks(peaks_list, min_frequency=0.2, min_number=1, labels=None, merge_whitelists=True):\n    \"\"\"Filter peaks which are not frequently represented in different samples.\n    Args:\n        peaks_list: List of DataFrames containing mass spec data\n        min_frequency: Minimum frequency threshold for peaks\n        min_number: Minimum number threshold for peaks\n        labels: Labels for grouping samples\n        merge_whitelists: Whether to merge whitelists globally\n    Returns:\n        List of filtered DataFrames",
-        "detail": "Pathogen.PeakBinning.PeakBinning",
-        "documentation": {}
-    },
-    {
-        "label": "align_peaks",
-        "kind": 2,
-        "importPath": "Pathogen.PeakDetection.PeakDetection",
-        "description": "Pathogen.PeakDetection.PeakDetection",
-        "peekOfCode": "def align_peaks(spectra_list, half_window_size=20, noise_method=\"MAD\", SNR=2, \n                reference=None, tolerance=0.002, warping_method=\"lowess\"):\n    \"\"\"\n    Aligns peaks in a list of mass spectra DataFrames.\n    Parameters:\n    - spectra_list (List[pd.DataFrame]): A list of DataFrames containing mass and intensity data.\n    - half_window_size (int): Half the size of the window for peak detection.\n    - noise_method (str): The method used for noise estimation.\n    - SNR (float): Signal-to-noise ratio for peak detection.\n    - reference (pd.DataFrame): A reference DataFrame for alignment.",
-        "detail": "Pathogen.PeakDetection.PeakDetection",
-        "documentation": {}
-    },
-    {
-        "label": "detect_peaks",
-        "kind": 2,
-        "importPath": "Pathogen.PeakDetection.PeakDetection",
-        "description": "Pathogen.PeakDetection.PeakDetection",
-        "peekOfCode": "def detect_peaks(spectrum_df, half_window_size=20, noise_method=\"MAD\", SNR=2):\n    # Placeholder for peak detection implementation\n    mass = spectrum_df['Mass'].values\n    intensity = spectrum_df['Intensity'].values\n    # Simple peak detection based on SNR\n    threshold = np.median(intensity) + SNR * np.std(intensity)\n    peaks = intensity > threshold\n    # Extract peak positions\n    peak_positions = mass[peaks]\n    return pd.DataFrame({'Mass': peak_positions})",
-        "detail": "Pathogen.PeakDetection.PeakDetection",
-        "documentation": {}
-    },
-    {
-        "label": "determine_warping_functions",
-        "kind": 2,
-        "importPath": "Pathogen.PeakDetection.PeakDetection",
-        "description": "Pathogen.PeakDetection.PeakDetection",
-        "peekOfCode": "def determine_warping_functions(peaks, reference=None, tolerance=0.002, method=\"lowess\"):\n    # Placeholder for determining warping functions\n    # In practice, implement the logic to calculate warping functions based on peaks\n    return [None] * len(peaks)  # Replace with actual warping functions\ndef warp_mass_spectra(spectra, warping_functions):\n    warped_spectra = []\n    for spectrum, wf in zip(spectra, warping_functions):\n        if wf is None:  # If no warping function, append original spectrum\n            warped_spectra.append(spectrum)\n            continue",
-        "detail": "Pathogen.PeakDetection.PeakDetection",
-        "documentation": {}
-    },
-    {
-        "label": "warp_mass_spectra",
-        "kind": 2,
-        "importPath": "Pathogen.PeakDetection.PeakDetection",
-        "description": "Pathogen.PeakDetection.PeakDetection",
-        "peekOfCode": "def warp_mass_spectra(spectra, warping_functions):\n    warped_spectra = []\n    for spectrum, wf in zip(spectra, warping_functions):\n        if wf is None:  # If no warping function, append original spectrum\n            warped_spectra.append(spectrum)\n            continue\n        mass = spectrum['Mass'].values\n        intensity = spectrum['Intensity'].values\n        # Placeholder for applying the warping function\n        # Assuming wf is a function that takes mass and returns warped mass",
-        "detail": "Pathogen.PeakDetection.PeakDetection",
-        "documentation": {}
-    },
-    {
-        "label": "detectPeaksInDataframe",
-        "kind": 2,
-        "importPath": "Pathogen.PeakDetection.PeakDetection",
-        "description": "Pathogen.PeakDetection.PeakDetection",
-        "peekOfCode": "def detectPeaksInDataframe(df, half_window_size=20, method=\"MAD\", SNR=2):\n    \"\"\"\n    Detect peaks in a single DataFrame based on SNR and local maxima.\n    Parameters:\n        df (pd.DataFrame): DataFrame containing 'Mass', 'Intensity', and 'patientID' columns.\n        half_window_size (int): Window size for detecting local maxima.\n        method (str): Method for noise estimation, e.g., \"MAD\".\n        SNR (float): Signal-to-noise ratio threshold for peak detection.\n    Returns:\n        pd.DataFrame: A DataFrame containing detected peaks with 'Mass', 'Intensity', and SNR.",
-        "detail": "Pathogen.PeakDetection.PeakDetection",
-        "documentation": {}
-    },
-    {
-        "label": "detectPeaksInList",
-        "kind": 2,
-        "importPath": "Pathogen.PeakDetection.PeakDetection",
-        "description": "Pathogen.PeakDetection.PeakDetection",
-        "peekOfCode": "def detectPeaksInList(dataframes, half_window_size=20, method=\"MAD\", SNR=2):\n    \"\"\"\n    Applies detect_peaks_in_dataframe to each DataFrame in a list.\n    Parameters:\n        dataframes (list of pd.DataFrame): List of DataFrames containing 'Mass', 'Intensity', and 'patientID'.\n    Returns:\n        list of pd.DataFrame: List of DataFrames with detected peaks for each original DataFrame.\n    \"\"\"\n    return [detectPeaksInDataframe(df, half_window_size=half_window_size, method=method, SNR=SNR) for df in dataframes]\n# Placeholder for noise estimation based on method",
-        "detail": "Pathogen.PeakDetection.PeakDetection",
-        "documentation": {}
-    },
-    {
-        "label": "estimateNoise",
-        "kind": 2,
-        "importPath": "Pathogen.PeakDetection.PeakDetection",
-        "description": "Pathogen.PeakDetection.PeakDetection",
-        "peekOfCode": "def estimateNoise(intensity, method=\"MAD\"):\n    if method == \"MAD\":\n        # Calculate MAD (Mean Absolute Deviation) for Series\n        return abs(intensity - intensity.median()).mean()\n    elif method == \"SuperSmoother\":\n        # Placeholder for an actual SuperSmoother calculation\n        return intensity.mean()\n    else:\n        raise ValueError(\"Unknown noise estimation method.\")\n# Placeholder for local maxima detection",
-        "detail": "Pathogen.PeakDetection.PeakDetection",
-        "documentation": {}
-    },
-    {
-        "label": "findLocalMaxima",
-        "kind": 2,
-        "importPath": "Pathogen.PeakDetection.PeakDetection",
-        "description": "Pathogen.PeakDetection.PeakDetection",
-        "peekOfCode": "def findLocalMaxima(intensity, half_window_size=20):\n    # Simple local maxima placeholder\n    return (intensity > intensity.shift(1)) & (intensity > intensity.shift(-1))",
-        "detail": "Pathogen.PeakDetection.PeakDetection",
-        "documentation": {}
-    },
-    {
-        "label": "trim_spectra",
-        "kind": 2,
-        "importPath": "Pathogen.Preprocessing.Preprocessing",
-        "description": "Pathogen.Preprocessing.Preprocessing",
-        "peekOfCode": "def trim_spectra(dataframes, mz_range):\n    trimmed_dataframes = []\n    lower_bound, upper_bound = mz_range\n    for df in dataframes:\n        trimmed_df = df[(df['Mass'] >= lower_bound) & (df['Mass'] <= upper_bound)]        \n        trimmed_dataframes.append(pd.DataFrame(trimmed_df))\n    return trimmed_dataframes\n# def trim_spectra(dataframes, mz_range):\n#     trimmed_spectra = []\n#     for spectrum in dataframes:",
-        "detail": "Pathogen.Preprocessing.Preprocessing",
-        "documentation": {}
-    },
-    {
-        "label": "is_regular",
-        "kind": 2,
-        "importPath": "Pathogen.QualityControl.QualityControl",
-        "description": "Pathogen.QualityControl.QualityControl",
-        "peekOfCode": "def is_regular(df, column_name):\n    intervals = np.diff(df[column_name].values)\n    return np.allclose(intervals, intervals[0])",
-        "detail": "Pathogen.QualityControl.QualityControl",
-        "documentation": {}
-    },
-    {
-        "label": "my_class",
-        "kind": 6,
-        "importPath": "Pathogen.Repository.Repository",
-        "description": "Pathogen.Repository.Repository",
-        "peekOfCode": "class my_class(object):\n    pass\n# savePathogen()\n# id, name, createdDate\n# saveRawData()\n# id, run, mass, intensity, createdDate\n# saveFeatureMatrix()\n# id(from above), it's feature matrix data, createdDate\n# savePCAData()\n# id(from above), pcaData, createdDate",
-        "detail": "Pathogen.Repository.Repository",
+        "detail": "IntensityCalibration",
         "documentation": {}
     },
     {
         "label": "main",
         "kind": 2,
-        "importPath": "Pathogen.Pathogen",
-        "description": "Pathogen.Pathogen",
-        "peekOfCode": "def main():\n    # Installs necessary imports for the entirety of the program\n    from Dependencies.Global import installPackages\n    installPackages()\n    # Prints the welcome message\n    from Dependencies.Global import printWelcomeMsg\n    printWelcomeMsg()\n    # Initializes the configuration file\n    from Dependencies.Global import initializeConfig\n    initializeConfig()",
-        "detail": "Pathogen.Pathogen",
+        "importPath": "Pathogen",
+        "description": "Pathogen",
+        "peekOfCode": "def main():\n    from Global import installPackages\n    installPackages() # Installs necessary imports for the entirety of the program\n    from Global import printWelcomeMsg\n    printWelcomeMsg() # Prints the welcome message\n    from Global import initializeConfig\n    initializeConfig() # Initializes the configuration file\n    from Global import database\n    database(None, True) # Initializes and checks the database connection\n    from Global import getConfigValue",
+        "detail": "Pathogen",
+        "documentation": {}
+    },
+    {
+        "label": "averageMassSpectra",
+        "kind": 2,
+        "importPath": "PeakBinning",
+        "description": "PeakBinning",
+        "peekOfCode": "def averageMassSpectra(list_dataframes, labels, method=\"mean\"):\n    \"\"\"\n    Averages or sums mass spectra data by given labels.\n    Parameters:\n    l (list): List of pandas DataFrames containing mass spectra data.\n    labels (list): List of labels for grouping the DataFrames.\n    method (str): Aggregation method to use, either 'mean', 'median', or 'sum'.\n    Returns:\n    list: List of pandas DataFrames, each representing aggregated values for a label.\n    \"\"\"",
+        "detail": "PeakBinning",
+        "documentation": {}
+    },
+    {
+        "label": "estimateNoise",
+        "kind": 2,
+        "importPath": "PeakBinning",
+        "description": "PeakBinning",
+        "peekOfCode": "def estimateNoise(df):\n    \"\"\"\n    Estimates noise in the data by calculating the Median Absolute Deviation (MAD) for each column.\n    Parameters:\n    df (pd.DataFrame): Input DataFrame containing numeric data.\n    Returns:\n    pd.Series: A Series containing the MAD for each column in the DataFrame.\n    \"\"\"\n    # Calculate the median of each column\n    # median = df.median()",
+        "detail": "PeakBinning",
+        "documentation": {}
+    },
+    {
+        "label": "binPeaks",
+        "kind": 2,
+        "importPath": "PeakBinning",
+        "description": "PeakBinning",
+        "peekOfCode": "def binPeaks(peak_list, method=\"strict\", tolerance=0.002):\n    \"\"\"\n    Binning peaks by splitting at the largest gap. This is a wrapper around the \n    .binPeaks function which prepares the peak list before and recreates a \n    correct peak list after binning.\n    Parameters:\n    peak_list (list): List of MassPeaks objects (each as a dictionary with 'mass', 'intensity', 'snr').\n    method (str): Method for grouping ('strict', 'relaxed', 'reference').\n    tolerance (float): Maximum deviation of a peak position to be considered as the same peak.\n    Returns:",
+        "detail": "PeakBinning",
+        "documentation": {}
+    },
+    {
+        "label": "grouperStrict",
+        "kind": 2,
+        "importPath": "PeakBinning",
+        "description": "PeakBinning",
+        "peekOfCode": "def grouperStrict(mass, intensities, samples, tolerance):\n    # Implement strict grouping logic here\n    return mass\ndef grouperRelaxed(mass, intensities, samples, tolerance):\n    # Implement relaxed grouping logic here\n    return mass\ndef grouperRelaxedHighestAtReference(mass, intensities, samples, tolerance):\n    # Implement reference grouping logic here\n    return mass\ndef average_by_bacteria(list_dataframes):",
+        "detail": "PeakBinning",
+        "documentation": {}
+    },
+    {
+        "label": "grouperRelaxed",
+        "kind": 2,
+        "importPath": "PeakBinning",
+        "description": "PeakBinning",
+        "peekOfCode": "def grouperRelaxed(mass, intensities, samples, tolerance):\n    # Implement relaxed grouping logic here\n    return mass\ndef grouperRelaxedHighestAtReference(mass, intensities, samples, tolerance):\n    # Implement reference grouping logic here\n    return mass\ndef average_by_bacteria(list_dataframes):\n    \"\"\"\n    Averages the DataFrames based on the 'patientID' column and returns a list of DataFrames.\n    Parameters:",
+        "detail": "PeakBinning",
+        "documentation": {}
+    },
+    {
+        "label": "grouperRelaxedHighestAtReference",
+        "kind": 2,
+        "importPath": "PeakBinning",
+        "description": "PeakBinning",
+        "peekOfCode": "def grouperRelaxedHighestAtReference(mass, intensities, samples, tolerance):\n    # Implement reference grouping logic here\n    return mass\ndef average_by_bacteria(list_dataframes):\n    \"\"\"\n    Averages the DataFrames based on the 'patientID' column and returns a list of DataFrames.\n    Parameters:\n    list_dataframes (list): List of pandas DataFrames with columns 'Mass', 'Intensity', and 'patientID'.\n    Returns:\n    list: A list of DataFrames, each representing averaged values for a unique patientID.",
+        "detail": "PeakBinning",
+        "documentation": {}
+    },
+    {
+        "label": "average_by_bacteria",
+        "kind": 2,
+        "importPath": "PeakBinning",
+        "description": "PeakBinning",
+        "peekOfCode": "def average_by_bacteria(list_dataframes):\n    \"\"\"\n    Averages the DataFrames based on the 'patientID' column and returns a list of DataFrames.\n    Parameters:\n    list_dataframes (list): List of pandas DataFrames with columns 'Mass', 'Intensity', and 'patientID'.\n    Returns:\n    list: A list of DataFrames, each representing averaged values for a unique patientID.\n    \"\"\"\n    # Concatenate all DataFrames into one\n    combined_df = pd.concat(list_dataframes, ignore_index=True)",
+        "detail": "PeakBinning",
+        "documentation": {}
+    },
+    {
+        "label": "average_by_patient_id",
+        "kind": 2,
+        "importPath": "PeakBinning",
+        "description": "PeakBinning",
+        "peekOfCode": "def average_by_patient_id(list_dataframes):\n    \"\"\"\n    Averages the DataFrames based on the 'PatientId' column and returns a list of DataFrames.\n    Parameters:\n    list_dataframes (list): List of pandas DataFrames with columns 'Mass', 'Intensity', and 'PatientId'.\n    Returns:\n    list: A list of DataFrames, each representing averaged values for a unique PatientId.\n    \"\"\"\n    # Concatenate all DataFrames into one\n    combined_df = pd.concat(list_dataframes, ignore_index=True)",
+        "detail": "PeakBinning",
+        "documentation": {}
+    },
+    {
+        "label": "average_mass_spectra_objects",
+        "kind": 2,
+        "importPath": "PeakBinning",
+        "description": "PeakBinning",
+        "peekOfCode": "def average_mass_spectra_objects(spectra_list, method=\"mean\"):\n    \"\"\"\n    Averages MassSpectrum objects represented as pandas DataFrames.\n    Parameters:\n    spectra_list (list): List of pandas DataFrames.\n    method (str): Aggregation method ('mean', 'median', 'sum').\n    Returns:\n    DataFrame: A new DataFrame representing the averaged values.\n    \"\"\"\n    # Use the first non-empty spectrum as reference",
+        "detail": "PeakBinning",
+        "documentation": {}
+    },
+    {
+        "label": "average_spectra",
+        "kind": 2,
+        "importPath": "PeakBinning",
+        "description": "PeakBinning",
+        "peekOfCode": "def average_spectra(dataframes):\n    # Group the dataframes in sets of 3\n    grouped_dataframes = [dataframes[i:i+3] for i in range(0, len(dataframes), 3)]\n    # List to store the averaged dataframes\n    averaged_dataframes = []\n    for group in grouped_dataframes:\n        # Retrieve the metadata from the first row of the first dataframe in the group\n        metadata = group[0].loc[0, ['patientID', 'patientID.orig', 'experiment', 'loctation', 'Bacteria', 'run']]\n        # Concatenate the Mass and Intensity columns across the group\n        mass_columns = pd.concat([df['Mass'] for df in group], axis=1)",
+        "detail": "PeakBinning",
+        "documentation": {}
+    },
+    {
+        "label": "debug_variable",
+        "kind": 2,
+        "importPath": "PeakBinning",
+        "description": "PeakBinning",
+        "peekOfCode": "def debug_variable(var, name=\"Variable\"):\n    print(f\"\\n{name} Debug Info\")\n    print(\"-\" * 30)\n    # Print type\n    print(f\"Type: {type(var)}\")\n    # If it's a DataFrame, print shape, columns, index, and a sample\n    if isinstance(var, pd.DataFrame):\n        print(f\"Shape: {var.shape}\")\n        print(f\"Columns: {var.columns}\")\n        print(f\"Index: {var.index}\")",
+        "detail": "PeakBinning",
+        "documentation": {}
+    },
+    {
+        "label": "as_occurrence_list",
+        "kind": 2,
+        "importPath": "PeakBinning",
+        "description": "PeakBinning",
+        "peekOfCode": "def as_occurrence_list(peaks_list) -> dict:\n    \"\"\"Convert list of DataFrames to occurrence format for filtering.\n    Args:\n        peaks_list: List of DataFrames containing mass spec data\n    Returns:\n        Dictionary containing unique masses and their occurrences across samples\n    \"\"\"\n    all_masses = []\n    indices = []\n    sample_indices = []",
+        "detail": "PeakBinning",
+        "documentation": {}
+    },
+    {
+        "label": "create_whitelist",
+        "kind": 2,
+        "importPath": "PeakBinning",
+        "description": "PeakBinning",
+        "peekOfCode": "def create_whitelist(occurrence_list, \n                    rows, \n                    min_frequency,\n                    min_number):\n    \"\"\"Create whitelist for filtering peaks.\n    Args:\n        occurrence_list: Dictionary containing mass occurrences\n        rows: List of row indices to consider\n        min_frequency: Minimum frequency threshold for peaks\n        min_number: Minimum number threshold for peaks",
+        "detail": "PeakBinning",
+        "documentation": {}
+    },
+    {
+        "label": "filter_peaks",
+        "kind": 2,
+        "importPath": "PeakBinning",
+        "description": "PeakBinning",
+        "peekOfCode": "def filter_peaks(peaks_list, min_frequency=0.2, min_number=1, labels=None, merge_whitelists=True):\n    \"\"\"Filter peaks which are not frequently represented in different samples.\n    Args:\n        peaks_list: List of DataFrames containing mass spec data\n        min_frequency: Minimum frequency threshold for peaks\n        min_number: Minimum number threshold for peaks\n        labels: Labels for grouping samples\n        merge_whitelists: Whether to merge whitelists globally\n    Returns:\n        List of filtered DataFrames",
+        "detail": "PeakBinning",
+        "documentation": {}
+    },
+    {
+        "label": "align_peaks",
+        "kind": 2,
+        "importPath": "PeakDetection",
+        "description": "PeakDetection",
+        "peekOfCode": "def align_peaks(spectra_list, half_window_size=20, noise_method=\"MAD\", SNR=2, \n                reference=None, tolerance=0.002, warping_method=\"lowess\"):\n    \"\"\"\n    Aligns peaks in a list of mass spectra DataFrames.\n    Parameters:\n    - spectra_list (List[pd.DataFrame]): A list of DataFrames containing mass and intensity data.\n    - half_window_size (int): Half the size of the window for peak detection.\n    - noise_method (str): The method used for noise estimation.\n    - SNR (float): Signal-to-noise ratio for peak detection.\n    - reference (pd.DataFrame): A reference DataFrame for alignment.",
+        "detail": "PeakDetection",
+        "documentation": {}
+    },
+    {
+        "label": "detect_peaks",
+        "kind": 2,
+        "importPath": "PeakDetection",
+        "description": "PeakDetection",
+        "peekOfCode": "def detect_peaks(spectrum_df, half_window_size=20, noise_method=\"MAD\", SNR=2):\n    # Placeholder for peak detection implementation\n    mass = spectrum_df['Mass'].values\n    intensity = spectrum_df['Intensity'].values\n    # Simple peak detection based on SNR\n    threshold = np.median(intensity) + SNR * np.std(intensity)\n    peaks = intensity > threshold\n    # Extract peak positions\n    peak_positions = mass[peaks]\n    return pd.DataFrame({'Mass': peak_positions})",
+        "detail": "PeakDetection",
+        "documentation": {}
+    },
+    {
+        "label": "determine_warping_functions",
+        "kind": 2,
+        "importPath": "PeakDetection",
+        "description": "PeakDetection",
+        "peekOfCode": "def determine_warping_functions(peaks, reference=None, tolerance=0.002, method=\"lowess\"):\n    # Placeholder for determining warping functions\n    # In practice, implement the logic to calculate warping functions based on peaks\n    return [None] * len(peaks)  # Replace with actual warping functions\ndef warp_mass_spectra(spectra, warping_functions):\n    warped_spectra = []\n    for spectrum, wf in zip(spectra, warping_functions):\n        if wf is None:  # If no warping function, append original spectrum\n            warped_spectra.append(spectrum)\n            continue",
+        "detail": "PeakDetection",
+        "documentation": {}
+    },
+    {
+        "label": "warp_mass_spectra",
+        "kind": 2,
+        "importPath": "PeakDetection",
+        "description": "PeakDetection",
+        "peekOfCode": "def warp_mass_spectra(spectra, warping_functions):\n    warped_spectra = []\n    for spectrum, wf in zip(spectra, warping_functions):\n        if wf is None:  # If no warping function, append original spectrum\n            warped_spectra.append(spectrum)\n            continue\n        mass = spectrum['Mass'].values\n        intensity = spectrum['Intensity'].values\n        # Placeholder for applying the warping function\n        # Assuming wf is a function that takes mass and returns warped mass",
+        "detail": "PeakDetection",
+        "documentation": {}
+    },
+    {
+        "label": "detectPeaksInDataframe",
+        "kind": 2,
+        "importPath": "PeakDetection",
+        "description": "PeakDetection",
+        "peekOfCode": "def detectPeaksInDataframe(df, half_window_size=20, method=\"MAD\", SNR=2):\n    \"\"\"\n    Detect peaks in a single DataFrame based on SNR and local maxima.\n    Parameters:\n        df (pd.DataFrame): DataFrame containing 'Mass', 'Intensity', and 'patientID' columns.\n        half_window_size (int): Window size for detecting local maxima.\n        method (str): Method for noise estimation, e.g., \"MAD\".\n        SNR (float): Signal-to-noise ratio threshold for peak detection.\n    Returns:\n        pd.DataFrame: A DataFrame containing detected peaks with 'Mass', 'Intensity', and SNR.",
+        "detail": "PeakDetection",
+        "documentation": {}
+    },
+    {
+        "label": "detectPeaksInList",
+        "kind": 2,
+        "importPath": "PeakDetection",
+        "description": "PeakDetection",
+        "peekOfCode": "def detectPeaksInList(dataframes, half_window_size=20, method=\"MAD\", SNR=2):\n    \"\"\"\n    Applies detect_peaks_in_dataframe to each DataFrame in a list.\n    Parameters:\n        dataframes (list of pd.DataFrame): List of DataFrames containing 'Mass', 'Intensity', and 'patientID'.\n    Returns:\n        list of pd.DataFrame: List of DataFrames with detected peaks for each original DataFrame.\n    \"\"\"\n    return [detectPeaksInDataframe(df, half_window_size=half_window_size, method=method, SNR=SNR) for df in dataframes]\n# Placeholder for noise estimation based on method",
+        "detail": "PeakDetection",
+        "documentation": {}
+    },
+    {
+        "label": "estimateNoise",
+        "kind": 2,
+        "importPath": "PeakDetection",
+        "description": "PeakDetection",
+        "peekOfCode": "def estimateNoise(intensity, method=\"MAD\"):\n    if method == \"MAD\":\n        # Calculate MAD (Mean Absolute Deviation) for Series\n        return abs(intensity - intensity.median()).mean()\n    elif method == \"SuperSmoother\":\n        # Placeholder for an actual SuperSmoother calculation\n        return intensity.mean()\n    else:\n        raise ValueError(\"Unknown noise estimation method.\")\n# Placeholder for local maxima detection",
+        "detail": "PeakDetection",
+        "documentation": {}
+    },
+    {
+        "label": "findLocalMaxima",
+        "kind": 2,
+        "importPath": "PeakDetection",
+        "description": "PeakDetection",
+        "peekOfCode": "def findLocalMaxima(intensity, half_window_size=20):\n    # Simple local maxima placeholder\n    return (intensity > intensity.shift(1)) & (intensity > intensity.shift(-1))",
+        "detail": "PeakDetection",
+        "documentation": {}
+    },
+    {
+        "label": "trim_spectra",
+        "kind": 2,
+        "importPath": "Preprocessing",
+        "description": "Preprocessing",
+        "peekOfCode": "def trim_spectra(dataframes, mz_range):\n    trimmed_dataframes = []\n    lower_bound, upper_bound = mz_range\n    for df in dataframes:\n        trimmed_df = df[(df['Mass'] >= lower_bound) & (df['Mass'] <= upper_bound)]        \n        trimmed_dataframes.append(pd.DataFrame(trimmed_df))\n    return trimmed_dataframes",
+        "detail": "Preprocessing",
+        "documentation": {}
+    },
+    {
+        "label": "is_regular",
+        "kind": 2,
+        "importPath": "QualityControl",
+        "description": "QualityControl",
+        "peekOfCode": "def is_regular(df, column_name):\n    intervals = np.diff(df[column_name].values)\n    return np.allclose(intervals, intervals[0])",
+        "detail": "QualityControl",
         "documentation": {}
     }
 ]
