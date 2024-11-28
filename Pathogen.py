@@ -156,9 +156,10 @@ def main():
     binned_peaks = binPeaks(peaks)
 
     labels = [df['Bacteria'].values[0] for df in binned_peaks]  # Get the first Bacteria value from each DataFrame
+    labelsSamples = [df['patientID'].values[0] for df in binned_peaks] # Get the first SampleID value from each DataFrame
     n = pd.Series(labels).value_counts().shape[0]
 
-    printMessage("info", "FIltering peaks...")
+    printMessage("info", "Filtering peaks...")
     from PeakBinning import filter_peaks
     # binned_peaks = filter_peaks(binned_peaks, labels=labels)
     binned_peaks = filter_peaks(binned_peaks,min_frequency=0.2,labels=labels,merge_whitelists=True)
@@ -198,7 +199,7 @@ def main():
         printMessage("warn", "Number of components cannot be larger than min(n_features, n_classes - 1), please evaluate your sample size.")
     from Global import initializeTables
     initializeTables(num_components)
-    pca = PCA(n_components=num_components)  # number of components to keep per R script
+    pca = PCA(n_components=num_components)
     pca_result = pca.fit_transform(data_scaled)
     
     printMessage("info", "Performing Linear Discriminant Analysis...")
@@ -238,7 +239,7 @@ def main():
         linkage_matrix = linkage(pca_result, method='ward')
         dendrogram(
             linkage_matrix,
-            labels=labels,
+            labels=labelsSamples,
             leaf_rotation=90,
             leaf_font_size=10
         )
@@ -255,7 +256,7 @@ def main():
         send_df_new_columns.append(f'PC{i+1}')
     send_df.columns = send_df_new_columns
     send_df['Bacteria'] = labels
-    send_df.insert(0, 'SampleID', labels)
+    send_df.insert(0, 'SampleID', labelsSamples)
     from Helper import sendValuesToDatabase
     from Helper import getValuesFromDatabase
     returned_df = getValuesFromDatabase(num_components)
@@ -275,12 +276,26 @@ def main():
                 previousData = previousData.reshape(1, -1)
                 cs = cosine_similarity(currentData, previousData)
                 if cs >= getSimilarity():
-                    matches.append(f"Sample: {send_np[i][0]} matches Database SampleID: {returned_np[j][0]}, Bacteria: {returned_np[j][num_components+1]}, Similarity: {cs[0]}")
+                    matches.append(f"Sample: {send_np[i][0]} matches Database SampleID: {returned_np[j][1]}, Bacteria: {returned_np[j][num_components+2]}, Similarity: {cs[0]}")
         if matches:
-            for i in matches:
-                printMessage("info", i)
+            printMessage("warn", "Is there a specific sample you are searching for? Press enter to display everything...")
+            inputSpecific = input("> ")
+            if inputSpecific.strip() != "":
+                matchesint = 0
+                for i in matches:
+                    if inputSpecific in i:
+                        matchesint += 1
+                        printMessage("info", f"Search result: {i}")
+                if matchesint == 0:
+                    printMessage("warn", f"No results found for: {inputSpecific}")
+            else:
+                for i in matches:
+                    printMessage("info", i)
     else:
         printMessage("info", "No matches were found because the table was empty.")
-    sendValuesToDatabase(send_df)
+    printMessage("warn", "Do you want to send the values to the database? Type 'Y' or 'N'")
+    sendValues = input("> ")
+    if sendValues == 'Y':
+        sendValuesToDatabase(send_df)
 if __name__ == "__main__":
     main()

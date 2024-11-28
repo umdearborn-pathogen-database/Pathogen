@@ -17,8 +17,7 @@ packages = [
     'pyyaml',
     'statsmodels',
     'mysql-connector-python',
-    'scipy',
-    'pybaselines'
+    'scipy'
 ]
 
 # Terminal text coloring
