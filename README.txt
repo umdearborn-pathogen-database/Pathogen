@@ -30,7 +30,7 @@ Before Starting:
 
 Startup:
 	1. Launching the program:
-		MacOS: double click on 'Launch_MacOS.sh'
+		MacOS: WIP, or emulate Windows using VMware Fusion
 		Windows: double click on 'Launch_Windows.bat'
 	2. Allow for packages to download, ensuring you are connected to the internet
 	3. Edit config values after first run
